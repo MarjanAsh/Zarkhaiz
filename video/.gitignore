@@ -1,0 +1,10 @@
+# reference reels belong to their creator: analysed locally, not committed
+refs/
+# scraped page + duplicate logo downloads (the logo used is in outputdm-reel/assets)
+research/
+# intermediates
+outputdm-reel/stills/
+outputdm-reel/out/video.mp4
+outputdm-reel/out/.video_segs*
+outputdm-reel/out/*.lock
+outputdm-reel/mix.wav
