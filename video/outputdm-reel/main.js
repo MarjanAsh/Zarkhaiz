@@ -98,7 +98,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 // 1 · hook
 {
   const { t0, t1 } = sc.hook;
-  heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers kahan hain?', t0 + .05, W('l01', 'lekin') - .1, t1);
+  heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', t0 + .05, W('l01', 'lekin') - .1, t1);
   mascot('m_serious', -40, 830, null, t0 + .1, t1, 'up');
   const rows = [
     ['Ads', 'chal rahe hain', W('l01', 'paisa'), true],
@@ -143,13 +143,13 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   vline._grow = [W('l03', 'pakistan') - .2, W('l03', 'uae'), 230];
   add(vline, W('l03', 'pakistan') - .2, t1, 'fade');
   const brands = ['Dajaj Broast', 'Nabi Cafe', 'Sadaqat Properties', 'Cheesy Chicken', 'Tashkeel Travels', 'Misbah Noor Medical Complex', 'Dabbay Wala', 'Dua Pixels', 'ABS Developers', 'Sami Motors', 'Guftagu Restaurant', 'Elite Health Cart'];
-  const lab = el('<div class="abs lbl">Brands we have worked with</div>', { left: '64px', top: '1130px' });
+  const lab = el('<div class="abs lbl" style="font-size:28px">Brands we have worked with</div>', { left: '64px', top: '1118px' });
   const tb = W('l03', 'businesses') - .2;
   add(lab, tb, t1, 'up');
   [0, 1].forEach(r => {
-    const m = el('<div class="marq"></div>', { top: px(1180 + r * 96) });
+    const m = el('<div class="marq"></div>', { top: px(1172 + r * 100) });
     const list = r ? brands.slice(6).concat(brands.slice(0, 6)) : brands;
-    m.innerHTML = list.concat(list).map(b => `<span class="chip" style="font-size:30px;padding:14px 26px;margin-right:16px">${b}</span>`).join('');
+    m.innerHTML = list.concat(list).map(b => `<span class="chip" style="font-size:36px;padding:14px 28px;margin-right:16px;background:rgba(64,50,38,.95);border-color:rgba(246,181,58,.45);color:#fff8ee">${b}</span>`).join('');
     m._marq = { dir: r ? 1 : -1, speed: 70 };
     add(m, tb + r * .15, t1, 'up');
   });
@@ -198,7 +198,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   heading('Sirf wohi', 'jo aap ke business ko chahiye', t0 + .05, W('l07', 'jo') - .1, t1);
   mascot('m_seated', 400, 810, BASE + 8, t0 + .1, t1, 'up');
   const opts = [['Social media', 1], ['Paid ads', 1], ['Shopify store', 0], ['Every service', 0], ['Lead follow-up', 1]];
-  const c = el('<div class="abs card" style="padding:26px 30px;width:440px"></div>', { left: '64px', top: '600px' });
+  const c = el('<div class="abs card" style="padding:26px 30px;width:470px"></div>', { left: '56px', top: '600px' });
   el('<div class="lbl" style="margin-bottom:10px">Aap ka plan</div>', {}, c);
   add(c, t0 + .2, t1, 'pop', { sfx: 'pop' });
   const tSel = W('l07', 'sirf');
@@ -206,7 +206,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
     const r = el(`<div class="row" style="padding:13px 0;position:relative"></div>`, {}, c);
     if (need) check(r, tSel + .15 + i * .12);
     else el(`<div class="chk" style="border-color:rgba(185,171,156,.35)"></div>`, {}, r);
-    const tx = el(`<div class="t1" style="font-size:36px;position:relative">${a}</div>`, {}, r);
+    const tx = el(`<div class="t1" style="font-size:39px;position:relative">${a}</div>`, {}, r);
     if (!need) { const s = el('<div class="strike"></div>', { width: '0px' }, tx); s._strike = [tSel + .2 + i * .1, tx]; tx._dim = tSel + .2; }
   });
 }
@@ -312,7 +312,8 @@ window.render = t => {
   if (ch) {
     const p = seg(t, ch.t0, ch.t0 + .16);
     cap.style.opacity = eo(p); cap.style.transform = `translateY(${14 * (1 - eo(p))}px) scale(${.96 + .04 * eo(p)})`;
-    [...cap.children].forEach((s, i) => { const w = ch.words[i]; s.className = (t >= w.t0 - .03 && (t < w.t1 || i === ch.words.length - 1)) ? 'on' : ''; });
+    let on = -1; ch.words.forEach((w, i) => { if (t >= w.t0 - .03) on = i; });
+    [...cap.children].forEach((s, i) => { s.className = i === on ? 'on' : ''; });
   }
   wm.style.opacity = eo(seg(t, .3, 1));
 };

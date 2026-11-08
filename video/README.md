@@ -4,7 +4,7 @@ A 43-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using his office mascot images, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final file: `outputdm-reel/out/outputdm_founder_reel_v001.mp4`
+Final file: `outputdm-reel/out/outputdm_founder_reel_v002.mp4`
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -56,7 +56,7 @@ LIB=/home/user/lemomo-ai/lemo-opuscar
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
 node $LIB/core/render/video.mjs . --fps 30 --workers 4 --size 1080x1920 --out out/video.mp4
-sh $LIB/core/render/mux.sh out/video.mp4 mix.wav out/outputdm_founder_reel_v001.mp4 30 1
+sh $LIB/core/render/mux.sh out/video.mp4 mix.wav out/outputdm_founder_reel_v002.mp4 30 1
 ```
 
 Review stills: `node $LIB/core/render/still.mjs . 3.2 7.6 12.5 --size 1080x1920 --out stills`
@@ -69,3 +69,13 @@ Review stills: `node $LIB/core/render/still.mjs . 3.2 7.6 12.5 --size 1080x1920 
 - `mix.py`: voice + generated music bed (no samples) + sound effects, music ducked under the voice.
 - `assets/`: mascot cutouts (from `mascot/office-v1`, background removed with rembg) and the OutputDM logo.
 - `fonts/`: Playfair Display and Jost (SIL Open Font License, see the licence files).
+
+Note: in this container `mux.sh` refused `mix.wav` (its decode check reads loudnorm's progress,
+which lags ~3 s at the end), so the final file was muxed directly with a two-pass ffmpeg
+`loudnorm` to -14 LUFS (true peak -1.5 dB), AAC 256k, video stream copied.
+
+## Review
+
+Gemini (gemini-3.5-flash) watched v001: 8.5/10, captions in sync within 0.1-0.2 s, no glitches.
+v002 fixes what it flagged: the hook's accent line now matches the voice, the brand strip and
+the "Aap ka plan" list are bigger and brighter, and only one caption word is highlighted at a time.
