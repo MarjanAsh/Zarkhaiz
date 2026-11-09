@@ -1,5 +1,6 @@
 // OutputDM founder reel: 1080x1920, every frame drawn by render(t) (lemo-opuscar page contract).
 const TL = await (await fetch('timeline.json')).json();
+const TALK = await (await fetch('talk/manifest.json')).json();
 const stage = document.getElementById('stage');
 
 // ---------- maths ----------
@@ -92,6 +93,17 @@ function mascot(src, x, h, bottom, tin, tout, fx = 'up') {
   return m;
 }
 
+// talking-head panel: a 30 fps frame sequence from the LeapTalk clip (talk/<scene>/f_0001.jpg…),
+// or, until that clip exists, the portrait still with a slow push-in
+const panels = [];
+function panel(scene, x, y, size, tin, tout, clipT0, fx = 'pop') {
+  const p = el(`<div class="abs panel"><img></div>`, { left: px(x), top: px(y), width: px(size), height: px(size) });
+  p._talk = { scene, n: (TALK[scene] || {}).frames || 0, t0: clipT0, tin, tout };
+  add(p, tin, tout, fx, { d: .6, sfx: 'whoosh', sfxAt: -.05 });
+  panels.push(p);
+  return p;
+}
+
 // ================= SCENES =================
 const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 
@@ -99,7 +111,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.hook;
   heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', t0 + .05, W('l01', 'lekin') - .1, t1);
-  mascot('m_serious', -40, 830, null, t0 + .1, t1, 'up');
+  panel('hook', 40, 560, 640, t0 + .1, t1, L('l01').t0, 'up');
   const rows = [
     ['Ads', 'chal rahe hain', W('l01', 'paisa'), true],
     ['Posts', 'lag rahi hain', W('l01', 'raha'), true],
@@ -117,16 +129,17 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 // 2 · intro  (+ mascot carries on into 3 · since)
 {
   const { t0, t1 } = sc.intro;
-  heading('Assalam o<br>Alaikum!', 'Main Zarkhaiz', t0 + .05, W('l02', 'main') - .1, t1);
-  const sq = el('<svg class="abs squig" width="380" height="40" viewBox="0 0 380 40"><path d="M6 24 C 60 6, 110 38, 170 20 S 280 6, 374 22"/></svg>', { left: '64px', top: px(262 + 2 * 94 + 12 + 66) });
+  heading('Assalam o Alaikum!', 'Main Zarkhaiz', t0 + .05, W('l02', 'main') - .1, t1);
+  const sq = el('<svg class="abs squig" width="380" height="40" viewBox="0 0 380 40"><path d="M6 24 C 60 6, 110 38, 170 20 S 280 6, 374 22"/></svg>', { left: '64px', top: px(262 + 94 + 12 + 66) });
   sq._draw = [W('l02', 'zarkhaiz'), t1];
   add(sq, t0 + .05, t1, 'fade');
-  mascot('m_smile', 10, 830, null, t0 + .1, sc.since.t1, 'right');
-  const c = el(`<div class="abs card" style="padding:40px 40px 38px;width:470px;text-align:left"></div>`, { left: '540px', top: '800px' });
-  el('<img src="assets/logo_icon.png" style="width:150px;display:block;margin-bottom:22px">', {}, c);
-  el('<div class="lbl" style="margin-bottom:8px">Founder</div>', {}, c);
-  el('<div style="font-family:Playfair;font-weight:800;font-size:72px;line-height:1">OutputDM</div>', {}, c);
-  el('<div class="t2" style="margin-top:12px;font-size:27px">Output Digital Marketing Pvt Ltd</div>', {}, c);
+  panel('intro', 140, 490, 800, t0 + .1, t1, L('l02').t0, 'pop');
+  const c = el(`<div class="abs card row" style="padding:26px 32px;width:560px;gap:24px"></div>`, { left: '470px', top: '1110px' });
+  el('<img src="assets/logo_icon.png" style="width:110px;display:block">', {}, c);
+  const ctx = el('<div></div>', {}, c);
+  el('<div class="lbl" style="margin-bottom:6px">Founder</div>', {}, ctx);
+  el('<div style="font-family:Playfair;font-weight:800;font-size:58px;line-height:1">OutputDM</div>', {}, ctx);
+  el('<div class="t2" style="margin-top:8px;font-size:24px">Output Digital Marketing Pvt Ltd</div>', {}, ctx);
   add(c, W('l02', 'outputdm') - .25, t1, 'pop', { sfx: 'pop' });
 }
 
@@ -134,16 +147,17 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.since;
   heading('2018 se', 'Lahore se, Pakistan + UAE', t0 + .05, W('l03', 'lahore') - .1, t1);
+  panel('since', 40, 470, 640, t0 + .05, t1, L('l03').t0, 'pop');
   const places = [['Lahore', W('l03', 'lahore')], ['Pakistan', W('l03', 'pakistan')], ['UAE', W('l03', 'uae')]];
   places.forEach(([p, tt], i) => {
-    const c = el(`<div class="abs chip"><span style="width:16px;height:16px;border-radius:50%;background:var(--gold);display:inline-block"></span>${p}</div>`, { left: px(560 + (i === 0 ? 0 : 60)), top: px(600 + i * 118) });
+    const c = el(`<div class="abs chip"><span style="width:16px;height:16px;border-radius:50%;background:var(--gold);display:inline-block"></span>${p}</div>`, { left: px(720 + (i === 0 ? 0 : 40)), top: px(520 + i * 118) });
     add(c, tt - .15, t1, 'pop', { sfx: 'pop' });
   });
-  const vline = el('<div class="abs" style="width:3px;background:linear-gradient(var(--gold),rgba(246,181,58,.1));border-radius:2px"></div>', { left: '588px', top: '670px', height: '0px' });
+  const vline = el('<div class="abs" style="width:3px;background:linear-gradient(var(--gold),rgba(246,181,58,.1));border-radius:2px"></div>', { left: '748px', top: '590px', height: '0px' });
   vline._grow = [W('l03', 'pakistan') - .2, W('l03', 'uae'), 230];
   add(vline, W('l03', 'pakistan') - .2, t1, 'fade');
   const brands = ['Dajaj Broast', 'Nabi Cafe', 'Sadaqat Properties', 'Cheesy Chicken', 'Tashkeel Travels', 'Misbah Noor Medical Complex', 'Dabbay Wala', 'Dua Pixels', 'ABS Developers', 'Sami Motors', 'Guftagu Restaurant', 'Elite Health Cart'];
-  const lab = el('<div class="abs lbl" style="font-size:28px">Brands we have worked with</div>', { left: '64px', top: '1118px' });
+  const lab = el('<div class="abs lbl" style="font-size:28px">Brands we have worked with</div>', { left: '64px', top: '1128px' });
   const tb = W('l03', 'businesses') - .2;
   add(lab, tb, t1, 'up');
   [0, 1].forEach(r => {
@@ -159,7 +173,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.leaks;
   heading('Teen jagah', 'customers kho jaate hain', t0 + .05, W('l04', 'customers') - .1, t1);
-  mascot('m_side', 570, 900, null, t0 + .1, t1, 'left');
+  panel('leaks', 440, 470, 600, t0 + .1, t1, L('l04').t0, 'left');
   const cards = [
     ['01', 'Visibility', 'Log dhoond nahi paate', W('l05', 'dhoond')],
     ['02', 'Conversion', 'Aa kar rukte nahi', W('l05', 'rukte')],
@@ -178,9 +192,9 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.system;
   heading('Sab kuch,', 'ek connected system mein', t0 + .05, W('l06', 'system') - .2, t1);
-  mascot('m_back', -10, 760, null, t0 + .1, t1, 'up');
+  panel('system', 40, 470, 600, t0 + .1, t1, L('l06').t0, 'up');
   const svc = [['Content', 'posts, reels, design', 'content'], ['Ads', 'Meta & Google', 'ads'], ['Website', '+ Shopify stores', 'website'], ['SEO', 'local visibility', 'seo'], ['Automation', 'lead follow-up', 'automation']];
-  const list = el('<div class="abs card" style="padding:18px 30px;width:540px"></div>', { left: '470px', top: '510px' });
+  const list = el('<div class="abs card" style="padding:18px 28px;width:450px"></div>', { left: '590px', top: '510px' });
   add(list, t0 + .25, t1, 'pop', { d: .5 });
   svc.forEach(([a, b, k], i) => {
     const tt = W('l06', k);
@@ -196,7 +210,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.only;
   heading('Sirf wohi', 'jo aap ke business ko chahiye', t0 + .05, W('l07', 'jo') - .1, t1);
-  mascot('m_seated', 400, 810, BASE + 8, t0 + .1, t1, 'up');
+  panel('only', 420, 470, 620, t0 + .1, t1, L('l07').t0, 'left');
   const opts = [['Social media', 1], ['Paid ads', 1], ['Shopify store', 0], ['Every service', 0], ['Lead follow-up', 1]];
   const c = el('<div class="abs card" style="padding:26px 30px;width:470px"></div>', { left: '56px', top: '600px' });
   el('<div class="lbl" style="margin-bottom:10px">Aap ka plan</div>', {}, c);
@@ -215,12 +229,12 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.cta;
   heading('Free Digital<br>Growth Review', 'abhi WhatsApp karein', t0 + .05, W('l08', 'abhi') - .15, t1 + 1);
-  mascot('m_smile', 610, 820, null, t0 + .1, t1 + 1, 'left');
-  const wa = el(`<div class="abs card row" style="padding:26px 30px;width:540px;gap:22px"><div class="wa">${WA}</div><div><div class="lbl" style="color:#7be3a2">WhatsApp</div><div style="font-family:Jost;font-weight:700;font-size:42px;white-space:nowrap">0344 444 1724</div></div></div>`, { left: '64px', top: '610px' });
+  panel('cta', 440, 560, 600, t0 + .1, t1 + 1, L('l08').t0, 'left');
+  const wa = el(`<div class="abs card row" style="padding:26px 30px;width:540px;gap:22px"><div class="wa">${WA}</div><div><div class="lbl" style="color:#7be3a2">WhatsApp</div><div style="font-family:Jost;font-weight:700;font-size:42px;white-space:nowrap">0344 444 1724</div></div></div>`, { left: '64px', top: '1030px' });
   add(wa, W('l08', 'whatsapp') - .25, t1 + 1, 'pop', { sfx: 'ding' });
-  const lg = el('<img class="abs" src="assets/logo.png" style="width:300px">', { left: '130px', top: '850px' });
+  const lg = el('<img class="abs" src="assets/logo.png" style="width:300px">', { left: '80px', top: '590px' });
   add(lg, W('l09', 'outputdm') - .2, t1 + 1, 'pop', { sfx: 'pop' });
-  const web = el('<div class="abs chip" style="font-size:36px">outputdm.com</div>', { left: '96px', top: '1200px' });
+  const web = el('<div class="abs chip" style="font-size:36px">outputdm.com</div>', { left: '96px', top: '895px' });
   add(web, W('l09', 'dot'), t1 + 1, 'up');
   const tf = L('l09').t1 + .55;
   const fol = el(`<div class="abs chip" style="padding:14px 18px 14px 30px;gap:22px">@outputdm <span class="btn" style="background:var(--gold);color:#1a120b">Follow</span></div>`, { left: '0px', top: '1410px' });
@@ -253,7 +267,8 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
-window.render = t => {
+window.render = async t => {
+  const pend = [];
   // background drift
   blobs[0].style.transform = `translate(${-120 + 90 * Math.sin(t * .23)}px, ${-160 + 70 * Math.cos(t * .19)}px)`;
   blobs[1].style.transform = `translate(${560 + 80 * Math.cos(t * .17)}px, ${980 + 90 * Math.sin(t * .21)}px)`;
@@ -275,6 +290,15 @@ window.render = t => {
       btn.style.border = on ? '2px solid var(--gold)' : '2px solid transparent';
       n.style.left = px((1080 - n.offsetWidth) / 2);
     }
+  }
+  for (const p of panels) {
+    const k = p._talk, img = p.firstElementChild;
+    if (t < k.tin - .01 || t > k.tout + .01) continue;
+    let src;
+    if (k.n) { const i = Math.min(k.n, Math.max(1, Math.floor((t - k.t0) * 30) + 1)); src = `talk/${k.scene}/f_${String(i).padStart(4, '0')}.jpg`; }
+    else src = `talk/${k.scene}/still.jpg`;
+    if (img._src !== src) { img._src = src; img.src = src; pend.push(img.decode().catch(() => {})); }
+    img.style.transform = `scale(${1.02 + .05 * seg(t, k.tin, k.tout)})`;
   }
   for (const c of checks) {
     const p = seg(t, c._on, c._on + .28);
@@ -316,6 +340,7 @@ window.render = t => {
     [...cap.children].forEach((s, i) => { s.className = i === on ? 'on' : ''; });
   }
   wm.style.opacity = eo(seg(t, .3, 1));
+  await Promise.all(pend);
 };
 
 window.DUR = TL.dur;
@@ -327,5 +352,5 @@ await document.fonts.load('700 42px Jost'); await document.fonts.load('500 29px 
 await document.fonts.load('900 64px Playfair');
 await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
 await document.fonts.ready;
-window.render(0);
+await window.render(0);
 window.READY = true;

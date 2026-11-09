@@ -16,3 +16,11 @@ motion/*.tmp
 motion/openapi.json
 motion/or_video_models.json
 motion/inputs/
+# talking-head frame sequences: rebuilt from motion/clips by outputdm-reel/talk_frames.sh
+outputdm-reel/talk/*/f_*.jpg
+# first LeapTalk attempts on full-body photos cut the head off; kept locally only
+motion/clips/lt_l01.mp4
+motion/clips/lt_l02.mp4
+motion/clips/lt_l03.mp4
+motion/clips/lt_l04.mp4
+motion/clips/lt_l05.mp4
