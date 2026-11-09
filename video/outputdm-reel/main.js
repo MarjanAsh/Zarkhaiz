@@ -104,6 +104,16 @@ function panel(scene, x, y, size, tin, tout, clipT0, fx = 'pop') {
   return p;
 }
 
+// full-body actor: smooth crossfades between poses (turns), breathing, sway, weight shift
+const actors = [];
+function actor(poses, x, h, tin, tout, fx = 'up') {
+  const w = Math.round(h * 0.7);
+  const a = el(`<div class="abs" style="width:${w}px;height:${h}px"></div>`, { left: px(x), top: px(BASE - h) });
+  el('<div class="shadow"></div>', {}, a); el('<div class="halo"></div>', {}, a);
+  a._p = poses.map(([src, t]) => ({ t, img: el(`<img src="assets/${src}.png" style="position:absolute;bottom:0;left:50%;height:100%;transform-origin:50% 100%;opacity:0">`, {}, a) }));
+  a._h = h; add(a, tin, tout, fx, { d: .7, sfx: 'whoosh', sfxAt: -.05 }); actors.push(a); return a;
+}
+
 // ================= SCENES =================
 const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 
@@ -111,7 +121,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.hook;
   heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', t0 + .05, W('l01', 'lekin') - .1, t1);
-  panel('hook', 40, 560, 640, t0 + .1, t1, L('l01').t0, 'up');
+  actor([['m_serious', 0]], -20, 860, t0 + .1, t1, 'up');
   const rows = [
     ['Ads', 'chal rahe hain', W('l01', 'paisa'), true],
     ['Posts', 'lag rahi hain', W('l01', 'raha'), true],
@@ -147,7 +157,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.since;
   heading('2018 se', 'Lahore se, Pakistan + UAE', t0 + .05, W('l03', 'lahore') - .1, t1);
-  panel('since', 40, 470, 640, t0 + .05, t1, L('l03').t0, 'pop');
+  actor([['m_back', 0], ['m_side', t0 + .9], ['m_smile', t0 + 1.8]], 40, 700, t0 + .05, t1, 'up');
   const places = [['Lahore', W('l03', 'lahore')], ['Pakistan', W('l03', 'pakistan')], ['UAE', W('l03', 'uae')]];
   places.forEach(([p, tt], i) => {
     const c = el(`<div class="abs chip"><span style="width:16px;height:16px;border-radius:50%;background:var(--gold);display:inline-block"></span>${p}</div>`, { left: px(720 + (i === 0 ? 0 : 40)), top: px(520 + i * 118) });
@@ -173,7 +183,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.leaks;
   heading('Teen jagah', 'customers kho jaate hain', t0 + .05, W('l04', 'customers') - .1, t1);
-  panel('leaks', 440, 470, 600, t0 + .1, t1, L('l04').t0, 'left');
+  actor([['m_side', 0], ['m_serious', W('l05', 'follow-up') - .2]], 600, 880, t0 + .1, t1, 'left');
   const cards = [
     ['01', 'Visibility', 'Log dhoond nahi paate', W('l05', 'dhoond')],
     ['02', 'Conversion', 'Aa kar rukte nahi', W('l05', 'rukte')],
@@ -229,7 +239,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.cta;
   heading('Free Digital<br>Growth Review', 'abhi WhatsApp karein', t0 + .05, W('l08', 'abhi') - .15, t1 + 1);
-  panel('cta', 440, 560, 600, t0 + .1, t1 + 1, L('l08').t0, 'left');
+  actor([['m_seated', 0], ['m_smile', W('l08', 'whatsapp') - .3]], 520, 820, t0 + .1, t1 + 1, 'left');
   const wa = el(`<div class="abs card row" style="padding:26px 30px;width:540px;gap:22px"><div class="wa">${WA}</div><div><div class="lbl" style="color:#7be3a2">WhatsApp</div><div style="font-family:Jost;font-weight:700;font-size:42px;white-space:nowrap">0344 444 1724</div></div></div>`, { left: '64px', top: '1030px' });
   add(wa, W('l08', 'whatsapp') - .25, t1 + 1, 'pop', { sfx: 'ding' });
   const lg = el('<img class="abs" src="assets/logo.png" style="width:300px">', { left: '80px', top: '590px' });
@@ -290,6 +300,18 @@ window.render = async t => {
       btn.style.border = on ? '2px solid var(--gold)' : '2px solid transparent';
       n.style.left = px((1080 - n.offsetWidth) / 2);
     }
+  }
+  for (const a of actors) {
+    const ps = a._p; let cur = 0; ps.forEach((p, i) => { if (t >= p.t) cur = i; });
+    ps.forEach((p, i) => {
+      const nx = ps[i + 1], fin = i === 0 ? 1 : seg(t, p.t, p.t + .4), fout = nx ? seg(t, nx.t, nx.t + .4) : 0;
+      const o = eio(fin) * (1 - eio(fout));
+      const turn = (1 - eio(fin)) * 6 - eio(fout) * 6;
+      p.img.style.opacity = o;
+      p.img.style.filter = o < 1 ? `blur(${(1 - o) * 4}px)` : 'none';
+      const br = 1 + .012 * Math.sin(t * 2.2), sw = 1.4 * Math.sin(t * .9), sx = 6 * Math.sin(t * .6);
+      p.img.style.transform = `translateX(calc(-50% + ${sx + turn * 4}px)) rotate(${sw}deg) scaleY(${br}) scaleX(${2 - br})`;
+    });
   }
   for (const p of panels) {
     const k = p._talk, img = p.firstElementChild;
