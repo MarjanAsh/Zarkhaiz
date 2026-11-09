@@ -104,14 +104,73 @@ function panel(scene, x, y, size, tin, tout, clipT0, fx = 'pop') {
   return p;
 }
 
-// full-body actor: smooth crossfades between poses (turns), breathing, sway, weight shift
+// ---------- rigged full-body actor ----------
+// Each pose is drawn through a WebGL warp: the head turns and nods around the neck, the jaw opens with the
+// voice (talk/mouth.json), eyelids blink, eyebrows lift on emphasis, the chest breathes. Poses crossfade for turns.
+const MOUTH = await (await fetch('talk/mouth.json')).json();
+const curve = (arr, t) => { const i = Math.max(0, t * MOUTH.fps), k = Math.floor(i), v0 = arr[k] || 0, v1 = arr[k + 1] || 0; return v0 + (v1 - v0) * (i - k); };
+const RIG = {   // image pixels: neck [x, y, falloff], hw = head half-width at the jaw, mouth [x, y, half-width], eyes [x, y, r]
+  m_serious: { S: [949, 1400], neck: [462, 265, 28], hw: 75, mouth: [460, 218, 22], e1: [424, 163, 12], e2: [482, 156, 12], chest: [420, 90], dark: .85 },
+  m_smile: { S: [723, 1400], neck: [235, 255, 28], hw: 75, mouth: [230, 194, 26], e1: [191, 147, 12], e2: [250, 138, 12], chest: [420, 90], dark: .15 },
+  m_side: { S: [732, 1400], neck: [272, 255, 28], hw: 80, mouth: [207, 197, 15], e1: [236, 152, 11], e2: [0, 0, 0], chest: [420, 90], dark: .7 },
+  m_seated: { S: [1138, 1312], neck: [560, 615, 55], hw: 170, mouth: [546, 470, 52], e1: [461, 352, 22], e2: [603, 337, 22], chest: [900, 160], dark: .85 },
+  m_back: { S: [716, 1400], neck: [243, 252, 28], hw: 80, mouth: [0, -999, 1], e1: [0, 0, 0], e2: [0, 0, 0], chest: [420, 90], dark: 0 },
+};
+const VS = 'attribute vec2 a;varying vec2 v;void main(){v=vec2((a.x+1.)/2.,(1.-a.y)/2.);gl_Position=vec4(a,0.,1.);}';
+const FS = `precision highp float;varying vec2 v;uniform sampler2D T;uniform vec2 S;uniform vec3 neck,mouth,e1,e2;uniform vec2 hOff,chest;
+uniform float hw,hRot,open,blink,brow,breath,dark;
+vec2 eye(vec2 hl,vec3 e){ if(e.z<.5) return vec2(0.); vec2 d=(hl-e.xy)/vec2(e.z*1.5,e.z); vec2 db=(hl-(e.xy-vec2(0.,1.6*e.z)))/vec2(e.z*2.,e.z*.9);
+  return vec2(0., -blink*.85*e.z*exp(-dot(d,d)) + brow*.4*e.z*exp(-dot(db,db))); }
+void main(){ vec2 p=v*S; p.y+=breath*exp(-pow((p.y-chest.x)/chest.y,2.));
+  float wy=1.-smoothstep(neck.y-neck.z,neck.y+.6*neck.z,p.y); float wx=1.-smoothstep(hw,hw*1.7,abs(p.x-neck.x));
+  float w=wy*mix(1.,wx,smoothstep(neck.y-2.2*neck.z,neck.y-neck.z,p.y));
+  float a=-hRot*w; vec2 q=p-hOff*w-neck.xy; vec2 s=vec2(cos(a)*q.x-sin(a)*q.y,sin(a)*q.x+cos(a)*q.y)+neck.xy; vec2 hl=s; float u=mouth.z;
+  float gx=exp(-pow((hl.x-mouth.x)/(1.25*u),2.)); float gy=smoothstep(mouth.y-.05*u,mouth.y+.35*u,hl.y)*(1.-smoothstep(mouth.y+1.6*u,mouth.y+2.6*u,hl.y));
+  s.y-=open*.42*u*gx*gy; s+=eye(hl,e1)+eye(hl,e2);
+  vec4 c=texture2D(T,s/S); if(s.x<0.||s.y<0.||s.x>S.x||s.y>S.y) c=vec4(0.);
+  vec2 dm=(hl-vec2(mouth.x,mouth.y+open*.17*u))/vec2(.55*u,max(open*.2*u,.001));
+  float m=(1.-smoothstep(.55,1.,dot(dm,dm)))*smoothstep(.06,.3,open)*dark;
+  c.rgb=mix(c.rgb,vec3(.10,.03,.03)*c.a,m); gl_FragColor=c; }`;
+const loads = [];
+function puppet(src, parent) {
+  const r = RIG[src], cv = document.createElement('canvas'); cv.width = r.S[0]; cv.height = r.S[1];
+  cv.style.cssText = 'position:absolute;bottom:0;left:50%;height:100%;transform-origin:50% 100%;opacity:0';
+  parent.appendChild(cv);
+  const gl = cv.getContext('webgl', { premultipliedAlpha: true, preserveDrawingBuffer: true, antialias: false });
+  const sh = (ty, code) => { const o = gl.createShader(ty); gl.shaderSource(o, code); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = n => gl.getUniformLocation(pr, n);
+  const im = new Image(); im.src = `assets/${src}.png`;
+  loads.push(new Promise(res => { im.onload = () => {
+    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture()); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
+    for (const [k, val] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, val);
+    gl.uniform2f(U('S'), ...r.S); gl.uniform3f(U('neck'), ...r.neck); gl.uniform3f(U('mouth'), ...r.mouth); gl.uniform3f(U('e1'), ...r.e1); gl.uniform3f(U('e2'), ...r.e2);
+    gl.uniform2f(U('chest'), ...r.chest); gl.uniform1f(U('hw'), r.hw); gl.uniform1f(U('dark'), r.dark); res();
+  }; }));
+  const k = r.mouth[2] / 22 || 1;   // motion scale: the seated close-up is drawn larger
+  cv._draw = (t, ph) => {
+    const sp = curve(MOUTH.s, t), op = curve(MOUTH.v, t);
+    const bk = Math.round((t - 1.7) / 2.9); let bl = 0;
+    for (const j of [bk - 1, bk, bk + 1]) { const tb = 1.7 + 2.9 * j + .9 * Math.sin(j * 12.9898 + ph); bl = Math.max(bl, 1 - Math.abs(t - tb) / .09); }
+    gl.uniform1f(U('hRot'), .03 * Math.sin(t * 1.25 + ph) + .016 * Math.sin(t * 2.7 + 1.3) + .05 * (sp - .2) * Math.sin(t * 4.1 + ph));
+    gl.uniform2f(U('hOff'), k * 3 * Math.sin(t * .8 + ph), k * (2 * Math.sin(t * 1.9) + 7 * sp));
+    gl.uniform1f(U('open'), op); gl.uniform1f(U('blink'), eio(clamp(bl))); gl.uniform1f(U('brow'), clamp(sp * 1.5 - .25));
+    gl.uniform1f(U('breath'), k * 3 * Math.sin(t * 2.1));
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  };
+  return cv;
+}
 const actors = [];
 function actor(poses, x, h, tin, tout, fx = 'up') {
   const w = Math.round(h * 0.7);
   const a = el(`<div class="abs" style="width:${w}px;height:${h}px"></div>`, { left: px(x), top: px(BASE - h) });
   el('<div class="shadow"></div>', {}, a); el('<div class="halo"></div>', {}, a);
-  a._p = poses.map(([src, t]) => ({ t, img: el(`<img src="assets/${src}.png" style="position:absolute;bottom:0;left:50%;height:100%;transform-origin:50% 100%;opacity:0">`, {}, a) }));
-  a._h = h; add(a, tin, tout, fx, { d: .7, sfx: 'whoosh', sfxAt: -.05 }); actors.push(a); return a;
+  a._p = poses.map(([src, t]) => ({ t, img: puppet(src, a) }));
+  a._ph = actors.length * 1.7;
+  add(a, tin, tout, fx, { d: fx.startsWith('walk') ? 1.0 : .7, sfx: 'whoosh', sfxAt: -.05 }); actors.push(a); return a;
 }
 
 // ================= SCENES =================
@@ -121,7 +180,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.hook;
   heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', t0 + .05, W('l01', 'lekin') - .1, t1);
-  actor([['m_serious', 0]], -20, 860, t0 + .1, t1, 'up');
+  actor([['m_serious', 0]], -20, 860, t0 + .05, t1, 'walkL');
   const rows = [
     ['Ads', 'chal rahe hain', W('l01', 'paisa'), true],
     ['Posts', 'lag rahi hain', W('l01', 'raha'), true],
@@ -157,7 +216,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.since;
   heading('2018 se', 'Lahore se, Pakistan + UAE', t0 + .05, W('l03', 'lahore') - .1, t1);
-  actor([['m_back', 0], ['m_side', t0 + .9], ['m_smile', t0 + 1.8]], 40, 700, t0 + .05, t1, 'up');
+  actor([['m_back', 0], ['m_side', t0 + .9], ['m_smile', t0 + 1.8]], 40, 700, t0 + .05, t1, 'walkL');
   const places = [['Lahore', W('l03', 'lahore')], ['Pakistan', W('l03', 'pakistan')], ['UAE', W('l03', 'uae')]];
   places.forEach(([p, tt], i) => {
     const c = el(`<div class="abs chip"><span style="width:16px;height:16px;border-radius:50%;background:var(--gold);display:inline-block"></span>${p}</div>`, { left: px(720 + (i === 0 ? 0 : 40)), top: px(520 + i * 118) });
@@ -183,7 +242,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 {
   const { t0, t1 } = sc.leaks;
   heading('Teen jagah', 'customers kho jaate hain', t0 + .05, W('l04', 'customers') - .1, t1);
-  actor([['m_side', 0], ['m_serious', W('l05', 'follow-up') - .2]], 600, 880, t0 + .1, t1, 'left');
+  actor([['m_side', 0], ['m_serious', W('l05', 'follow-up') - .2]], 600, 880, t0 + .1, t1, 'walkR');
   const cards = [
     ['01', 'Visibility', 'Log dhoond nahi paate', W('l05', 'dhoond')],
     ['02', 'Conversion', 'Aa kar rukte nahi', W('l05', 'rukte')],
@@ -270,6 +329,7 @@ function fxStyle(it, t) {
     case 'pop': tf = `scale(${.82 + .18 * back(pin)})`; break;
     case 'blur': tf = `translateY(${24 * Math.pow(k, 2)}px)`; fl = `blur(${14 * Math.pow(k, 1.5)}px)`; break;
     case 'shake': { const s = seg(t, it.tin, it.tin + .55); tf = `scale(${.82 + .18 * back(pin)}) translateX(${Math.sin(s * 28) * 14 * (1 - s)}px)`; break; }
+    case 'walkL': case 'walkR': { const dir = it.fx === 'walkL' ? -1 : 1, e = eo(pin); tf = `translateX(${dir * 380 * (1 - e)}px) translateY(${-16 * Math.abs(Math.sin(pin * Math.PI * 4)) * (1 - pin)}px) rotate(${dir * 2.2 * Math.sin(pin * Math.PI * 4) * (1 - pin)}deg)`; break; }
     case 'fade': break;
   }
   tf += ` translateY(${-28 * eio(pout)}px)`;
@@ -302,15 +362,16 @@ window.render = async t => {
     }
   }
   for (const a of actors) {
-    const ps = a._p; let cur = 0; ps.forEach((p, i) => { if (t >= p.t) cur = i; });
+    const ps = a._p, sp = curve(MOUTH.s, t);
     ps.forEach((p, i) => {
       const nx = ps[i + 1], fin = i === 0 ? 1 : seg(t, p.t, p.t + .4), fout = nx ? seg(t, nx.t, nx.t + .4) : 0;
-      const o = eio(fin) * (1 - eio(fout));
-      const turn = (1 - eio(fin)) * 6 - eio(fout) * 6;
+      const o = eio(fin) * (1 - eio(fout)), turn = (1 - eio(fin)) * 6 - eio(fout) * 6;
       p.img.style.opacity = o;
+      if (o <= 0) return;
+      p.img._draw(t, a._ph + i);
       p.img.style.filter = o < 1 ? `blur(${(1 - o) * 4}px)` : 'none';
-      const br = 1 + .012 * Math.sin(t * 2.2), sw = 1.4 * Math.sin(t * .9), sx = 6 * Math.sin(t * .6);
-      p.img.style.transform = `translateX(calc(-50% + ${sx + turn * 4}px)) rotate(${sw}deg) scaleY(${br}) scaleX(${2 - br})`;
+      const sw = 1.1 * Math.sin(t * .9 + a._ph) + .6 * (sp - .2) * Math.sin(t * 2.3), sx = 6 * Math.sin(t * .6 + a._ph);
+      p.img.style.transform = `translateX(calc(-50% + ${sx + turn * 4}px)) translateY(${-5 * sp}px) rotate(${sw}deg) scale(${1 + .012 * sp})`;
     });
   }
   for (const p of panels) {
@@ -372,6 +433,7 @@ window.EV = EV.sort((a, b) => a.t - b.t);
 await document.fonts.load('800 92px Playfair'); await document.fonts.load('italic 700 52px Playfair');
 await document.fonts.load('700 42px Jost'); await document.fonts.load('500 29px Jost'); await document.fonts.load('600 24px Jost');
 await document.fonts.load('900 64px Playfair');
+await Promise.all(loads);
 await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
 await document.fonts.ready;
 await window.render(0);

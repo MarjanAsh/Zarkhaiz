@@ -4,7 +4,7 @@ A 43-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using his office mascot images, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final file: `outputdm-reel/out/outputdm_founder_reel_v002.mp4`
+Final file: `outputdm-reel/out/outputdm_founder_reel_v005_rigged.mp4`
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -79,3 +79,17 @@ which lags ~3 s at the end), so the final file was muxed directly with a two-pas
 Gemini (gemini-3.5-flash) watched v001: 8.5/10, captions in sync within 0.1-0.2 s, no glitches.
 v002 fixes what it flagged: the hook's accent line now matches the voice, the brand strip and
 the "Aap ka plan" list are bigger and brighter, and only one caption word is highlighted at a time.
+
+## v005: rigged, moving mascot (made in code, no paid video model)
+
+- `main.js` draws each mascot pose through a WebGL warp (`puppet()`): the head turns and nods around the
+  neck, the jaw opens with the voice, eyelids blink, eyebrows lift on emphasis, the chest breathes.
+  Face points per pose are in `RIG` (image pixels, read off gridded crops).
+- `build_mouth.py` -> `talk/mouth.json`: mouth-open and speech-energy curves from the voiceover (60 fps).
+- `actor()` crossfades poses for turns (back -> side -> front) and walks the character in.
+- Intro, system and "only" scenes play real lip-synced clips from the free Hugging Face LeapTalk space
+  (`motion/clips`, frames rebuilt by `talk_frames.sh`).
+- Limits: arms and legs do not move separately (the source photos have crossed arms / hands in pockets),
+  and the rigged mouth follows loudness, not exact Urdu phonemes.
+
+Rebuild order: `tts_gemini.py`, `build_timeline.py`, `build_mouth.py`, `talk_frames.sh`, then events, mix, video, mux.
