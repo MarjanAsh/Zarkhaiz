@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final file: `outputdm-reel/out/outputdm_founder_reel_v006_cutouts.mp4`
+Final files: `outputdm-reel/out/outputdm_founder_reel_v007.mp4` (1080x1920) and `outputdm_founder_reel_v007_4k.mp4` (2160x3840)
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -58,8 +58,12 @@ python3 build_timeline.py
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
 node $LIB/core/render/video.mjs . --fps 30 --workers 3 --size 1080x1920 --out out/video.mp4
-ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v006_cutouts.mp4
+ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v007.mp4
 ```
+
+4K: the page layout stays 1080x1920 and is drawn at 2x. `page.mjs` in lemo-opuscar fixes `deviceScaleFactor: 1`;
+change it to `+process.env.LEMO_DSF || 1`, then run the same `video.mjs` command with `LEMO_DSF=2` and
+`--out out/video4k.mp4`. (Scaling the stage with a CSS transform instead left cut-off chips and seams.)
 
 Review stills: `node $LIB/core/render/still.mjs . 3.2 7.6 12.5 --size 1080x1920 --out stills`
 
@@ -103,3 +107,10 @@ and make the motion graphics bigger.
 - Captions: the end of a sentence is no longer split from its verb ("kar rahe hain." is one caption).
 - Limits: word times inside a line are estimated from word length (Gemini TTS gives no timestamps), and the
   character has five poses, so arms and legs change by pose swap, not by continuous movement.
+
+## v007: line 3 voice fix, 4K
+
+- The first splice for line 3 took 0.19 s from the end of line 6, which included the "t" of "jodte", so the
+  line read "kaam kar rakte hain". `fix_vo.py` now takes only the last 0.125 s (the "hain" after the "t").
+- Added the 4K render (see Rebuild). The mascot images are 1024x1536, so in 4K the character is slightly
+  upscaled; text and graphics are drawn at full 4K.

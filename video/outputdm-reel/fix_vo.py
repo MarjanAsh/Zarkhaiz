@@ -33,9 +33,10 @@ for n in range(1, 10):
     e = speech_end(x, sr); clean[i] = fade(x[: e + int(.05 * sr)], sr, .002, .04)
 # l03: "... kaam kar rahe" + "hain" from l06
 x6, sr = take("l06"); e6 = speech_end(x6, sr)
-hain = fade(x6[e6 - int(.19 * sr): e6 + int(.05 * sr)], sr, .012, .05)
+# Only the last 0.125 s: anything longer brings the "t" of "jodte" with it and the line reads "kar rakte hain".
+hain = fade(x6[e6 - int(.125 * sr): e6 + int(.05 * sr)], sr, .015, .05)
 a = clean["l03"]; a = a / np.abs(a).max(); hain = hain / np.abs(x6).max() * 1.0
-clean["l03"] = np.concatenate([a, np.zeros(int(.02 * sr), dtype="float32"), hain]).astype("float32") * .9
+clean["l03"] = np.concatenate([a, np.zeros(int(.03 * sr), dtype="float32"), hain]).astype("float32") * .9
 for i, x in clean.items():
     sf.write(f"vo/{i}.wav", x, sr); durs[i] = round(len(x) / sr, 3)
 json.dump(durs, open("vo/dur.json", "w"), indent=1); print(durs)
