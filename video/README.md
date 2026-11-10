@@ -1,10 +1,10 @@
 # OutputDM founder reel
 
-A 43-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the founder of
-OutputDM (Output Digital Marketing Pvt Ltd), using his office mascot images, the OutputDM logo
+A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the founder of
+OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final file: `outputdm-reel/out/outputdm_founder_reel_v005_rigged.mp4`
+Final file: `outputdm-reel/out/outputdm_founder_reel_v006_cutouts.mp4`
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -47,16 +47,18 @@ Needs the lemo-opuscar toolkit (https://github.com/lemomo-ai/lemo-opuscar) clone
 
 ```sh
 cd video/outputdm-reel
-# 1. voiceover (Google AI Studio key in a file OUTSIDE the repo)
-GEMINI_KEY_FILE=/path/to/key python3 tts_gemini.py lines.json vo --voice Charon
-# 2. timeline (line, word and caption timings)
-python3 build_timeline.py
-# 3. sound cues, audio mix, frames, final mux
 LIB=/home/user/lemomo-ai/lemo-opuscar
+# 1. voiceover (Google AI Studio key in a file OUTSIDE the repo), kept untouched in vo/raw
+GEMINI_KEY_FILE=/path/to/key python3 tts_gemini.py lines.json vo/raw --voice Charon
+# 2. clean the takes (end click, the cut-off "hain" in line 3) -> vo/*.wav, vo/dur.json
+$LIB/.venv/bin/python fix_vo.py
+# 3. timeline (line, word and caption timings)
+python3 build_timeline.py
+# 4. sound cues, audio mix, frames, final mux
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
-node $LIB/core/render/video.mjs . --fps 30 --workers 4 --size 1080x1920 --out out/video.mp4
-sh $LIB/core/render/mux.sh out/video.mp4 mix.wav out/outputdm_founder_reel_v002.mp4 30 1
+node $LIB/core/render/video.mjs . --fps 30 --workers 3 --size 1080x1920 --out out/video.mp4
+ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v006_cutouts.mp4
 ```
 
 Review stills: `node $LIB/core/render/still.mjs . 3.2 7.6 12.5 --size 1080x1920 --out stills`
@@ -64,15 +66,15 @@ Review stills: `node $LIB/core/render/still.mjs . 3.2 7.6 12.5 --size 1080x1920 
 ## Files
 
 - `index.html`, `main.js`: the reel; `render(t)` draws any frame (lemo-opuscar page contract).
-- `lines.json`: the script; `tts_gemini.py`: Gemini TTS; `vo/`: the voice lines.
+- `lines.json`: the script; `tts_gemini.py`: Gemini TTS; `vo/raw/`: the untouched takes; `fix_vo.py` -> `vo/`: the cleaned lines.
 - `build_timeline.py` -> `timeline.json`; `events.json`: sound cues exported from the page.
 - `mix.py`: voice + generated music bed (no samples) + sound effects, music ducked under the voice.
-- `assets/`: mascot cutouts (from `mascot/office-v1`, background removed with rembg) and the OutputDM logo.
+- `assets/`: the five mascot cutouts (`h_*.png`, from `mascot/office-v2`, background removed with rembg
+  `birefnet-general-lite`, all cropped to the same 670x1510 frame) and the OutputDM logo.
 - `fonts/`: Playfair Display and Jost (SIL Open Font License, see the licence files).
 
-Note: in this container `mux.sh` refused `mix.wav` (its decode check reads loudnorm's progress,
-which lags ~3 s at the end), so the final file was muxed directly with a two-pass ffmpeg
-`loudnorm` to -14 LUFS (true peak -1.5 dB), AAC 256k, video stream copied.
+Note: `mux.sh` refuses `mix.wav` in this container (its decode check reads loudnorm's progress, which lags
+~3 s at the end), so the final file is muxed directly with ffmpeg `loudnorm` to -14 LUFS, AAC 256k, video copied.
 
 ## Review
 
@@ -80,16 +82,24 @@ Gemini (gemini-3.5-flash) watched v001: 8.5/10, captions in sync within 0.1-0.2 
 v002 fixes what it flagged: the hook's accent line now matches the voice, the brand strip and
 the "Aap ka plan" list are bigger and brighter, and only one caption word is highlighted at a time.
 
-## v005: rigged, moving mascot (made in code, no paid video model)
+## v006: full-body cutouts that act with the words
 
-- `main.js` draws each mascot pose through a WebGL warp (`puppet()`): the head turns and nods around the
-  neck, the jaw opens with the voice, eyelids blink, eyebrows lift on emphasis, the chest breathes.
-  Face points per pose are in `RIG` (image pixels, read off gridded crops).
-- `build_mouth.py` -> `talk/mouth.json`: mouth-open and speech-energy curves from the voiceover (60 fps).
-- `actor()` crossfades poses for turns (back -> side -> front) and walks the character in.
-- Intro, system and "only" scenes play real lip-synced clips from the free Hugging Face LeapTalk space
-  (`motion/clips`, frames rebuilt by `talk_frames.sh`).
-- Limits: arms and legs do not move separately (the source photos have crossed arms / hands in pockets),
-  and the rigged mouth follows loudness, not exact Urdu phonemes.
+Feedback on v005: drop the angry pose, the face animation looked fake, line 3 stopped at "kar rahe"
+instead of "kar rahe hain", use only the five new office images as full cutouts that move with the words,
+and make the motion graphics bigger.
 
-Rebuild order: `tts_gemini.py`, `build_timeline.py`, `build_mouth.py`, `talk_frames.sh`, then events, mix, video, mux.
+- Character: only the five images in `mascot/office-v2` (side, back, smile, explaining, surprised). The angry
+  and seated poses, the WebGL face rig and the LeapTalk talking-head panels are gone. Nothing inside the image
+  is warped any more.
+- `hero()` in `main.js`: all poses share one frame, so swapping the image reads as a pose change. Each scene has
+  a track of `[time, pose, x]` keys tied to spoken words: he turns round to greet, looks across at the places,
+  reacts with the surprised pose on each growth leak, steps toward the card he is presenting. Every word start
+  gives a hop and a nod, each pose change lands with a squash, and moves lean with two footfalls.
+- Bigger graphics: heavier cards and type, a giant outlined word behind each scene, a spend-vs-customers bar,
+  a huge "3", leak bars that drain, a line that wires the five services together, three rows of brand chips.
+- Voice: every Gemini take ended with a click after a silence, and in line 3 that click replaced the last word.
+  `fix_vo.py` removes the clicks and splices "hain" in from the end of line 6 ("jodte hain"). It is a splice,
+  not a new recording: with a Google AI Studio key, re-record line 3 with `tts_gemini.py --only l03`.
+- Captions: the end of a sentence is no longer split from its verb ("kar rahe hain." is one caption).
+- Limits: word times inside a line are estimated from word length (Gemini TTS gives no timestamps), and the
+  character has five poses, so arms and legs change by pose swap, not by continuous movement.

@@ -50,6 +50,9 @@ for ln in lines:
             chunks.append(cur); cur = []
     if cur:
         chunks.append(cur)
+    # never leave the end of a sentence split from its verb ("kar rahe" / "hain."): give the last chunk a third word
+    if len(chunks) > 1 and chunks[-1][0]["line"] == chunks[-2][0]["line"] and len(chunks[-1]) <= 2 and len(chunks[-2]) == 3:
+        chunks[-1].insert(0, chunks[-2].pop())
     t += d
     prev_scene = ln["scene"]
 

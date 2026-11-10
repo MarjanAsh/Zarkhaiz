@@ -72,3 +72,8 @@ For any new image, use the master (MAHaQsk-h78) plus suits v004 as references.
 - v003 angles: MAHaQsVwbbY; v004 angles: MAHaQ84tQU4 (curly hair).
 - v001 (photo-realistic): base MAHaQj5ke-k, suits MAHaQszrDUw, angles MAHaQvBnCwo,
   expressions MAHaQoyoSa0, first all-in-one sheet MAHaQmsHZU4.
+
+## Office set v2 (used by the reel from v006)
+Five full-body images supplied by the client in `office-v2/` (side, back, front smile, explaining with a marker,
+surprised with open hands), all in the same framing. `office-v2/cutout/` holds the background-removed versions.
+The reel uses only these; the angry and seated poses in `office-v1/` are no longer used.
