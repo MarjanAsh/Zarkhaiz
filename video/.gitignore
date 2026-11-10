@@ -4,7 +4,7 @@ refs/
 research/
 # intermediates
 outputdm-reel/stills/
-outputdm-reel/out/video.mp4
-outputdm-reel/out/.video_segs*
+outputdm-reel/out/video*.mp4
+outputdm-reel/out/.video*_segs*
 outputdm-reel/out/*.lock
 outputdm-reel/mix.wav
