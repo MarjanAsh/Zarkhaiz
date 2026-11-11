@@ -77,3 +77,13 @@ For any new image, use the master (MAHaQsk-h78) plus suits v004 as references.
 Five full-body images supplied by the client in `office-v2/` (side, back, front smile, explaining with a marker,
 surprised with open hands), all in the same framing. `office-v2/cutout/` holds the background-removed versions.
 The reel uses only these; the angry and seated poses in `office-v1/` are no longer used.
+
+## Office set v3: new poses (2026-11-11)
+User asked for more images like office-v2. Made through the user's GPT bridge
+(`https://zarkhaiz.duckdns.org`: `POST /jobs {"prompt": "..."}`, poll `GET /jobs/<id>`,
+download `GET /jobs/<id>/files/<name>`). The bridge takes text only (it cannot read attached
+images or fetch URLs), so these were generated from a written description of the character
+and office, not from the office-v2 images. Face and office are close but not identical to office-v2.
+- `office-v3/06_thumbs_up.png`, `07_pointing.png`, `08_waving.png` (1024x1536)
+- fal, OpenAI API and Gemini were out of credits / blocked on this date.
+Open: not yet cut out (no `cutout/`), not used in the reel; the user has not approved them yet.
