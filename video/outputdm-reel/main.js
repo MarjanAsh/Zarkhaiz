@@ -330,9 +330,12 @@ function drawHero(a, t) {
   const set = changed ? spring(u) : 1;                                        // 0 -> 1 with overshoot
   for (const [key, img] of Object.entries(a._img)) {
     let o = 0, f = 0;
-    if (key === k.key) { o = eio(pin); f = 3 * (1 - pin); }
-    else if (changed && key === pv.key && u < .16) { o = 1 - eio(pin); f = 3 * pin; }
-    img.style.opacity = o; img.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none';
+    // the new pose dissolves in ON TOP of the old one, which stays fully opaque until it is covered,
+    // so the body never turns see-through mid-change
+    let z = 0;
+    if (key === k.key) { o = eio(pin); f = 2.5 * (1 - pin); z = 2; }
+    else if (changed && key === pv.key && u < .16) { o = 1; f = 2.5 * pin; z = 1; }
+    img.style.opacity = o; img.style.zIndex = z; img.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none';
   }
   // words: a nod and a small lift on every word start, bigger on longer words
   let lift = 0, nod = 0;
