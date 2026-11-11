@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v008.mp4` (1080x1920) and `outputdm_founder_reel_v008_4k.mp4` (2160x3840)
+Final files: `outputdm-reel/out/outputdm_founder_reel_v009.mp4` (1080x1920) and `outputdm_founder_reel_v009_4k.mp4` (2160x3840)
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -58,7 +58,7 @@ python3 build_timeline.py
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
 node $LIB/core/render/video.mjs . --fps 30 --workers 3 --size 1080x1920 --out out/video.mp4
-ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v008.mp4
+ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v009.mp4
 ```
 
 4K: the page layout stays 1080x1920 and is drawn at 2x. `page.mjs` in lemo-opuscar fixes `deviceScaleFactor: 1`;
@@ -122,3 +122,21 @@ and make the motion graphics bigger.
 - Every scene faded out completely before the next one came in, leaving a near-empty frame. Items now outlive
   their scene by 0.26 s (`LINGER`), so one scene dissolves into the next.
 - Check used: mean brightness of every frame; no single-frame dips remain.
+
+## v009: 17-pose character, rig-style motion, real line 3
+
+Feedback: the character needed many more actions, smooth "Blender-like" movement that follows the words,
+and the voice must say "kaam kar rahe hain".
+
+- Character: 17 poses cut from the client's three pose sheets (`mascot/character`, see `CHARACTER.md`), all on
+  one shared canvas with the feet in the same place (`cut_sheets.py`). The angry pose is left out. The office-v2
+  set is retired.
+- Motion (`hero()` / `drawHero()` in `main.js`): each scene has a track of `[time, pose, centre-x, flip]` keys
+  tied to words (50 pose changes in the reel). Each change has an anticipation dip, a 0.16 s dissolve with a
+  short blur and a spring settle (damping 0.55); steps lean and blur with their speed; the body breathes,
+  shifts its weight and turns slightly in 3D; every word start gives a nod and a small lift.
+- Stage: a gold perspective floor grid that slowly dollies, a horizon glow and a floor reflection.
+- Voice: line 3 re-recorded with Gemini TTS (voice Charon) and trimmed to its first complete take; it ends on a
+  spoken "hain" (checked by transcription: cutting the last 0.3 s removes the word). The v007 splice is gone.
+- Limits: arms and legs move by switching between drawn poses, not by bending joints; the mouth moves only
+  through poses with an open mouth.

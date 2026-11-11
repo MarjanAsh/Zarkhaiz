@@ -56,6 +56,11 @@ const blobs = [
   el('<div class="blob"></div>', { width: '700px', height: '700px', background: 'rgba(240,138,36,.12)' }),
 ];
 
+// ---------- 3D floor: a gold grid in perspective that the camera slowly dollies over ----------
+const floorWrap = el('<div id="floorwrap"><div id="floor"></div></div>');
+const floor = floorWrap.firstElementChild;
+el('<div id="horizon"></div>');
+
 // ---------- header + progress ----------
 const SCN = ['hook', 'intro', 'since', 'leaks', 'system', 'only', 'cta'];
 const SCN_LABEL = { hook: '01 · the problem', intro: '02 · founder', since: '03 · since 2018', leaks: '04 · growth leaks', system: '05 · one system', only: '06 · only what you need', cta: '07 · growth review' };
@@ -82,25 +87,30 @@ function heading(h1, sub, tH, tSub, tout, top = 262) {
   return { h, s };
 }
 
-// ---------- hero: the full-body cutout ----------
-// Five poses share one frame (670x1510, feet on the same spot), so swapping the image reads as the character
-// changing pose. A track of [time, pose, x] keys ties pose and position to spoken words; every word start
-// gives a small hop and nod, and each pose change lands with a squash. Nothing inside the image is warped.
-const HW = 670 / 1510, BASE = 1392;
-const POSES = ['h_smile', 'h_explain', 'h_wow', 'h_side', 'h_back'];
+// ---------- hero: the full-body character ----------
+// 17 poses from mascot/character (see CHARACTER.md), all on one 820x1240 canvas with the feet on the same
+// spot, so a pose change reads as the character moving, not as a new image. A track of
+// [time, pose, centre-x, flip] keys ties every pose and step to a spoken word. The motion is layered like a
+// rig: anticipation dip before each pose, a spring settle after it (damping 0.55), a soft 0.16 s dissolve
+// with a short blur between poses, a lean and blur into each step, breathing, weight shift, a small 3D turn,
+// and a nod on every word. Nothing inside the image is warped.
+const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392;
 const heroes = [];
+const spring = (u, z = .55, w = 26) => u <= 0 ? 0 : 1 - Math.exp(-z * w * u) * Math.cos(w * Math.sqrt(1 - z * z) * u);
 function hero(scene, h, track, tin, tout, fx = 'walkR') {
-  const w = Math.round(h * HW);
-  const a = el(`<div class="abs" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h) });
+  const w = Math.round(h * PW / PH);
+  const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
   el('<div class="halo"></div>', {}, mv); el('<div class="shadow"></div>', {}, mv);
-  const body = el('<div class="hbody"></div>', {}, mv);
-  const used = [...new Set(track.map(k => k[1]))];
-  a._img = Object.fromEntries(used.map(p => [p, el(`<img src="assets/${p}.png">`, {}, body)]));
-  a._mv = mv; a._body = body; a._w = w;
-  a._track = track.map(([t, pose, x]) => ({ t, pose, x })).sort((p, q) => p.t - q.t);
+  const turn = el('<div class="hturn"></div>', {}, mv);
+  const body = el('<div class="hbody"></div>', {}, turn);
+  a._track = track.map(([t, pose, x, flip]) => ({ t, pose, x: x - w / 2, flip: !!flip, key: pose + (flip ? '|f' : '') })).sort((p, q) => p.t - q.t);
+  a._img = {};
+  for (const k of a._track) if (!a._img[k.key]) a._img[k.key] = el(`<img src="assets/char/${k.pose}.png" style="${k.flip ? 'transform:scaleX(-1)' : ''}">`, {}, body);
+  turn.style.webkitBoxReflect = `below ${-Math.round(h * (1 - PFEET / PH) + 4)}px linear-gradient(transparent 80%, rgba(0,0,0,.28))`;   // glossy-floor reflection
+  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = heroes.length * 1.37;
   a._words = TL.words.filter(x => L(x.line).scene === scene);
-  a._track.slice(1).forEach(k => EV.push({ t: +k.t.toFixed(3), type: k.pose === 'h_wow' ? 'thump' : 'whoosh' }));
+  a._track.slice(1).forEach(k => EV.push({ t: +(k.t - .04).toFixed(3), type: ['surprised', 'oh_no', 'panic'].includes(k.pose) ? 'thump' : (['victory', 'triumph'].includes(k.pose) ? 'ding' : 'whoosh') }));
   add(a, tin, tout, fx, { d: fx.startsWith('walk') ? .9 : .6, sfx: 'whoosh', sfxAt: -.05 });
   heroes.push(a); return a;
 }
@@ -142,7 +152,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   bar(g, W('l01', 'paisa'), W('l01', 'lekin'), .08, 1, 'linear-gradient(90deg,var(--gold2),var(--gold))', { marginTop: '16px' });
   bar(g, W('l01', 'customers'), t1, .1, .14, 'var(--red)', { marginTop: '14px' });
   add(g, W('l01', 'lag') - .1, t1, 'up', { sfx: 'pop' });
-  hero('hook', 850, [[0, 'h_explain', 640], [W('l01', 'lekin') - .08, 'h_wow', 610], [W('l01', 'nahi'), 'h_wow', 650]], t0 + .05, t1, 'walkR');
+  hero('hook', 1040, [[0, 'confident', 830], [W('l01', 'paisa') - .1, 'presenting', 820], [W('l01', 'raha') - .05, 'explain', 820], [W('l01', 'lekin') - .1, 'thinking', 835], [W('l01', 'customers') - .08, 'surprised', 825], [W('l01', 'aa') - .05, 'oh_no', 835]], t0 + .05, t1, 'walkR');
 }
 
 // 2 · intro
@@ -154,7 +164,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   add(sq, t0 + .05, t1, 'fade');
   ghost('ZARKHAIZ', 560, t0 + .1, t1, 300, 1);
   // he turns round to greet, then steps aside and presents the company card
-  hero('intro', 930, [[0, 'h_back', 330], [t0 + .28, 'h_side', 330], [t0 + .62, 'h_smile', 330], [W('l02', 'outputdm') - .3, 'h_explain', 20]], t0 + .02, t1, 'up');
+  hero('intro', 1120, [[0, 'back_look', 540], [t0 + .3, 'side_point', 540], [W('l02', 'alaikum') - .1, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
   const c = el(`<div class="abs card big" style="padding:34px 36px;width:580px"></div>`, { left: '452px', top: '760px' });
   el('<img src="assets/logo_icon.png" style="width:170px;display:block;margin-bottom:14px">', {}, c);
   el('<div class="lbl" style="margin-bottom:8px;font-size:28px">Founder</div>', {}, c);
@@ -188,7 +198,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
     add(m, tb + r * .12, t1, 'up');
   });
   // looks across at the places, then turns to camera in front of the brand wall
-  hero('since', 900, [[0, 'h_side', 650], [tb, 'h_smile', 600], [W('l03', 'kaam') - .1, 'h_explain', 560]], t0 + .05, t1, 'walkR');
+  hero('since', 1090, [[0, 'idea', 850], [W('l03', 'lahore') - .1, 'point_screen', 830, true], [W('l03', 'pakistan') - .1, 'presenting', 830], [W('l03', 'uae') - .1, 'side_point', 840], [W('l03', 'businesses') - .1, 'laugh', 830], [W('l03', 'kaam') - .1, 'confident', 820], [W('l03', 'hain') - .05, 'arms_crossed', 820]], t0 + .05, t1, 'walkR');
 }
 
 // 4 · leaks
@@ -214,7 +224,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
     bar(c, tt + .1, tt + 1.1, 1, .18, 'var(--red)', { marginTop: '18px' });   // the leak: the bar drains
     add(c, tt - .35, t1, 'right', { sfx: 'pop' });
   });
-  hero('leaks', 900, [[0, 'h_explain', 640], [W('l05', 'dhoond') - .1, 'h_side', 650], [W('l05', 'rukte') - .1, 'h_wow', 620], [W('l05', 'follow-up') - .1, 'h_side', 650], [W('l05', 'hota') - .1, 'h_wow', 630]], t0 + .1, t1, 'walkR');
+  hero('leaks', 1090, [[0, 'thinking', 850], [W('l04', 'teen') - .1, 'idea', 845], [W('l04', 'kho') - .1, 'oh_no', 840], [L('l05').t0 - .1, 'explain', 830], [W('l05', 'dhoond') - .1, 'thinking', 845], [W('l05', 'rukte') - .1, 'surprised', 840], [W('l05', 'follow-up') - .1, 'oh_no', 840], [W('l05', 'hota') - .1, 'panic', 835]], t0 + .1, t1, 'walkR');
 }
 
 // 5 · system
@@ -235,7 +245,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   });
   const badge = el(`<div class="abs card big row" style="padding:24px 32px;width:640px;gap:24px;border-color:rgba(246,181,58,.75)"><img src="assets/logo_icon.png" style="width:100px"><div><div class="lbl">OutputDM</div><div class="t1" style="font-size:46px;white-space:nowrap">1 connected system</div></div></div>`, { left: '400px', top: '1196px' });
   add(badge, W('l06', 'system') - .1, t1, 'pop', { sfx: 'ding' });
-  hero('system', 900, [[0, 'h_explain', 20], [W('l06', 'website') - .05, 'h_explain', 50], [W('l06', 'automation'), 'h_explain', 20], [W('l06', 'system') - .15, 'h_smile', 30]], t0 + .1, t1, 'walkL');
+  hero('system', 1090, [[0, 'presenting', 230, true], [W('l06', 'content') - .1, 'point_screen', 230], [W('l06', 'ads') - .05, 'explain', 240, true], [W('l06', 'website') - .05, 'point_screen', 230], [W('l06', 'seo') - .05, 'presenting', 240, true], [W('l06', 'automation') - .05, 'idea', 235], [W('l06', 'system') - .1, 'victory', 240], [W('l06', 'jodte') - .05, 'triumph', 245]], t0 + .1, t1, 'walkL');
 }
 
 // 6 · only what you need
@@ -255,7 +265,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
     const tx = el(`<div class="t1" style="font-size:46px;position:relative">${a}</div>`, {}, r);
     if (!need) { const s = el('<div class="strike"></div>', { width: '0px' }, tx); s._strike = [tSel + .2 + i * .1, tx]; tx._dim = tSel + .2; }
   });
-  hero('only', 900, [[0, 'h_smile', 640], [tSel - .1, 'h_explain', 610], [W('l07', 'waqai') - .1, 'h_smile', 640]], t0 + .1, t1, 'walkR');
+  hero('only', 1090, [[0, 'thinking', 850], [W('l07', 'sirf') - .1, 'point_screen', 835, true], [W('l07', 'jo') - .05, 'presenting', 830], [W('l07', 'business') - .05, 'point_camera', 845], [W('l07', 'waqai') - .05, 'confident', 840], [W('l07', 'chahiye') - .05, 'arms_crossed', 840]], t0 + .1, t1, 'walkR');
 }
 
 // 7 · CTA
@@ -275,7 +285,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   fol._follow = [tf, tf + 1.15];
   add(fol, tf, t1 + 1, 'pop', { sfx: 'pop' });
   EV.push({ t: +(tf + 1.15).toFixed(3), type: 'click' });
-  hero('cta', 850, [[0, 'h_explain', 650], [W('l08', 'whatsapp') - .15, 'h_explain', 610], [W('l09', 'outputdm') - .15, 'h_smile', 650]], t0 + .1, t1 + 1, 'walkR');
+  hero('cta', 1040, [[0, 'idea', 840], [W('l08', 'growth') - .05, 'side_point', 830], [W('l08', 'whatsapp') - .15, 'point_screen', 820, true], [W('l08', 'karein') - .05, 'point_camera', 830], [W('l09', 'outputdm') - .15, 'presenting', 830], [W('l09', 'com') - .05, 'peace', 835], [L('l09').t1 + .5, 'laugh', 840], [L('l09').t1 + 1.6, 'victory', 840]], t0 + .1, t1 + 1, 'walkR');
 }
 
 // ---------- captions + watermark ----------
@@ -308,31 +318,43 @@ function fxStyle(it, t) {
 function drawHero(a, t) {
   const tr = a._track; let i = 0;
   for (let j = 0; j < tr.length; j++) if (t >= tr[j].t) i = j;
-  const k = tr[i], pv = tr[i - 1] || k;
-  // position: step across to the new mark, leaning into the move, with two footfalls
-  const m = seg(t, k.t, k.t + .5), dx = k.x - pv.x, x = pv.x + dx * eio(m);
-  const moving = Math.sin(m * Math.PI);
-  a._mv.style.transform = `translateX(${x}px)`;
-  // pose: hard swap softened over three frames, landing with a squash
-  const p = seg(t, k.t, k.t + .42), changed = i > 0 && pv.pose !== k.pose;
-  for (const [name, img] of Object.entries(a._img)) {
-    let o = name === k.pose ? 1 : 0;
-    if (changed && name === pv.pose) o = 1 - seg(t, k.t, k.t + .1);
-    img.style.opacity = o;
+  const k = tr[i], pv = tr[i - 1] || k, nx = tr[i + 1];
+  // steps: travel to the new mark on an in-out ease, leaning and blurring with the speed
+  const m = seg(t, k.t, k.t + .55), dx = k.x - pv.x, x = pv.x + dx * eio(m);
+  const vel = dx * (m > 0 && m < 1 ? 6 * m * (1 - m) / .55 : 0);           // px / s
+  const moving = Math.sin(m * Math.PI) * (dx ? 1 : 0);
+  // pose change: anticipation dip just before, dissolve with a short blur, spring settle after
+  const changed = i > 0 && pv.key !== k.key, u = t - k.t;
+  const ant = nx && nx.key !== k.key ? seg(t, nx.t - .1, nx.t) : 0;        // dip into the next pose
+  const pin = changed ? seg(u, 0, .16) : 1;
+  const set = changed ? spring(u) : 1;                                        // 0 -> 1 with overshoot
+  for (const [key, img] of Object.entries(a._img)) {
+    let o = 0, f = 0;
+    if (key === k.key) { o = eio(pin); f = 3 * (1 - pin); }
+    else if (changed && key === pv.key && u < .16) { o = 1 - eio(pin); f = 3 * pin; }
+    img.style.opacity = o; img.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none';
   }
-  const sq = changed ? Math.exp(-p * 5) * Math.cos(p * 13) * .07 : 0;
-  // words: a hop and a nod on every word start, bigger on long words
-  let hop = 0, nod = 0;
+  // words: a nod and a small lift on every word start, bigger on longer words
+  let lift = 0, nod = 0;
   a._words.forEach((w, n) => {
-    const u = t - w.t0; if (u < 0 || u > .6) return;
-    const amp = Math.min(1.25, .55 + w.w.length / 12), e = Math.exp(-u * 7);
-    hop += amp * Math.sin(Math.min(1, u / .22) * Math.PI) * (u < .22 ? 1 : 0);
-    nod += amp * e * (n % 2 ? 1 : -1);
+    const v = t - w.t0; if (v < 0 || v > .7) return;
+    const amp = Math.min(1.2, .5 + w.w.length / 12), e = Math.exp(-v * 6);
+    lift += amp * Math.sin(Math.min(1, v / .18) * Math.PI / 2) * e;
+    nod += amp * e * Math.sin(v * 14) * (n % 2 ? 1 : -1);
   });
-  const breathe = Math.sin(t * 2.2);
-  const ty = -13 * hop - 16 * Math.abs(Math.sin(m * Math.PI * 2)) * moving;
-  const rot = 1.3 * nod + (dx ? Math.sign(dx) * 3.2 * moving : 0) + .5 * Math.sin(t * 1.1);
-  a._body.style.transform = `translateY(${ty}px) rotate(${rot}deg) scale(${1 + sq * .6 + .004 * breathe}, ${1 - sq + .012 * hop + .005 * breathe})`;
+  const ph = a._ph, breathe = Math.sin(t * 2.1 + ph);
+  const settle = 1 - set;                                                     // 1 at the swap, rings to 0
+  const sx = 1 + .006 * breathe + .03 * settle - .012 * ant;
+  const sy = 1 + .009 * breathe - .045 * settle + .02 * ant * -1 + .008 * lift;
+  const ty = -10 * lift - 14 * Math.abs(Math.sin(m * Math.PI * 2)) * moving + 10 * ant;
+  const rot = .9 * nod + Math.max(-5, Math.min(5, vel / 260)) + .6 * Math.sin(t * .9 + ph) - 1.5 * settle * (k.flip ? -1 : 1);
+  const shift = 5 * Math.sin(t * .7 + ph);                                   // weight shift
+  a._mv.style.transform = `translateX(${(x + shift).toFixed(1)}px)`;
+  a._mv.style.filter = Math.abs(vel) > 60 ? `blur(${Math.min(4, Math.abs(vel) / 500).toFixed(2)}px)` : 'none';
+  a._turn.style.transform = `perspective(1800px) rotateY(${(4 * Math.sin(t * .55 + ph) + Math.max(-10, Math.min(10, vel / 90))).toFixed(2)}deg)`;
+  a._body.style.transform = `translateY(${ty.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  const sh = a._mv.querySelector('.shadow');
+  sh.style.transform = `scaleX(${(1 + .002 * ty).toFixed(3)})`; sh.style.opacity = (1 + .01 * ty).toFixed(3);
 }
 
 window.render = async t => {
@@ -341,6 +363,7 @@ window.render = async t => {
   blobs[1].style.transform = `translate(${560 + 80 * Math.cos(t * .17)}px, ${980 + 90 * Math.sin(t * .21)}px)`;
   blobs[2].style.transform = `translate(${380 + 120 * Math.sin(t * .13 + 1)}px, ${380 + 140 * Math.sin(t * .11)}px)`;
 
+  floor.style.backgroundPosition = `${(-14 * t).toFixed(1)}px ${(40 * t).toFixed(1)}px`;
   for (const it of items) {
     const n = it.n;
     if (t < it.tin - .01 || t > it.tout + LINGER + .01) { n.style.opacity = 0; continue; }

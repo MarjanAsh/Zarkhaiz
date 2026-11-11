@@ -5,12 +5,13 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v008.mp4` (1080x1920) and
-  `outputdm_founder_reel_v008_4k.mp4` (2160x3840), 38 s, Roman Urdu captions, Urdu voiceover.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v009.mp4` (1080x1920) and
+  `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
+- Character file: `mascot/character/CHARACTER.md` (17 poses and the rules). Read it before every video.
 
 ## The user's standing rules for the reel
-- Character: only the five full-body cutouts in `mascot/office-v2` (side, back, smile, explaining,
-  surprised). Never the angry pose, never a face or mouth animation.
+- Character: only the poses in `mascot/character/poses` (17, see CHARACTER.md). Never the angry pose, never a
+  face or mouth warp; the mouth moves only by switching to an open-mouth pose.
 - The character moves with the spoken words (pose and position changes on words), not just fading in.
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".
@@ -21,7 +22,9 @@ and `mascot/README.md` (the character images).
   `/home/user/lemomo-ai/lemo-opuscar`, `npm install`, a `.venv` from `requirements.txt`.
   For 4K, its `core/render/page.mjs` needs `deviceScaleFactor: +process.env.LEMO_DSF || 1`
   (see `video/README.md`, Rebuild).
-- Gemini TTS needs a Google AI Studio key in a file outside the repo (`GEMINI_KEY_FILE`). Never commit keys.
+- Gemini TTS: the Google AI Studio key is a network secret on the `zarkhaiz` environment (header
+  `x-goog-api-key`); pass any dummy file as `GEMINI_KEY_FILE`, the proxy adds the real key. Image generation
+  needs billing on that key (free tier limit is 0). Never commit keys.
 
 ## Keep the hand-off current (required)
 The user moves between sessions and Claude accounts; the chat does not travel, only this repo does.

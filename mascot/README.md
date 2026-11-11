@@ -77,3 +77,8 @@ For any new image, use the master (MAHaQsk-h78) plus suits v004 as references.
 Five full-body images supplied by the client in `office-v2/` (side, back, front smile, explaining with a marker,
 surprised with open hands), all in the same framing. `office-v2/cutout/` holds the background-removed versions.
 The reel uses only these; the angry and seated poses in `office-v1/` are no longer used.
+
+## Character file (used by the reel from v009)
+`character/` holds the client's three pose sheets (`refs/`), 17 cutouts on one shared canvas (`poses/`) and
+`CHARACTER.md`, which lists every pose, what it is for and the rules. The office-v1 and office-v2 sets are no
+longer used by the reel.
