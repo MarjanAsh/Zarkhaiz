@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v007.mp4` (1080x1920) and `outputdm_founder_reel_v007_4k.mp4` (2160x3840)
+Final files: `outputdm-reel/out/outputdm_founder_reel_v008.mp4` (1080x1920) and `outputdm_founder_reel_v008_4k.mp4` (2160x3840)
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -58,7 +58,7 @@ python3 build_timeline.py
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
 node $LIB/core/render/video.mjs . --fps 30 --workers 3 --size 1080x1920 --out out/video.mp4
-ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v007.mp4
+ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v008.mp4
 ```
 
 4K: the page layout stays 1080x1920 and is drawn at 2x. `page.mjs` in lemo-opuscar fixes `deviceScaleFactor: 1`;
@@ -114,3 +114,11 @@ and make the motion graphics bigger.
   line read "kaam kar rakte hain". `fix_vo.py` now takes only the last 0.125 s (the "hain" after the "t").
 - Added the 4K render (see Rebuild). The mascot images are 1024x1536, so in 4K the character is slightly
   upscaled; text and graphics are drawn at full 4K.
+
+## v008: no more blinking
+
+- Each new caption faded in from zero, so the caption line blinked at every change (36 times). A new caption now
+  replaces the old one at full opacity and only fades out in a pause.
+- Every scene faded out completely before the next one came in, leaving a near-empty frame. Items now outlive
+  their scene by 0.26 s (`LINGER`), so one scene dissolves into the next.
+- Check used: mean brightness of every frame; no single-frame dips remain.

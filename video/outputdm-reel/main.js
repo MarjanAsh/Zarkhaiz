@@ -284,8 +284,10 @@ const wm = el('<div id="wm">@outputdm</div>');
 let capKey = '';
 
 // ================= RENDER =================
+const LINGER = .26;
 function fxStyle(it, t) {
-  const pin = seg(t, it.tin, it.tin + it.d), pout = seg(t, it.tout - .32, it.tout);
+  // items outlive their scene by a quarter second, so one scene dissolves into the next and the screen never empties
+  const pin = seg(t, it.tin, it.tin + it.d), pout = seg(t, it.tout - .08, it.tout + LINGER);
   let o = eo(pin) * (1 - eo(pout)), tf = '', fl = '';
   const k = 1 - pin;
   switch (it.fx) {
@@ -341,7 +343,7 @@ window.render = async t => {
 
   for (const it of items) {
     const n = it.n;
-    if (t < it.tin - .01 || t > it.tout + .01) { n.style.opacity = 0; continue; }
+    if (t < it.tin - .01 || t > it.tout + LINGER + .01) { n.style.opacity = 0; continue; }
     const { o, tf, fl } = fxStyle(it, t);
     let extra = '';
     if (n._marq) extra = ` translateX(${n._marq.dir < 0 ? -n._marq.speed * (t - it.tin) : -1100 + n._marq.speed * (t - it.tin)}px)`;
@@ -391,11 +393,13 @@ window.render = async t => {
 
   // captions
   const ch = TL.chunks.find(c => t >= c.t0 && t < c.t1);
-  const key = ch ? ch.t0 : '';
-  if (key !== capKey) { cap.innerHTML = ch ? ch.words.map(w => `<span>${w.w.replace(/[.,]$/, '')}</span>`).join('') : ''; capKey = key; }
+  const key = ch ? ch.t0 : capKey;
+  if (!ch) { const last = TL.chunks.filter(c => c.t1 <= t).pop(); cap.style.opacity = last ? 1 - seg(t, last.t1, last.t1 + .2) : 0; }   // in a pause the caption fades, it does not cut
+  if (ch && key !== capKey) { cap.innerHTML = ch ? ch.words.map(w => `<span>${w.w.replace(/[.,]$/, '')}</span>`).join('') : ''; capKey = key; }
   if (ch) {
     const p = seg(t, ch.t0, ch.t0 + .16);
-    cap.style.opacity = eo(p); cap.style.transform = `translateY(${14 * (1 - eo(p))}px) scale(${.96 + .04 * eo(p)})`;
+    // a new caption replaces the old one at full opacity (fading it in made the captions blink); it only settles in scale
+    cap.style.opacity = 1; cap.style.transform = `scale(${.97 + .03 * eo(p)})`;
     let on = -1; ch.words.forEach((w, i) => { if (t >= w.t0 - .03) on = i; });
     [...cap.children].forEach((s, i) => { s.className = i === on ? 'on' : ''; });
   }
