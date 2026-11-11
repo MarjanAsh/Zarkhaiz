@@ -430,6 +430,8 @@ window.render = async t => {
     [...cap.children].forEach((s, i) => { s.className = i === on ? 'on' : ''; });
   }
   wm.style.opacity = eo(seg(t, .3, 1));
+  // let the browser paint this frame fully before it is captured (a 4K render under load once dropped the captions)
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 };
 
 window.DUR = TL.dur;
