@@ -8,8 +8,8 @@ and `mascot/README.md` (the character images).
 - Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v010.mp4` (1080x1920), puppet rig. v009 (pose images, also 4K) kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: puppet rig from one A-pose image, `mascot/rig/RIG.md` (from v010). The old 17 pose images: `mascot/character/CHARACTER.md`.
-- Mascot asset library (in progress, the user's direction from 2026-11-13: build reusable assets, no rendering for now):
-  `mascot/library/README.md`.
+- Mascot asset library v1 (the user's direction from 2026-11-13: build reusable assets, no rendering for now):
+  `mascot/library/` (117 assets, `library.json`, contact sheets in `sheets/`), read `mascot/library/README.md`.
 
 ## The user's standing rules for the reel
 - Character: the puppet rig (mascot/rig) from v010; before that only the 17 poses in `mascot/character/poses`. Never the angry pose, never a

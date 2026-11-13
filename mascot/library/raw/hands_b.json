@@ -1,0 +1,25 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "d43cebdf84f94afd9e48498cf4921e6f",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated the image; saving a copy to the working directory failed due to filesystem permissions.",
+ "id": "hands_b",
+ "kind": "hand",
+ "rows": 2,
+ "cols": 3,
+ "cells": [
+  "peace",
+  "ok",
+  "marker",
+  "open_palm_side",
+  "point_up",
+  "grab"
+ ],
+ "side": "right",
+ "size": "1536x1024",
+ "prompt": "A hand reference sheet: a grid of 2 rows x 3 columns, 6 separate RIGHT hands of the same man, each with a short piece of the black suit sleeve cuff (and black shirt cuff) at the bottom, the wrist at the bottom of each cell and the fingers toward the top, all the same size, evenly spaced with white space between them. Hands: row 1, column 1: peace / V sign with index and middle fingers, palm to the viewer; row 1, column 2: OK sign, thumb and index finger forming a circle, other fingers up; row 1, column 3: holding a black whiteboard marker like a pen; row 2, column 1: flat open hand seen from the side (karate-chop edge to the viewer), fingers up; row 2, column 2: pointing up and slightly forward with the index finger, seen from the side; row 2, column 3: hand half-open as if about to grab something, palm to the viewer. Skin tone and 3D style exactly as the reference hands, five fingers on every hand, no watch. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T18:11:29Z"
+}

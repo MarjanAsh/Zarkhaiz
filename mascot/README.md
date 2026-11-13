@@ -83,7 +83,7 @@ The reel uses only these; the angry and seated poses in `office-v1/` are no long
 `CHARACTER.md`, which lists every pose, what it is for and the rules. The office-v1 and office-v2 sets are no
 longer used by the reel.
 
-## Asset library (from v011, in progress)
+## Asset library (from v011)
 Request (user, 2026-11-13): the v010 puppet rig is smoother but the arms look unnatural and the single front face
 and body angle are too stiff. The work is now a video series, so stop rendering and build a reusable asset library
 with ChatGPT through the GPT bridge (GPT + Gemini, not Muse, Canva or fal): expressions, head/body angles
@@ -132,3 +132,13 @@ Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 h
 Next: when the user says "VPS fix ho gaya", run `gen.py --reset --only bodies_turn_a`, check the face, then the rest.
 Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
 (regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.
+
+### v1 done (2026-11-13)
+All 27 jobs were generated through the bridge (upload mode, 4 references) on the user's first ChatGPT account after
+its Codex limit reset; none failed. `post.py` cut them into 117 assets: 60 heads, 18 bodies, 3 torsos, 24 hands,
+12 arms (details, contact sheets and known limits in `library/README.md`). Every sheet matched the references, so
+nothing was regenerated. One fix: `walk_side` is filed under `bodies/profileright/`.
+The user's other decisions in this session: Codex limits are separate from ChatGPT chat; the bridge shell
+(bwrap/AppArmor) is not needed for image generation, so the AppArmor profile was left optional.
+Open: acting poses at other angles, a composite test of head-on-torso and arm+hand on a body, rig update to use
+the library, the second ChatGPT account on the bridge (rotation, `GPT_INSTRUCTIONS.md` Part B3).

@@ -141,7 +141,7 @@ def jobs():
     for pose, ptext in POSES.items():
         out.append({
             "id": f"pose_{pose}", "kind": "body", "rows": 1, "cols": 1, "cells": [pose], "pose": pose,
-            "angle": "side" if pose == "walk_side" else "front", "size": "1024x1536",
+            "angle": "profileright" if pose == "walk_side" else "front", "size": "1024x1536",
             "prompt": (
                 f"One full-body image of the man, head to toe with both feet visible and some white space around him, "
                 f"{ptext}. Natural, anatomically correct arms and hands with five fingers. {IDENTITY} {STUDIO}"

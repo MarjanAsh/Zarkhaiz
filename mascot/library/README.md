@@ -6,6 +6,30 @@ and composites them, instead of rendering one fixed reel.
 
 Status and history: see `mascot/README.md` (section "Asset library").
 
+## What is in it (v1, 2026-11-13)
+117 assets from 27 generated sheets, all made with the ChatGPT bridge (Codex `image_gen`, ChatGPT plan) with the
+four identity references uploaded (`refs/source.jpg` = `mascot/rig/source.webp`, `mascot/character/refs/sheet1-3.jpg`).
+Every sheet was checked by eye: same face, glasses, beard, hair, black suit and shirt, gold pocket square, watch; no
+angry face. None was rejected or regenerated.
+
+| Kind | Count | Contents |
+|---|---|---|
+| heads | 60 | 5 angles x 12 expressions |
+| bodies | 18 | neutral at 6 angles (front, 34left, 34right, profileleft, profileright, back) + 12 front acting poses (`walk_side` is in `profileright`) |
+| torsos | 3 | front, 34left, 34right (cut from the neutral bodies) |
+| hands | 24 | 12 shapes, right + mirrored left |
+| arms | 12 | 6 sleeve pieces, right + mirrored left |
+
+Contact sheets: `sheets/heads_<angle>.jpg`, `sheets/bodies.jpg`, `sheets/torsos.jpg`, `sheets/hands_<side>.jpg`,
+`sheets/arms_<side>.jpg`.
+
+Known limits:
+- Acting poses exist only facing front (plus `walk_side` in profile). Other angles need new jobs in `tools/jobs.py`.
+- Torsos keep a thin strip of beard and neck at the cut; a head placed on top covers it.
+- `canvases.head.scale_on_body_canvas` (0.41) is an estimate from the proportions; check it on the first composite.
+- Arm pieces are scaled so the sleeve end matches the hand cuff (130 px); their length relative to a body is not
+  normalized yet. The puppet rig in `mascot/rig` can keep using its own arms until a composite test is done.
+
 ## Folders
 
 | Path | What | Canvas and anchor |

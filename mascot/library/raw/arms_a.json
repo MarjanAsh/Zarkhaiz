@@ -1,0 +1,25 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "74aeecc4cd0541868771384d7bef36fd",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated one image; saving a copy to the working directory failed due to a filesystem permission error.",
+ "id": "arms_a",
+ "kind": "arm",
+ "rows": 2,
+ "cols": 3,
+ "cells": [
+  "upper_down",
+  "upper_out45",
+  "upper_forward",
+  "fore_straight",
+  "fore_bent",
+  "arm_full_straight"
+ ],
+ "side": "right",
+ "size": "1536x1024",
+ "prompt": "A rig parts sheet: a grid of 2 rows x 3 columns, 6 separate pieces of the man's RIGHT arm in the black suit jacket sleeve (matte black wool, same fabric as the references), with no hand (the sleeve ends in a clean cuff with a sliver of black shirt cuff), the shoulder or elbow end at the top of each cell, all at the same scale, evenly spaced: row 1, column 1: upper arm only (shoulder to elbow) hanging straight down, seen from the front; row 1, column 2: upper arm only (shoulder to elbow) raised 45 degrees out to the side, seen from the front; row 1, column 3: upper arm only (shoulder to elbow) seen from the side, foreshortened as if reaching forward; row 2, column 1: forearm only (elbow to wrist cuff), straight, vertical; row 2, column 2: forearm only (elbow to wrist cuff) seen from the side, slightly turned; row 2, column 3: whole arm in sleeve from shoulder to wrist cuff, straight and vertical, no hand. Cut ends are clean and rounded. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T18:12:31Z"
+}

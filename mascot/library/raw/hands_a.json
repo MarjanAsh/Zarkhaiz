@@ -1,0 +1,25 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "6608a7a4ec4d49a3bbbb7418ea5074ef",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated one image; saving it to the working directory failed because filesystem access was blocked.",
+ "id": "hands_a",
+ "kind": "hand",
+ "rows": 2,
+ "cols": 3,
+ "cells": [
+  "open_palm",
+  "back",
+  "point",
+  "fist",
+  "thumbs_up",
+  "relaxed"
+ ],
+ "side": "right",
+ "size": "1536x1024",
+ "prompt": "A hand reference sheet: a grid of 2 rows x 3 columns, 6 separate RIGHT hands of the same man, each with a short piece of the black suit sleeve cuff (and black shirt cuff) at the bottom, the wrist at the bottom of each cell and the fingers toward the top, all the same size, evenly spaced with white space between them. Hands: row 1, column 1: open hand, palm facing the viewer, fingers up and slightly spread; row 1, column 2: open hand seen from the back (back of the hand to the viewer), fingers up; row 1, column 3: index finger pointing up, other fingers curled; row 2, column 1: closed fist, knuckles to the viewer; row 2, column 2: thumbs up, fingers curled; row 2, column 3: relaxed hand, fingers gently curled, palm to the side. Skin tone and 3D style exactly as the reference hands, five fingers on every hand, no watch. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T18:10:33Z"
+}

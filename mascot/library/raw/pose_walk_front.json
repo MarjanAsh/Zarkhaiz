@@ -1,0 +1,21 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "c2956250c8ea464693084f44e37d2ad4",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated the image; copying it to the working directory failed due to filesystem permissions.",
+ "id": "pose_walk_front",
+ "kind": "body",
+ "rows": 1,
+ "cols": 1,
+ "cells": [
+  "walk_front"
+ ],
+ "pose": "walk_front",
+ "angle": "front",
+ "size": "1024x1536",
+ "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, walking toward the camera mid-stride, one leg forward, arms swinging naturally, smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T18:08:37Z"
+}
