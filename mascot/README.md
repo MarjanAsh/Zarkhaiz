@@ -82,3 +82,27 @@ The reel uses only these; the angry and seated poses in `office-v1/` are no long
 `character/` holds the client's three pose sheets (`refs/`), 17 cutouts on one shared canvas (`poses/`) and
 `CHARACTER.md`, which lists every pose, what it is for and the rules. The office-v1 and office-v2 sets are no
 longer used by the reel.
+
+## Asset library (from v011, in progress)
+Request (user, 2026-11-13): the v010 puppet rig is smoother but the arms look unnatural and the single front face
+and body angle are too stiff. The work is now a video series, so stop rendering and build a reusable asset library
+with ChatGPT through the GPT bridge (GPT + Gemini, not Muse, Canva or fal): expressions, head/body angles
+(front, 3/4, profile), clean arm/hand pieces, head-less torsos, organized in the repo for assembling any future script.
+
+Everything is in `mascot/library/` (read its README for names, anchors and how a script picks assets).
+Identity references for every generation: `rig/source.webp` + `character/refs/sheet1-3.jpg`.
+
+### Generators found in this environment (2026-11-13)
+- ChatGPT bridge `https://zarkhaiz.duckdns.org` (token injected by the proxy): `GET /health`; `POST /jobs {"prompt"}`
+  → `{"id"}`; `GET /jobs/<id>` → `{status, reply, files}`; `GET /jobs/<id>/files/<name>` downloads an output. It runs
+  Codex (ChatGPT plan sign-in) which has an `image_gen` tool; tested OK (1536x1024 PNG). It takes no uploads and its
+  shell sandbox fails (bwrap), so reference images are passed as public raw GitHub URLs.
+  After a few test jobs it hit the ChatGPT plan usage limit ("try again at 3:16 PM").
+- OpenAI API (gpt-image-2 edits with the refs uploaded): `insufficient_quota`, no credits.
+- Gemini API: 401. This environment ("AI Tools") stores the Gemini key under the `Authorization` header, but
+  the Gemini API needs it in `x-goog-api-key` (as the `zarkhaiz` environment has it). Fix it in the environment's
+  network secrets to use Gemini here.
+
+### Status
+Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 head sheets of 6 expressions,
+2 body turnaround sheets, 12 acting poses, 2 hand sheets, 1 arm sheet). Generation waits for the bridge quota.
