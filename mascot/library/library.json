@@ -23,7 +23,8 @@
     700
    ],
    "height": 620,
-   "scale_on_body_canvas": 0.4094
+   "scale_on_body_canvas": 0.3723,
+   "fit_note": "per body: assets[].head_fit (composite.py); this is the median"
   },
   "hand": {
    "size": [
@@ -1321,7 +1322,15 @@
    "raw": "raw/bodies_turn_a.png",
    "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure facing the camera straight on; middle figure in three-quarter view facing the viewer's left; right figure in three-quarter view facing the viewer's right. Neutral relaxed standing pose, arms hanging naturally at the sides, slight smile. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3702,
+    "left": 287.0,
+    "top": 184.0,
+    "iou": 0.982,
+    "headless": "bodies_headless/front/neutral.png"
+   }
   },
   {
    "file": "torsos/front.png",
@@ -1370,7 +1379,15 @@
    "raw": "raw/bodies_turn_a.png",
    "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure facing the camera straight on; middle figure in three-quarter view facing the viewer's left; right figure in three-quarter view facing the viewer's right. Neutral relaxed standing pose, arms hanging naturally at the sides, slight smile. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "34right",
+    "scale": 0.387,
+    "left": 303.3,
+    "top": 182.7,
+    "iou": 0.957,
+    "headless": "bodies_headless/34right/neutral.png"
+   }
   },
   {
    "file": "torsos/34right.png",
@@ -1419,7 +1436,15 @@
    "raw": "raw/bodies_turn_a.png",
    "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure facing the camera straight on; middle figure in three-quarter view facing the viewer's left; right figure in three-quarter view facing the viewer's right. Neutral relaxed standing pose, arms hanging naturally at the sides, slight smile. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "34left",
+    "scale": 0.3724,
+    "left": 291.2,
+    "top": 183.2,
+    "iou": 0.965,
+    "headless": "bodies_headless/34left/neutral.png"
+   }
   },
   {
    "file": "torsos/34left.png",
@@ -1493,7 +1518,15 @@
    "raw": "raw/bodies_turn_b.png",
    "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure in exact side profile facing the viewer's left; middle figure in exact side profile facing the viewer's right; right figure seen from directly behind (back view, back of the head). Neutral relaxed standing pose, arms hanging naturally at the sides. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "profileleft",
+    "scale": 0.3582,
+    "left": 291.4,
+    "top": 185.5,
+    "iou": 0.964,
+    "headless": "bodies_headless/profileleft/neutral.png"
+   }
   },
   {
    "file": "bodies/profileright/neutral.png",
@@ -1518,7 +1551,15 @@
    "raw": "raw/bodies_turn_b.png",
    "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure in exact side profile facing the viewer's left; middle figure in exact side profile facing the viewer's right; right figure seen from directly behind (back view, back of the head). Neutral relaxed standing pose, arms hanging naturally at the sides. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "profileright",
+    "scale": 0.349,
+    "left": 294.8,
+    "top": 184.5,
+    "iou": 0.951,
+    "headless": "bodies_headless/profileright/neutral.png"
+   }
   },
   {
    "file": "bodies/front/presenting.png",
@@ -1543,7 +1584,15 @@
    "raw": "raw/pose_presenting.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, presenting: one arm extended to the side with an open palm up, as if showing something, smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3722,
+    "left": 297.9,
+    "top": 183.4,
+    "iou": 0.974,
+    "headless": "bodies_headless/front/presenting.png"
+   }
   },
   {
    "file": "bodies/front/point_camera.png",
@@ -1568,7 +1617,15 @@
    "raw": "raw/pose_point_camera.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, pointing straight at the camera with his right index finger, confident smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3772,
+    "left": 291.3,
+    "top": 182.9,
+    "iou": 0.979,
+    "headless": "bodies_headless/front/point_camera.png"
+   }
   },
   {
    "file": "bodies/front/point_side.png",
@@ -1593,7 +1650,15 @@
    "raw": "raw/pose_point_side.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, pointing to the viewer's right with an extended arm and index finger, looking that way, smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3778,
+    "left": 239.1,
+    "top": 180.4,
+    "iou": 0.89,
+    "headless": "bodies_headless/front/point_side.png"
+   }
   },
   {
    "file": "bodies/front/thumbs_up.png",
@@ -1618,7 +1683,15 @@
    "raw": "raw/pose_thumbs_up.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, giving a thumbs up with his right hand at chest height, big smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3797,
+    "left": 290.0,
+    "top": 182.7,
+    "iou": 0.978,
+    "headless": "bodies_headless/front/thumbs_up.png"
+   }
   },
   {
    "file": "bodies/front/arms_crossed.png",
@@ -1643,7 +1716,15 @@
    "raw": "raw/pose_arms_crossed.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, arms crossed over the chest, confident smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3573,
+    "left": 292.6,
+    "top": 184.6,
+    "iou": 0.982,
+    "headless": "bodies_headless/front/arms_crossed.png"
+   }
   },
   {
    "file": "bodies/front/thinking_chin.png",
@@ -1693,7 +1774,15 @@
    "raw": "raw/pose_shrug.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, shrugging, both palms up at waist height, shoulders raised, eyebrows up, small smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3659,
+    "left": 269.9,
+    "top": 182.9,
+    "iou": 0.896,
+    "headless": "bodies_headless/front/shrug.png"
+   }
   },
   {
    "file": "bodies/front/victory.png",
@@ -1718,7 +1807,15 @@
    "raw": "raw/pose_victory.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, victory, both fists raised above his head, happy open-mouth cheer. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3753,
+    "left": 284.4,
+    "top": 182.6,
+    "iou": 0.978,
+    "headless": "bodies_headless/front/victory.png"
+   }
   },
   {
    "file": "bodies/front/waving.png",
@@ -1743,7 +1840,15 @@
    "raw": "raw/pose_waving.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, waving hello with his right hand raised beside his head, open palm, smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3697,
+    "left": 291.2,
+    "top": 183.6,
+    "iou": 0.97,
+    "headless": "bodies_headless/front/waving.png"
+   }
   },
   {
    "file": "bodies/front/explain_both.png",
@@ -1768,7 +1873,15 @@
    "raw": "raw/pose_explain_both.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, explaining with both hands in front of the chest, palms open and facing each other, mouth open talking. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3797,
+    "left": 281.0,
+    "top": 182.7,
+    "iou": 0.975,
+    "headless": "bodies_headless/front/explain_both.png"
+   }
   },
   {
    "file": "bodies/front/walk_front.png",
@@ -1793,7 +1906,15 @@
    "raw": "raw/pose_walk_front.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, walking toward the camera mid-stride, one leg forward, arms swinging naturally, smile. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "front",
+    "scale": 0.3524,
+    "left": 339.2,
+    "top": 185.0,
+    "iou": 0.982,
+    "headless": "bodies_headless/front/walk_front.png"
+   }
   },
   {
    "file": "bodies/profileright/walk_side.png",
@@ -1818,7 +1939,15 @@
    "raw": "raw/pose_walk_side.png",
    "prompt": "One full-body image of the man, head to toe with both feet visible and some white space around him, walking mid-stride in exact side profile facing the viewer's right, arms swinging naturally. Natural, anatomically correct arms and hands with five fingers. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
    "model": "ChatGPT (Codex image_gen)",
-   "backend": null
+   "backend": null,
+   "head_fit": {
+    "angle": "profileright",
+    "scale": 0.3775,
+    "left": 264.1,
+    "top": 181.8,
+    "iou": 0.956,
+    "headless": "bodies_headless/profileright/walk_side.png"
+   }
   },
   {
    "file": "hands/right/back.png",

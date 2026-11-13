@@ -26,7 +26,8 @@ Contact sheets: `sheets/heads_<angle>.jpg`, `sheets/bodies.jpg`, `sheets/torsos.
 Known limits:
 - Acting poses exist only facing front (plus `walk_side` in profile). Other angles need new jobs in `tools/jobs.py`.
 - Torsos keep a thin strip of beard and neck at the cut; a head placed on top covers it.
-- `canvases.head.scale_on_body_canvas` (0.41) is an estimate from the proportions; check it on the first composite.
+- Head swap is fitted per body (`tools/composite.py`, see "Head swap" below); `canvases.head.scale_on_body_canvas`
+  is only the median of those fits (0.372).
 - Arm pieces are scaled so the sleeve end matches the hand cuff (130 px); their length relative to a body is not
   normalized yet. The puppet rig in `mascot/rig` can keep using its own arms until a composite test is done.
 
@@ -123,3 +124,14 @@ Hand the VPS assistant `bridge/GPT_INSTRUCTIONS.md`: it holds all the code and s
 `gen.py` picks the bridge mode by itself: `upload` when `/health` has `"images": true`; otherwise `url` (Codex
 curls the four reference images from GitHub raw URLs, which works after Part A); `bridge-noref` only on request.
 If Codex answers NO_REFS, the bridge is skipped for 30 minutes (`--reset` clears it).
+
+## Head swap (composite test, 2026-11-13)
+`tools/composite.py` fits the neutral head of the same angle onto each body (hair top + head width + centre, then a
+small scale/offset search for the best silhouette overlap) and writes:
+- `bodies_headless/<angle>/<pose>.png`: the body with its own head cleared above the chin line;
+- `head_fit` on each body in `library.json`: `{angle, scale, left, top, iou, headless}`. Draw any head of that angle
+  on the body canvas at x=`left`, y=`top`, size 640x720 times `scale`.
+15 bodies fit with IoU 0.89-0.98 (shrug and point_side lowest, their own head is tilted). Not fitted:
+`thinking_chin` (the hand is on the chin) and `back` (no face): they keep their own head.
+Check: `sheets/composite_heads.jpg` (own head, headless, and neutral/talk_a/talk_o/laugh/wink swapped on every body).
+The neck seam was checked at full size on a dark background: no visible edge.
