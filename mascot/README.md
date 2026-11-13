@@ -126,6 +126,9 @@ Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 h
   ChatGPT chat; 5-hour and weekly windows) was full ("try again at 5:32 PM", still full at 15:34 UTC, so the VPS
   clock is not UTC+2). The user's second OpenAI API key also returns `credit_balance_exhausted`. Second ChatGPT
   account on the bridge: prompt given to the user (`CODEX_HOMES` rotation, Part B3), not confirmed yet.
+- First library image made through the bridge in upload mode with the 4 references (2026-11-13, after the
+  user's Codex limit reset): `library/raw/bodies_turn_a.png` (front, 3/4 left, 3/4 right). Face, glasses, beard,
+  outfit, gold pocket square and watch match the references. The other 27 jobs are running (`gen.py --par 2`).
 Next: when the user says "VPS fix ho gaya", run `gen.py --reset --only bodies_turn_a`, check the face, then the rest.
 Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
 (regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.
