@@ -109,68 +109,69 @@ const LIBMAP = {
 };
 const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392;
 const heroes = [];
-const spring = (u, z = .55, w = 26) => u <= 0 ? 0 : 1 - Math.exp(-z * w * u) * Math.cos(w * Math.sqrt(1 - z * z) * u);
-// mouth shapes for a word: one per vowel group, a closing 'teeth' shape between syllables of long words
-function mouthShapes(w) {
-  const groups = w.w.toLowerCase().match(/[aeiouy]+/g) || ['a'];
-  const n = groups.length, dur = Math.max(.08, w.t1 - w.t0), slot = dur / n, out = [];
-  groups.forEach((g, i) => {
-    const c = g[0], shape = c === 'o' || c === 'u' ? 'talk_o' : (c === 'e' || c === 'i' || c === 'y') ? 'talk_e' : 'talk_a';
-    out.push({ t: w.t0 + i * slot, e: shape });
-    if (slot > .16 && i < n - 1) out.push({ t: w.t0 + (i + .7) * slot, e: 'talk_teeth' });
-  });
-  return out;
-}
-function hero(scene, h, track, tin, tout, fx = 'walkR') {
-  const w = Math.round(h * PW / PH), k = w / PW;
+const smooth = x => x * x * (3 - 2 * x);
+// mouth: one open shape per spoken word (talk_o for o/u words, else talk_a), closed between words when the gap is
+// 0.15 s or more. Heads cross-fade over 0.07 s, so the mouth opens and closes softly instead of popping.
+function mouthOf(w) { const v = (w.w.toLowerCase().match(/[aeiou]/) || ['a'])[0]; return v === 'o' || v === 'u' ? 'talk_o' : 'talk_a'; }
+const TRACKS = [];   // every scene adds its keys; ONE character plays them all (built below the scenes)
+function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
+const MIN_HOLD = 1.5, HERO_H = 1090;
+function buildHero() {
+  const h = HERO_H, w = Math.round(h * PW / PH), k = w / PW;
   const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
   el('<div class="halo"></div>', {}, mv); el('<div class="shadow"></div>', {}, mv);
   const turn = el('<div class="hturn"></div>', {}, mv);
   const body = el('<div class="hbody"></div>', {}, turn);
-  let keys = track.map(([t, pose, x, flip]) => ({ t, pose, x: x - w / 2, cx: x, flip: !!flip })).sort((p, q) => p.t - q.t);
-  // walking entrances: he walks in side-on, then turns into the first pose
-  if (fx.startsWith('walk')) {
-    keys[0].t = Math.max(keys[0].t, tin + .72);
-    keys.unshift({ t: -1, pose: 'walk', x: keys[0].x, cx: keys[0].cx, flip: fx === 'walkR' });
+  // all keys in time order; the first key of each scene is kept (it sets the scene's mark), the others only
+  // when the pose has been held MIN_HOLD seconds and the next scene is not about to start
+  const all = [];
+  TRACKS.forEach(({ track, tin }, si) => track.map(([t, pose, x, flip]) => ({ t: Math.max(t, tin), pose, cx: x, flip: !!flip }))
+    .sort((p, q) => p.t - q.t).forEach((key, i) => all.push({ ...key, first: i === 0, si, t: i === 0 && si > 0 ? tin - .45 : key.t })));   // he moves to the new scene's mark while the old scene fades
+  const firstT = si => TRACKS[si] ? Math.max(TRACKS[si].track.reduce((m, q) => Math.min(m, q[0]), 1e9), TRACKS[si].tin) : 1e9;
+  const keys = [];
+  for (const key of all) {
+    const last = keys[keys.length - 1];
+    if (!last || key.first || (key.t - last.t >= MIN_HOLD && firstT(key.si + 1) - key.t >= 1.1)) keys.push(key);
   }
   for (const key of keys) {
     let [b, expr] = LIBMAP[key.pose] || LIBMAP.confident;
     if (b.startsWith('look/')) b = (key.cx > 540 ? '34left/' : '34right/') + b.slice(5);
-    key.body = b; key.expr = expr; key.key = b + (key.flip ? '|f' : '');
+    key.body = b; key.expr = expr || 'smile'; key.key = b + (key.flip ? '|f' : ''); key.x = key.cx - w / 2;
   }
   a._track = keys;
   a._grp = {};
   for (const key of keys) {
     if (a._grp[key.key]) continue;
     const B = LIBJ.bodies[key.body];
-    const g = el(`<div class="hgrp" style="transform:${key.flip ? 'scaleX(-1)' : 'none'}"></div>`, {}, body);
+    const g = el(`<div class="hgrp" style="transform:${key.flip ? 'scaleX(-1)' : 'none'};opacity:0"></div>`, {}, body);
     el(`<img src="${B.src}">`, {}, g);
     g._heads = {};
     if (B.headless) {
       const f = B.fit, hw = 640 * f.scale * k, hh = 720 * f.scale * k;
       for (const e of LIBJ.heads[f.angle])
-        g._heads[e] = el(`<img class="hhead" src="assets/lib/heads/${f.angle}/${e}.webp" style="left:${(f.left * k).toFixed(1)}px;top:${(f.top * k).toFixed(1)}px;width:${hw.toFixed(1)}px;height:${hh.toFixed(1)}px;display:none">`, {}, g);
+        g._heads[e] = el(`<img class="hhead" src="assets/lib/heads/${f.angle}/${e}.webp" style="left:${(f.left * k).toFixed(1)}px;top:${(f.top * k).toFixed(1)}px;width:${hw.toFixed(1)}px;height:${hh.toFixed(1)}px;opacity:0">`, {}, g);
     }
     a._grp[key.key] = g;
   }
-  turn.style.webkitBoxReflect = `below ${-Math.round(h * (1 - PFEET / PH) + 4)}px linear-gradient(transparent 80%, rgba(0,0,0,.28))`;   // glossy-floor reflection
-  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = heroes.length * 1.37;
-  a._words = TL.words.filter(x => L(x.line).scene === scene);
-  a._mouth = a._words.map(x => ({ w: x, shapes: mouthShapes(x) }));
-  a._track.slice(1).forEach(k => EV.push({ t: +(k.t - .04).toFixed(3), type: ['surprised', 'oh_no', 'panic'].includes(k.pose) ? 'thump' : (['victory', 'triumph'].includes(k.pose) ? 'ding' : 'whoosh') }));
-  add(a, tin, tout, fx, { d: fx.startsWith('walk') ? .9 : .6, sfx: 'whoosh', sfxAt: -.05 });
-  heroes.push(a); return a;
-}
-// the head image at time t: a mouth shape while a word is spoken (held across gaps under 0.12 s), else the
-// expression of the current pose
-function headAt(a, t, base) {
-  for (let i = 0; i < a._mouth.length; i++) {
-    const { w, shapes } = a._mouth[i], nx = a._mouth[i + 1];
-    const end = nx && nx.w.t0 - w.t1 < .12 ? nx.w.t0 : w.t1;
-    if (t >= w.t0 && t < end) { let e = shapes[0].e; for (const s of shapes) if (t >= s.t) e = s.e; return e; }
-  }
-  return base;
+  // head schedule: [t, expr] segments for the whole reel
+  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0), sched = [];
+  const baseAt = t => { let e = keys[0].expr; for (const q of keys) if (t >= q.t) e = q.expr; return e; };
+  words.forEach((wd, i) => {
+    const nx = words[i + 1];
+    sched.push({ t: wd.t0, e: mouthOf(wd) });
+    const end = Math.max(wd.t0 + .12, wd.t0 + .75 * (wd.t1 - wd.t0));
+    if (!nx || nx.t0 - end >= .15) sched.push({ t: end, e: null });       // null = the pose's expression
+  });
+  keys.forEach(q => sched.push({ t: q.t, e: undefined }));                 // a pose change re-reads the base
+  sched.sort((p, q) => p.t - q.t);
+  let open = null;
+  for (const s of sched) { if (s.e === undefined) s.e = open; else open = s.e; }
+  a._sched = sched.map(s => ({ t: s.t, e: s.e || baseAt(s.t + .001) }));
+  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = 0;
+  a._speech = words;
+  add(a, keys[0].t, TL.dur, 'slide', { d: .9 });
+  return a;
 }
 // giant outlined word behind the scene, drifting sideways
 function ghost(text, top, tin, tout, size = 330, dir = 1) {
@@ -222,7 +223,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   add(sq, t0 + .05, t1, 'fade');
   ghost('ZARKHAIZ', 560, t0 + .1, t1, 300, 1);
   // he turns round to greet, then steps aside and presents the company card
-  hero('intro', 1120, [[0, 'back_look', 540], [t0 + .26, 'turn', 540], [t0 + .5, 'side_point', 540], [W('l02', 'alaikum') - .1, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
+  hero('intro', 1120, [[0, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
   const c = el(`<div class="abs card big" style="padding:34px 36px;width:580px"></div>`, { left: '452px', top: '760px' });
   el('<img src="assets/logo_icon.png" style="width:170px;display:block;margin-bottom:14px">', {}, c);
   el('<div class="lbl" style="margin-bottom:8px;font-size:28px">Founder</div>', {}, c);
@@ -346,6 +347,8 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   hero('cta', 1040, [[0, 'idea', 840], [W('l08', 'growth') - .05, 'side_point', 830], [W('l08', 'whatsapp') - .15, 'point_screen', 820, true], [W('l08', 'karein') - .05, 'point_camera', 830], [W('l09', 'outputdm') - .15, 'presenting', 830], [W('l09', 'com') - .05, 'peace', 835], [L('l09').t1 + .5, 'laugh', 840], [L('l09').t1 + 1.6, 'victory', 840]], t0 + .1, t1 + 1, 'walkR');
 }
 
+const HERO = buildHero();
+
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
 const wm = el('<div id="wm">@outputdm</div>');
@@ -366,6 +369,7 @@ function fxStyle(it, t) {
     case 'blur': tf = `translateY(${24 * Math.pow(k, 2)}px)`; fl = `blur(${14 * Math.pow(k, 1.5)}px)`; break;
     case 'shake': { const s = seg(t, it.tin, it.tin + .55); tf = `scale(${.82 + .18 * back(pin)}) translateX(${Math.sin(s * 28) * 14 * (1 - s)}px)`; break; }
     case 'walkL': case 'walkR': { const dir = it.fx === 'walkL' ? -1 : 1, e = eo(pin); tf = `translateX(${dir * 460 * (1 - e)}px) translateY(${-18 * Math.abs(Math.sin(pin * Math.PI * 4)) * (1 - pin)}px) rotate(${dir * 2.4 * Math.sin(pin * Math.PI * 4) * (1 - pin)}deg)`; o = Math.min(1, pin * 6) * (1 - eo(pout)); break; }
+    case 'slide': { const e = smooth(pin); tf = `translateX(${(140 * (1 - e)).toFixed(1)}px)`; o = e; break; }
     case 'fade': break;
   }
   tf += ` translateY(${-28 * eio(pout)}px)`;
@@ -373,50 +377,48 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
+const FADE = .4, HFADE = .07;
+function speechEnv(a, t) {
+  // how much he is speaking around t, smoothed (rises over ~0.25 s, falls over ~0.4 s)
+  let v = 0;
+  for (const w of a._speech) {
+    if (w.t0 > t + .3) break;
+    const on = smooth(seg(t, w.t0 - .1, w.t0 + .15)), off = 1 - smooth(seg(t, w.t1, w.t1 + .4));
+    v = Math.max(v, Math.min(on, off));
+  }
+  return v;
+}
 function drawHero(a, t) {
   const tr = a._track; let i = 0;
   for (let j = 0; j < tr.length; j++) if (t >= tr[j].t) i = j;
-  const k = tr[i], pv = tr[i - 1] || k, nx = tr[i + 1];
-  // steps: travel to the new mark on an in-out ease, leaning and blurring with the speed
-  const m = seg(t, k.t, k.t + .55), dx = k.x - pv.x, x = pv.x + dx * eio(m);
-  const vel = dx * (m > 0 && m < 1 ? 6 * m * (1 - m) / .55 : 0);           // px / s
-  const moving = Math.sin(m * Math.PI) * (dx ? 1 : 0);
-  // pose change: anticipation dip just before, dissolve with a short blur, spring settle after
-  const changed = i > 0 && pv.key !== k.key, u = t - k.t;
-  const ant = nx && nx.key !== k.key ? seg(t, nx.t - .1, nx.t) : 0;
-  const pin = changed ? seg(u, 0, .16) : 1;
-  const set = changed ? spring(u) : 1;
-  // the new body+head dissolves in ON TOP of the old one, which stays opaque until covered
-  const headNow = headAt(a, t, k.expr), headPrev = headAt(a, t, pv.expr);
+  const k = tr[i], pv = tr[i - 1] || k;
+  // glide to the new mark over 1.0 s on a smooth ease (no blur, no hop)
+  const m = smooth(seg(t, k.t, k.t + 1.0)), x = pv.x + (k.x - pv.x) * m;
+  const vel = (k.x - pv.x) * 6 * seg(t, k.t, k.t + 1.0) * (1 - seg(t, k.t, k.t + 1.0)) / 1.0;
+  // pose change: the new body fades in over 0.4 s on top of the old one, which stays opaque until covered
+  const changed = i > 0 && pv.key !== k.key, u = t - k.t, pin = changed ? smooth(seg(u, 0, FADE)) : 1;
+  // head: current schedule entry, cross-faded from the previous one
+  const S = a._sched; let si = 0;
+  for (let j = 0; j < S.length; j++) if (t >= S[j].t) si = j;
+  const hc = S[si].e, hp = (S[si - 1] || S[si]).e, hm = smooth(seg(t, S[si].t, S[si].t + HFADE));
   for (const [key, g] of Object.entries(a._grp)) {
-    let o = 0, f = 0, z = 0, he = null;
-    if (key === k.key) { o = eio(pin); f = 2.5 * (1 - pin); z = 2; he = headNow; }
-    else if (changed && key === pv.key && u < .16) { o = 1; f = 2.5 * pin; z = 1; he = headPrev; }
-    g.style.opacity = o; g.style.zIndex = z; g.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none';
-    g.style.display = o > 0 ? 'block' : 'none';
-    if (o > 0) for (const [e, im] of Object.entries(g._heads)) im.style.display = e === (he || 'neutral') ? 'block' : 'none';
+    let o = 0, z = 0;
+    if (key === k.key) { o = pin; z = 2; }
+    else if (changed && key === pv.key && u < FADE) { o = 1; z = 1; }
+    g.style.opacity = o; g.style.zIndex = z; g.style.display = o > 0 ? 'block' : 'none';
+    if (o > 0) for (const [e, im] of Object.entries(g._heads)) {
+      const v = e === hc ? (hc === hp ? 1 : hm) : (e === hp ? 1 : 0);    // new head fades in over the old one
+      im.style.opacity = v; im.style.zIndex = e === hc ? 2 : 1; im.style.display = v > 0 ? 'block' : 'none';
+    }
   }
-  // words: a nod and a small lift on every word start, bigger on longer words
-  let lift = 0, nod = 0;
-  a._words.forEach((w, n) => {
-    const v = t - w.t0; if (v < 0 || v > .7) return;
-    const amp = Math.min(1.2, .5 + w.w.length / 12), e = Math.exp(-v * 6);
-    lift += amp * Math.sin(Math.min(1, v / .18) * Math.PI / 2) * e;
-    nod += amp * e * Math.sin(v * 14) * (n % 2 ? 1 : -1);
-  });
-  const ph = a._ph, breathe = Math.sin(t * 2.1 + ph);
-  const settle = 1 - set;
-  const sx = 1 + .006 * breathe + .03 * settle - .012 * ant;
-  const sy = 1 + .009 * breathe - .045 * settle - .02 * ant + .008 * lift;
-  const ty = -10 * lift - 14 * Math.abs(Math.sin(m * Math.PI * 2)) * moving + 10 * ant;
-  const rot = .9 * nod + Math.max(-5, Math.min(5, vel / 260)) + .6 * Math.sin(t * .9 + ph) - 1.5 * settle * (k.flip ? -1 : 1);
-  const shift = 5 * Math.sin(t * .7 + ph);
-  a._mv.style.transform = `translateX(${(x + shift).toFixed(1)}px)`;
-  a._mv.style.filter = Math.abs(vel) > 60 ? `blur(${Math.min(4, Math.abs(vel) / 500).toFixed(2)}px)` : 'none';
-  a._turn.style.transform = `perspective(1800px) rotateY(${(4 * Math.sin(t * .55 + ph) + Math.max(-10, Math.min(10, vel / 90))).toFixed(2)}deg)`;
-  a._body.style.transform = `translateY(${ty.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
-  const sh = a._mv.querySelector('.shadow');
-  sh.style.transform = `scaleX(${(1 + .002 * ty).toFixed(3)})`; sh.style.opacity = (1 + .01 * ty).toFixed(3);
+  // idle life: slow breathing and a gentle sway; speaking adds a small, smoothed lift and lean
+  const sp = speechEnv(a, t), breathe = Math.sin(t * 1.6);
+  const ty = -2.5 * breathe - 6 * sp;
+  const rot = .5 * Math.sin(t * .7) + .8 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
+  const sx = 1 + .004 * breathe, sy = 1 + .006 * breathe;
+  a._mv.style.transform = `translateX(${(x + 4 * Math.sin(t * .45)).toFixed(2)}px)`;
+  a._turn.style.transform = `perspective(1800px) rotateY(${(2.5 * Math.sin(t * .4) + Math.max(-6, Math.min(6, vel / 120))).toFixed(2)}deg)`;
+  a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
 }
 
 window.render = async t => {

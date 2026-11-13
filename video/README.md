@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v012.mp4` (1080x1920, mascot asset library with head swap). v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v013.mp4` (1080x1920, 60 fps, one smooth library character). v012 (library, choppy) kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -193,3 +193,25 @@ reusable asset library (done: `mascot/library/`), complete the head/body composi
 - Rebuild: `python3 prep_lib.py` first, then the usual steps (events, mix, video, mux) with `_v012` in the name.
 - Open: no acting poses at 3/4 or profile angles yet (only neutral there); mouth timing follows estimated word
   times (Gemini TTS gives no timestamps); 4K not rendered for v012 yet (same command as before).
+
+## v013: one ultra-smooth character, no swish on movements, 60 fps
+
+User feedback on v012 (Nov 13): everything felt broken/choppy and not consistent; wants it ultra smooth; the swish
+sound on every movement was very annoying, reduce it a lot.
+
+Causes found: the character swapped body images ~50 times (each image generated separately, so each swap jumped),
+the mouth cycled 4 shapes per syllable, every pose change had a dip, blur and spring squash, each scene had its own
+character that faded in and out (7 times), and 47 whooshes (one per pose change).
+
+- One character for the whole reel (`buildHero()` in `main.js`): the scene tracks are merged; he glides to each
+  scene's mark (1.0 s smoothstep, starting 0.45 s before the scene so he is in place when its cards arrive).
+- Far fewer pose changes: a pose is held at least 1.5 s (`MIN_HOLD`); the first key of every scene is kept.
+  Changes are a 0.4 s smooth dissolve (new body over the old one), no blur, no anticipation dip, no squash.
+- Intro no longer turns from the back view (it was a jump in the middle of the reel); he greets with a wave.
+- Mouth: one open shape per word (`talk_a`, or `talk_o` for o/u words), closed between words when the gap is
+  0.15 s or more; heads cross-fade over 0.07 s.
+- Motion: slow breathing, a gentle sway, and a small smoothed lift/lean while he speaks (no nod on every word).
+- Sound: the character makes no sound at all; whoosh 0.22 -> 0.06, pop .20 -> .12, thump .45 -> .30,
+  ding .16 -> .12 (`mix.py`). Events: 84 -> 28 (pops/ticks on cards only).
+- 60 fps render (`video.mjs --fps 60`).
+- Open: 4K not rendered; poses at 3/4/profile angles beyond neutral still missing.

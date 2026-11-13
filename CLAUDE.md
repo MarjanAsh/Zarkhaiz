@@ -5,8 +5,8 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v012.mp4` (1080x1920): mascot library bodies + swapped talking heads
-  (`video/README.md`, v012). v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v013.mp4` (1080x1920, 60 fps): one smooth library character,
+  swapped talking heads, no movement sounds (`video/README.md`, v013). v012 kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v012 the mascot library (`mascot/library/`, bodies + head swap). Before: puppet rig `mascot/rig/RIG.md` (v010),
   the 17 pose images `mascot/character/CHARACTER.md` (v009).
@@ -20,6 +20,8 @@ and `mascot/README.md` (the character images).
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".
 - No blinking: check every frame's brightness for single-frame dips before delivering a render.
+- Ultra smooth (v013): one character for the whole reel, poses held >= 1.5 s with 0.4 s dissolves, no sound on
+  character movements (the swish annoyed the user), render at 60 fps.
 
 ## Tools (not in the repo, install in a new session)
 - Render toolkit lemo-opuscar: clone https://github.com/lemomo-ai/lemo-opuscar to

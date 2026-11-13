@@ -95,11 +95,11 @@ music *= duck[:, None]
 
 # ---------- sound effects ----------
 SFX = {
-    "whoosh": lambda: sfx.whoosh(.4, .22),
-    "pop": lambda: sfx.pop(.20),
+    "whoosh": lambda: sfx.whoosh(.4, .06),   # v013: was .22; the character makes no whoosh any more
+    "pop": lambda: sfx.pop(.12),
     "tick": lambda: sfx.click(1.3, .16),
-    "ding": lambda: sfx.ding(.16),
-    "thump": lambda: sfx.thump(.45, 60),
+    "ding": lambda: sfx.ding(.12),
+    "thump": lambda: sfx.thump(.30, 60),
     "click": lambda: sfx.click(1.0, .25),
 }
 for e in EV:
