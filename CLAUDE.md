@@ -28,8 +28,8 @@ and `mascot/README.md` (the character images).
   `x-goog-api-key`); pass any dummy file as `GEMINI_KEY_FILE`, the proxy adds the real key. Image generation
   needs billing on that key (free tier limit is 0). Never commit keys.
 - Image generation for the mascot library: `mascot/library/tools/gen.py` falls back automatically
-  gemini → openai → ChatGPT bridge (zarkhaiz.duckdns.org, token injected by the proxy). Status and the bridge
-  upgrade it needs are in `mascot/library/README.md`.
+  gemini → openai → ChatGPT bridge (zarkhaiz.duckdns.org, token injected by the proxy). Status is in `mascot/library/README.md`;
+  the bridge upgrade for the VPS (given to ChatGPT there by the user) is `mascot/library/bridge/GPT_INSTRUCTIONS.md`.
 
 ## Keep the hand-off current (required)
 The user moves between sessions and Claude accounts; the chat does not travel, only this repo does.

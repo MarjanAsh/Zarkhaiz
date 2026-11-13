@@ -25,18 +25,19 @@ from pathlib import Path
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
+import jobs as jobs_mod  # noqa: E402
 from jobs import jobs  # noqa: E402
 
 LIB = Path(__file__).resolve().parents[1]
 RAW = LIB / "raw"
 STATE = RAW / ".providers.json"
 REPO = LIB.parents[1]
-REFS = [REPO / "mascot/rig/source.webp"] + [REPO / f"mascot/character/refs/sheet{i}.jpg" for i in (1, 2, 3)]
+REFS = [REPO / "mascot/library/refs/source.jpg"] + [REPO / f"mascot/character/refs/sheet{i}.jpg" for i in (1, 2, 3)]
 BRIDGE = "https://zarkhaiz.duckdns.org"
 GEMINI = "https://generativelanguage.googleapis.com/v1beta/models"
 GEMINI_MODELS = ["gemini-3-pro-image", "gemini-3.1-flash-image", "gemini-2.5-flash-image"]
 OPENAI_MODELS = ["gpt-image-2", "gpt-image-1.5"]
-COOLDOWN = {"quota": 6 * 3600, "rate": 120, "unusable": 6 * 3600}
+COOLDOWN = {"quota": 6 * 3600, "rate": 120, "unusable": 1800}
 _lock = threading.Lock()
 
 
@@ -156,26 +157,42 @@ def run_openai(job):
     raise last or Exhausted("openai", "cooling down", "all OpenAI image models are cooling down")
 
 
-def run_bridge(job, noref=False):
+def bridge_prompt(job, mode):
     shape = "landscape 1536x1024" if job["size"] == "1536x1024" else "portrait 1024x1536"
-    refline = ("No reference images are available; follow the character description exactly." if noref else
-               "Use the attached images as references for the character.")
-    prompt = ("Image generation task. Do not write code and do not run shell commands. "
-              f"{refline} Call the image generation tool exactly ONCE to make ONE image, {shape}. "
-              f"Image description: {job['prompt']} Return the generated image file and reply with one short line. "
-              "If the reference images are not attached, do NOT generate; reply exactly: NO_REFS")
+    task = (f"Call the image generation tool exactly ONCE to make ONE image, {shape}. "
+            f"Image description: {job['prompt']} "
+            "Save the generated image in the working directory and reply with one short line.")
+    if mode == "noref":
+        return "Image generation task. No reference images are available; follow the description exactly. " + task
+    if mode == "upload":
+        return ("Image generation task. The files ref*.jpg attached to this message (also saved in the refs/ "
+                "folder) show the character. Pass ALL of them to the image generation tool as reference images. "
+                + task + " If you cannot see the reference images, do NOT generate; reply exactly: NO_REFS")
+    urls = " ".join(jobs_mod.REFS)
+    return ("Image generation task.\n"
+            "Step 1. Download the character reference images into the working directory with one shell command:\n"
+            "  mkdir -p refs && cd refs && for u in " + urls + "; do curl -fsSLO \"$u\"; done\n"
+            "Step 2. Look at the downloaded images, then pass ALL of them to the image generation tool as reference "
+            "images.\n"
+            "Step 3. " + task + "\n"
+            "If the download fails or the images cannot be passed as references, do NOT generate; reply exactly: "
+            "NO_REFS and the error.")
+
+
+def run_bridge(job, noref=False):
+    """Bridge modes: upload (the bridge reports images support: refs are sent in the request), url (Codex
+    downloads the refs from GitHub itself; needs network access in its sandbox, see bridge/GPT_INSTRUCTIONS.md),
+    noref (text only, the face drifts)."""
+    body = {}
     if noref:
-        prompt = prompt.replace(" If the reference images are not attached, do NOT generate; reply exactly: NO_REFS", "")
-    body = {"prompt": prompt}
-    if not noref:
+        mode = "noref"
+    else:
         health = json.loads(urllib.request.urlopen(f"{BRIDGE}/health", timeout=30).read())
-        if not health.get("images"):
-            mark("bridge", "unusable", "bridge /health does not report images support, so it cannot take the "
-                 "reference images (see mascot/library/README.md, Bridge upgrade); use --providers bridge-noref "
-                 "to generate without references")
-            raise Exhausted("bridge", "unusable", "no image upload on the bridge")
-        body["images"] = [{"name": p.with_suffix(".jpg").name, "data": base64.b64encode(ref_jpeg(p, 768)).decode()}
-                          for p in REFS]
+        mode = "upload" if health.get("images") else "url"
+        if mode == "upload":
+            body["images"] = [{"name": f"ref{i}_{p.stem}.jpg", "data": base64.b64encode(ref_jpeg(p, 768)).decode()}
+                              for i, p in enumerate(REFS)]
+    body["prompt"] = bridge_prompt(job, mode)
     jid = post_json(f"{BRIDGE}/jobs", body, 120)["id"]
     t0 = time.time()
     while True:
@@ -191,15 +208,18 @@ def run_bridge(job, noref=False):
         raise Exhausted("bridge", "quota", "ChatGPT plan usage limit")
     if st["status"] == "failed":
         raise RuntimeError(f"bridge failed: {err[-300:]}")
-    imgs = [f for f in st.get("files", []) if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))]
+    imgs = [f for f in st.get("files", []) if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+            and not f.startswith("refs/") and not Path(f).name.startswith("ref")
+            and Path(f).name not in {Path(u).name for u in jobs_mod.REFS}]
     if not imgs:
-        if "NO_REFS" in reply or "could not be loaded" in reply or "attach" in reply.lower():
-            mark("bridge", "unusable", "bridge does not pass reference images to Codex: " + reply)
+        if mode != "noref" and ("NO_REFS" in reply or "could not be loaded" in reply or "attach" in reply.lower()):
+            mark("bridge", "unusable", f"bridge ({mode} mode) could not use the reference images: " + reply)
             raise Exhausted("bridge", "unusable", reply)
         raise RuntimeError(f"bridge: no image returned; reply: {reply[:300]}")
-    data = urllib.request.urlopen(f"{BRIDGE}/jobs/{jid}/files/{imgs[0]}", timeout=180).read()
+    data = urllib.request.urlopen(f"{BRIDGE}/jobs/{jid}/files/{imgs[-1]}", timeout=180).read()
     return data, {"provider": "chatgpt-bridge", "model": "ChatGPT (Codex image_gen)", "bridge_job": jid,
-                  "references": not noref, "reply": reply[:300]}
+                  "bridge_mode": mode, "account": st.get("account"), "references": mode != "noref",
+                  "reply": reply[:300]}
 
 
 PROVIDERS = {"gemini": run_gemini, "openai": run_openai, "bridge": run_bridge,

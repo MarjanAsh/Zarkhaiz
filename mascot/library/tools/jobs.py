@@ -6,7 +6,7 @@ gen.py sends each job to the generator; post.py cuts the result into assets.
 
 RAW = "https://raw.githubusercontent.com/marjanash/zarkhaiz/ccr-e371ce1b-168zzm/"
 REFS = [
-    RAW + "mascot/rig/source.webp",
+    RAW + "mascot/library/refs/source.jpg",  # JPG copy of mascot/rig/source.webp (the A-pose)
     RAW + "mascot/character/refs/sheet1.jpg",
     RAW + "mascot/character/refs/sheet2.jpg",
     RAW + "mascot/character/refs/sheet3.jpg",

@@ -116,5 +116,11 @@ Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 h
 - The user added a new OpenAI API key (replaced the old one in the "AI Tools" environment, 2026-11-13). Tested twice,
   a minute apart: still `credit_balance_exhausted`, so that OpenAI account has no credits either (check
   platform.openai.com → Settings → Billing). A second ChatGPT account would go on the bridge as a second `CODEX_HOME`.
+- User decision: fix the bridge (option 1). The user has ChatGPT on the VPS apply
+  `library/bridge/GPT_INSTRUCTIONS.md` (Part A: `fix_vps.sh` turns on Codex sandbox network access, which also stops
+  the bwrap crash; Part B: image upload + account rotation in the bridge). `gen.py` now tries the bridge in `url`
+  mode (Codex downloads the references) or `upload` mode (when `/health` says `"images": true`).
+  `library/refs/source.jpg` is a JPG copy of `rig/source.webp` for those downloads.
+Next: when the user says "VPS fix ho gaya", run `gen.py --reset --only bodies_turn_a`, check the face, then the rest.
 Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
 (regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.

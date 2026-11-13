@@ -84,10 +84,18 @@ environment: replace the exhausted key with the new one (Network secrets, host `
 `Authorization`, prefix `Bearer`). A second ChatGPT account (plan sign-in) belongs on the bridge (below).
 
 ### Bridge upgrade (needed for the bridge to use reference images)
-The bridge today takes only `{"prompt"}` (bodies over roughly 100-500 KB get HTTP 400) and Codex cannot fetch URLs from its
-sandbox, so it cannot see the character references. Change on the VPS (`~/chatgpt-bridge`):
-1. Accept `"images": [{"name": "source.jpg", "data": "<base64>"}]` in `POST /jobs` (allow bodies up to ~3 MB),
-   save each file into the job directory and pass each one to Codex: `codex exec -i source.jpg -i sheet1.jpg ... "<prompt>"`.
-2. Return `"images": true` from `GET /health`. `gen.py` sends images to the bridge only when it sees this.
-3. Optional, for a second ChatGPT account: keep one `CODEX_HOME` per account (`CODEX_HOME=~/.codex2 codex login`) and,
-   when a job fails with "usage limit", rerun it with the next `CODEX_HOME`.
+User decision (2026-11-13): fix the bridge (option 1); the user has ChatGPT on the VPS apply the change.
+Hand the VPS assistant `bridge/GPT_INSTRUCTIONS.md`: it holds all the code and steps.
+- Part A (required, config only): `bridge/fix_vps.sh` sets `[sandbox_workspace_write] network_access = true` in
+  Codex's `config.toml`. Codex's shell failed on every job with `bwrap: loopback: Failed RTM_NEWADDR`, which comes
+  from building an offline network namespace; with network access on, that step is skipped. Tested here with Codex
+  0.169: workspace-write + network_access=false has no network, =true gives curl 200 and still blocks writes outside
+  the workspace. The script was tested on six config.toml cases (none, plain, existing section, last section,
+  indented key, broken file: left untouched).
+- Part B (recommended, bridge code): `POST /jobs` accepts `"images"` (saved to `refs/`, passed as
+  `codex exec -i a -i b -- "<prompt>"`; without `--` Codex swallows the prompt as an image), `/health` reports
+  `"images": true`, and several ChatGPT accounts (`CODEX_HOMES`) are rotated on "usage limit".
+
+`gen.py` picks the bridge mode by itself: `upload` when `/health` has `"images": true`; otherwise `url` (Codex
+curls the four reference images from GitHub raw URLs, which works after Part A); `bridge-noref` only on request.
+If Codex answers NO_REFS, the bridge is skipped for 30 minutes (`--reset` clears it).
