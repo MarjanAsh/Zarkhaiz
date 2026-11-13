@@ -87,85 +87,90 @@ function heading(h1, sub, tH, tSub, tout, top = 262) {
   return { h, s };
 }
 
-// ---------- hero: the character as a 2D puppet rig ----------
-// Built from one A-pose image (mascot/rig, see RIG.md): body, head, and per arm an upper arm, a forearm and
-// a hand, each turning on its joint (shoulder, elbow, wrist, neck). Gestures are joint angles, not new images,
-// so the arms and head move through every in-between frame. Hands swap between the rest hand and the 4
-// gesture hands (open, point, fist, thumb) mid-move. The face is never warped; the mouth does not move.
-// Animation as in a Blender action: eased keys, overlapping action (shoulder leads, elbow and hand follow),
-// a spring settle with overshoot, breathing, weight shift and a head nod on every spoken word.
-const RIG = await (await fetch('assets/rig/rig.json')).json();
-const RJ = RIG.joints, FEET = RIG.feet, CW = RIG.canvas[0], CH = RIG.canvas[1];
-// [shoulder, elbow, hand] per arm; positive angles lift the arm outward / swing the forearm outward-up
-// and negative elbow angles bring the forearm in front of the body
-const POSE = {
-  rest:      { L: [2, 0, 'rest'], R: [2, 0, 'rest'], head: 0, lean: 0 },
-  confident: { L: [-4, -12, 'rest'], R: [10, -150, 'thumb'], head: -2, lean: -.6 },
-  present:   { L: [-2, -6, 'rest'], R: [28, 62, 'open'], head: 3, lean: .8 },
-  explain:   { L: [18, 70, 'open'], R: [14, 52, 'open'], head: -2, lean: 0 },
-  think:     { L: [-4, -8, 'rest'], R: [6, -158, 'fist'], head: 5, lean: .5 },
-  chest:     { L: [-4, -8, 'rest'], R: [4, -150, 'open'], head: -3, lean: -.4 },
-  surprised: { L: [34, 120, 'open'], R: [34, 120, 'open'], head: -4, lean: -1 },
-  shrug:     { L: [22, 78, 'open'], R: [22, 78, 'open'], head: 6, lean: 0 },
-  wave:      { L: [-2, -6, 'rest'], R: [40, 110, 'open'], head: 4, lean: 1 },
-  point_side:{ L: [-4, -10, 'rest'], R: [52, 30, 'point'], head: 3, lean: 1.4 },
-  point_cam: { L: [-4, -10, 'rest'], R: [8, -118, 'point'], head: -2, lean: -.8 },
-  idea:      { L: [-4, -10, 'rest'], R: [26, 138, 'point'], head: -5, lean: .6 },
-  thumb:     { L: [8, -140, 'thumb'], R: [8, -140, 'thumb'], head: 0, lean: 0 },
-  fist:      { L: [-4, -10, 'rest'], R: [36, 140, 'fist'], head: -4, lean: .8 },
-  victory:   { L: [34, 128, 'fist'], R: [34, 128, 'fist'], head: -3, lean: 0 },
+// ---------- hero: the character from the mascot asset library (v012) ----------
+// Bodies and heads come from mascot/library (ChatGPT bridge, see mascot/library/README.md), copied by prep_lib.py.
+// Every body shares one 820x1240 canvas with the feet in the same place, so swapping bodies reads as movement.
+// The arms are drawn in the body images (natural arms, no rig joints). The head is a separate layer fitted to each
+// body: on spoken words it switches between mouth shapes (talk_a / talk_o / talk_e / talk_teeth) by syllable, and
+// on the pose keys it shows the pose's expression (smile, laugh, surprised, concerned...). The face is never warped:
+// the mouth only moves by switching to another head image (the user's rule). Poses keep the v009 motion layers:
+// anticipation dip, 0.16 s dissolve with a short blur, spring settle, lean into steps, breathing, nod on words.
+const LIBJ = await (await fetch('assets/lib/lib.json')).json();
+// the scene tracks still use the 17 pose names of the v009 character; each maps to a library body + expression.
+// 'look' is a 3/4 body turned toward the content: 34left when the hero stands on the right half, else 34right.
+const LIBMAP = {
+  confident: ['look/neutral', 'smile'], presenting: ['front/presenting', 'smile'], explain: ['front/explain_both', 'neutral'],
+  thinking: ['front/thinking_chin', null], surprised: ['front/shrug', 'surprised'], oh_no: ['front/shrug', 'concerned'],
+  panic: ['front/shrug', 'surprised'], peace: ['front/waving', 'smile'], back_look: ['back/neutral', null],
+  turn: ['look/neutral', 'smile'], side_point: ['front/point_camera', 'smile'], point_screen: ['front/point_side', 'smile'],
+  point_camera: ['front/point_camera', 'smirk'], idea: ['look/neutral', 'surprised'], laugh: ['front/neutral', 'laugh'],
+  arms_crossed: ['front/arms_crossed', 'smile'], victory: ['front/victory', 'laugh'], triumph: ['front/thumbs_up', 'laugh'],
+  walk: ['profileright/walk_side', 'smile'],
 };
-// the 17 pose names used in the scene tracks map onto rig poses
-const MAP = { confident: 'confident', presenting: 'present', explain: 'explain', thinking: 'think', surprised: 'surprised',
-  oh_no: 'shrug', panic: 'surprised', peace: 'wave', back_look: 'rest', side_point: 'point_side', point_screen: 'point_side',
-  point_camera: 'point_cam', idea: 'idea', laugh: 'chest', arms_crossed: 'thumb', victory: 'victory', triumph: 'fist' };
-const HAND_SCALE = .62;
-const deg = Math.atan2;
-function armRig(parent, s) {
-  const j = RJ[s], P = RIG.parts;
-  const img = (name, extra = '') => `<img src="assets/rig/${name}.png" style="position:absolute;left:${P[name].x}px;top:${P[name].y}px;width:${P[name].w}px;height:${P[name].h}px;${extra}">`;
-  const grp = o => `<div style="position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:${o[0]}px ${o[1]}px"></div>`;
-  const sh = el(grp(j.sh), {}, parent);
-  const elb = el(grp(j.el), {}, sh);            // forearm first, so the upper arm covers the elbow joint
-  el(img('upper' + s), {}, sh);
-  el(img('cap' + s), {}, sh);                      // covers the shoulder seam when the arm lifts
-  const wr = el(grp(j.wr), {}, elb);
-  el(img('fore' + s), {}, elb);
-  const hands = { rest: el(img('hand' + s), {}, wr) };
-  // gesture hands stand upright when the forearm points up: base turn = forearm rest direction + 90deg
-  const th = deg(j.wr[1] - j.el[1], j.wr[0] - j.el[0]) * 180 / Math.PI + 90;
-  for (const [k, g] of Object.entries(RIG.gestures)) {
-    const sc = HAND_SCALE, mir = s === 'R' ? -1 : 1;
-    hands[k] = el(`<img src="assets/rig/g_${k}.png" style="position:absolute;left:${j.wr[0] - g.wrist[0]}px;top:${j.wr[1] - g.wrist[1] + 10}px;width:${g.w}px;height:${g.h}px;transform-origin:${g.wrist[0]}px ${g.wrist[1] - 10}px;transform:rotate(${th}deg) scale(${mir * sc},${sc})">`, {}, wr);
-  }
-  return { sh, elb, wr, hands, sgn: s === 'L' ? 1 : -1 };
-}
-const PW = 820, PH = 1240, BASE = 1392;
+const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392;
 const heroes = [];
-const spring = (u, z = .55, w = 18) => u <= 0 ? 0 : 1 - Math.exp(-z * w * u) * Math.cos(w * Math.sqrt(1 - z * z) * u);
+const spring = (u, z = .55, w = 26) => u <= 0 ? 0 : 1 - Math.exp(-z * w * u) * Math.cos(w * Math.sqrt(1 - z * z) * u);
+// mouth shapes for a word: one per vowel group, a closing 'teeth' shape between syllables of long words
+function mouthShapes(w) {
+  const groups = w.w.toLowerCase().match(/[aeiouy]+/g) || ['a'];
+  const n = groups.length, dur = Math.max(.08, w.t1 - w.t0), slot = dur / n, out = [];
+  groups.forEach((g, i) => {
+    const c = g[0], shape = c === 'o' || c === 'u' ? 'talk_o' : (c === 'e' || c === 'i' || c === 'y') ? 'talk_e' : 'talk_a';
+    out.push({ t: w.t0 + i * slot, e: shape });
+    if (slot > .16 && i < n - 1) out.push({ t: w.t0 + (i + .7) * slot, e: 'talk_teeth' });
+  });
+  return out;
+}
 function hero(scene, h, track, tin, tout, fx = 'walkR') {
-  const sc = (1000 / 1240 * h) / (FEET[1] - 8);         // same on-screen size as the pose images had
-  const w = Math.round(CW * sc);
-  const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${Math.round(CH * sc)}px"></div>`, { top: px(BASE - FEET[1] * sc) });
+  const w = Math.round(h * PW / PH), k = w / PW;
+  const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
   el('<div class="halo"></div>', {}, mv); el('<div class="shadow"></div>', {}, mv);
   const turn = el('<div class="hturn"></div>', {}, mv);
-  const body = el(`<div style="position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:0 0"></div>`, {}, turn);
-  body.style.transform = `scale(${sc})`;
-  const root = el(`<div style="position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:${FEET[0]}px ${FEET[1]}px"></div>`, {}, body);
-  const P = RIG.parts;
-  el(`<img src="assets/rig/body.png" style="position:absolute;left:${P.body.x}px;top:${P.body.y}px;width:${P.body.w}px;height:${P.body.h}px">`, {}, root);
-  const upper = el(`<div style="position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:${RJ.neck[0]}px 560px"></div>`, {}, root);
-  const head = el(`<div style="position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:${RJ.neck[0]}px ${RJ.neck[1]}px"></div>`, {}, upper);
-  el(`<img src="assets/rig/head.png" style="position:absolute;left:${P.head.x}px;top:${P.head.y}px;width:${P.head.w}px;height:${P.head.h}px">`, {}, head);
-  a._arms = { L: armRig(upper, 'L'), R: armRig(upper, 'R') };
-  a._root = root; a._upper = upper; a._head = head;
-  a._track = track.map(([t, pose, x, flip]) => ({ t, pose: MAP[pose] || pose, x: x - (FEET[0] * sc), cx: x, flip: !!flip })).sort((p, q) => p.t - q.t);
-  a._mv = mv; a._turn = turn; a._w = w; a._ph = heroes.length * 1.37;
+  const body = el('<div class="hbody"></div>', {}, turn);
+  let keys = track.map(([t, pose, x, flip]) => ({ t, pose, x: x - w / 2, cx: x, flip: !!flip })).sort((p, q) => p.t - q.t);
+  // walking entrances: he walks in side-on, then turns into the first pose
+  if (fx.startsWith('walk')) {
+    keys[0].t = Math.max(keys[0].t, tin + .72);
+    keys.unshift({ t: -1, pose: 'walk', x: keys[0].x, cx: keys[0].cx, flip: fx === 'walkR' });
+  }
+  for (const key of keys) {
+    let [b, expr] = LIBMAP[key.pose] || LIBMAP.confident;
+    if (b.startsWith('look/')) b = (key.cx > 540 ? '34left/' : '34right/') + b.slice(5);
+    key.body = b; key.expr = expr; key.key = b + (key.flip ? '|f' : '');
+  }
+  a._track = keys;
+  a._grp = {};
+  for (const key of keys) {
+    if (a._grp[key.key]) continue;
+    const B = LIBJ.bodies[key.body];
+    const g = el(`<div class="hgrp" style="transform:${key.flip ? 'scaleX(-1)' : 'none'}"></div>`, {}, body);
+    el(`<img src="${B.src}">`, {}, g);
+    g._heads = {};
+    if (B.headless) {
+      const f = B.fit, hw = 640 * f.scale * k, hh = 720 * f.scale * k;
+      for (const e of LIBJ.heads[f.angle])
+        g._heads[e] = el(`<img class="hhead" src="assets/lib/heads/${f.angle}/${e}.webp" style="left:${(f.left * k).toFixed(1)}px;top:${(f.top * k).toFixed(1)}px;width:${hw.toFixed(1)}px;height:${hh.toFixed(1)}px;display:none">`, {}, g);
+    }
+    a._grp[key.key] = g;
+  }
+  turn.style.webkitBoxReflect = `below ${-Math.round(h * (1 - PFEET / PH) + 4)}px linear-gradient(transparent 80%, rgba(0,0,0,.28))`;   // glossy-floor reflection
+  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = heroes.length * 1.37;
   a._words = TL.words.filter(x => L(x.line).scene === scene);
-  a._track.slice(1).forEach(k => EV.push({ t: +(k.t - .04).toFixed(3), type: ['surprised', 'shrug'].includes(k.pose) ? 'thump' : (['victory', 'fist'].includes(k.pose) ? 'ding' : 'whoosh') }));
+  a._mouth = a._words.map(x => ({ w: x, shapes: mouthShapes(x) }));
+  a._track.slice(1).forEach(k => EV.push({ t: +(k.t - .04).toFixed(3), type: ['surprised', 'oh_no', 'panic'].includes(k.pose) ? 'thump' : (['victory', 'triumph'].includes(k.pose) ? 'ding' : 'whoosh') }));
   add(a, tin, tout, fx, { d: fx.startsWith('walk') ? .9 : .6, sfx: 'whoosh', sfxAt: -.05 });
   heroes.push(a); return a;
+}
+// the head image at time t: a mouth shape while a word is spoken (held across gaps under 0.12 s), else the
+// expression of the current pose
+function headAt(a, t, base) {
+  for (let i = 0; i < a._mouth.length; i++) {
+    const { w, shapes } = a._mouth[i], nx = a._mouth[i + 1];
+    const end = nx && nx.w.t0 - w.t1 < .12 ? nx.w.t0 : w.t1;
+    if (t >= w.t0 && t < end) { let e = shapes[0].e; for (const s of shapes) if (t >= s.t) e = s.e; return e; }
+  }
+  return base;
 }
 // giant outlined word behind the scene, drifting sideways
 function ghost(text, top, tin, tout, size = 330, dir = 1) {
@@ -217,7 +222,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   add(sq, t0 + .05, t1, 'fade');
   ghost('ZARKHAIZ', 560, t0 + .1, t1, 300, 1);
   // he turns round to greet, then steps aside and presents the company card
-  hero('intro', 1120, [[0, 'back_look', 540], [t0 + .3, 'side_point', 540], [W('l02', 'alaikum') - .1, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
+  hero('intro', 1120, [[0, 'back_look', 540], [t0 + .26, 'turn', 540], [t0 + .5, 'side_point', 540], [W('l02', 'alaikum') - .1, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
   const c = el(`<div class="abs card big" style="padding:34px 36px;width:580px"></div>`, { left: '452px', top: '760px' });
   el('<img src="assets/logo_icon.png" style="width:170px;display:block;margin-bottom:14px">', {}, c);
   el('<div class="lbl" style="margin-bottom:8px;font-size:28px">Founder</div>', {}, c);
@@ -368,62 +373,50 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
-// a pose with left and right swapped (flip aims the gesture to the other side)
- function poseOf(k) {
-  const p = POSE[k.pose] || POSE.rest;
-  return k.cx > 540 ? { L: p.R, R: p.L, head: -p.head, lean: -p.lean } : p;
-}
 function drawHero(a, t) {
-  const FP = new URLSearchParams(location.search).get('pose');   // test mode: hold one pose
-  if (FP) a._track = [{ ...a._track[0], t: 0, pose: FP }];
   const tr = a._track; let i = 0;
   for (let j = 0; j < tr.length; j++) if (t >= tr[j].t) i = j;
-  const k = tr[i], pv = tr[i - 1] || k;
-  const P1 = poseOf(k), P0 = poseOf(pv), u = t - k.t;
-  // steps between marks
-  const m = seg(t, k.t, k.t + .6), dx = k.x - pv.x, x = pv.x + dx * eio(m);
-  const vel = dx * (m > 0 && m < 1 ? 6 * m * (1 - m) / .6 : 0);
-  // overlapping action: shoulder leads, elbow follows 60 ms later, both settle on a spring
-  const fS = spring(u), fE = spring(u - .06), fH = seg(u, .1, .2);
-  const mix = (p, q, f) => p + (q - p) * f;
-  // idle life on top of the pose: arms swing a little, opposite phase on each side
-  const ph = a._ph, breathe = Math.sin(t * 2.1 + ph);
+  const k = tr[i], pv = tr[i - 1] || k, nx = tr[i + 1];
+  // steps: travel to the new mark on an in-out ease, leaning and blurring with the speed
+  const m = seg(t, k.t, k.t + .55), dx = k.x - pv.x, x = pv.x + dx * eio(m);
+  const vel = dx * (m > 0 && m < 1 ? 6 * m * (1 - m) / .55 : 0);           // px / s
+  const moving = Math.sin(m * Math.PI) * (dx ? 1 : 0);
+  // pose change: anticipation dip just before, dissolve with a short blur, spring settle after
+  const changed = i > 0 && pv.key !== k.key, u = t - k.t;
+  const ant = nx && nx.key !== k.key ? seg(t, nx.t - .1, nx.t) : 0;
+  const pin = changed ? seg(u, 0, .16) : 1;
+  const set = changed ? spring(u) : 1;
+  // the new body+head dissolves in ON TOP of the old one, which stays opaque until covered
+  const headNow = headAt(a, t, k.expr), headPrev = headAt(a, t, pv.expr);
+  for (const [key, g] of Object.entries(a._grp)) {
+    let o = 0, f = 0, z = 0, he = null;
+    if (key === k.key) { o = eio(pin); f = 2.5 * (1 - pin); z = 2; he = headNow; }
+    else if (changed && key === pv.key && u < .16) { o = 1; f = 2.5 * pin; z = 1; he = headPrev; }
+    g.style.opacity = o; g.style.zIndex = z; g.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none';
+    g.style.display = o > 0 ? 'block' : 'none';
+    if (o > 0) for (const [e, im] of Object.entries(g._heads)) im.style.display = e === (he || 'neutral') ? 'block' : 'none';
+  }
+  // words: a nod and a small lift on every word start, bigger on longer words
   let lift = 0, nod = 0;
   a._words.forEach((w, n) => {
     const v = t - w.t0; if (v < 0 || v > .7) return;
     const amp = Math.min(1.2, .5 + w.w.length / 12), e = Math.exp(-v * 6);
     lift += amp * Math.sin(Math.min(1, v / .18) * Math.PI / 2) * e;
-    nod += amp * e * Math.sin(v * 12) * (n % 2 ? 1 : -1);
+    nod += amp * e * Math.sin(v * 14) * (n % 2 ? 1 : -1);
   });
-  for (const s of ['L', 'R']) {
-    const A = a._arms[s], p0 = P0[s], p1 = P1[s];
-    const idle = 1.6 * Math.sin(t * 1.3 + ph + (s === 'L' ? 0 : 2)) + .9 * breathe;
-    // a raised forearm beats with the words (a speaking gesture), a hanging one only sways
-    const beat = (Math.abs(p1[1]) > 40 ? 5 : 1.5) * lift;
-    const shA = mix(p0[0], p1[0], fS) + idle + .6 * beat;
-    const elA = mix(p0[1], p1[1], fE) + .7 * idle + beat * Math.sign(p1[1] || 1);
-    A.sh.style.transform = `rotate(${(A.sgn * shA).toFixed(2)}deg)`;
-    A.elb.style.transform = `rotate(${(A.sgn * elA).toFixed(2)}deg)`;
-    A.wr.style.transform = `rotate(${(A.sgn * (3 * Math.sin(t * 1.7 + ph) - 4 * lift)).toFixed(2)}deg)`;
-    // hand swap at the middle of the move: a quick cross-fade, the new hand on top
-    for (const [hk, im] of Object.entries(A.hands)) {
-      let o = 0, z = 0;
-      if (hk === p1[2]) { o = p0[2] === p1[2] || i === 0 ? 1 : fH; z = 2; }
-      else if (hk === p0[2] && fH < 1 && i > 0) { o = 1; z = 1; }
-      im.style.opacity = o; im.style.zIndex = z;
-    }
-  }
-  // head: pose tilt + a nod on every word + a slow look around
-  const hd = mix(P0.head, P1.head, spring(u - .03)) + 2.2 * nod + 1.2 * Math.sin(t * .8 + ph);
-  a._head.style.transform = `rotate(${hd.toFixed(2)}deg) translateY(${(-2 * lift).toFixed(1)}px)`;
-  // upper body: breathing rises the chest; the whole body leans with the pose and the walk
-  a._upper.style.transform = `translateY(${(-3 * breathe - 4 * lift).toFixed(1)}px)`;
-  const lean = mix(P0.lean, P1.lean, fS) + Math.max(-4, Math.min(4, vel / 300)) + .6 * Math.sin(t * .9 + ph);
-  const bob = -10 * Math.abs(Math.sin(m * Math.PI * 2)) * (dx ? Math.sin(m * Math.PI) : 0);
-  a._root.style.transform = `translateY(${bob.toFixed(1)}px) rotate(${lean.toFixed(2)}deg) scale(${(1 + .004 * breathe).toFixed(4)}, ${(1 + .006 * breathe).toFixed(4)})`;
+  const ph = a._ph, breathe = Math.sin(t * 2.1 + ph);
+  const settle = 1 - set;
+  const sx = 1 + .006 * breathe + .03 * settle - .012 * ant;
+  const sy = 1 + .009 * breathe - .045 * settle - .02 * ant + .008 * lift;
+  const ty = -10 * lift - 14 * Math.abs(Math.sin(m * Math.PI * 2)) * moving + 10 * ant;
+  const rot = .9 * nod + Math.max(-5, Math.min(5, vel / 260)) + .6 * Math.sin(t * .9 + ph) - 1.5 * settle * (k.flip ? -1 : 1);
   const shift = 5 * Math.sin(t * .7 + ph);
   a._mv.style.transform = `translateX(${(x + shift).toFixed(1)}px)`;
-  a._turn.style.transform = `perspective(1800px) rotateY(${(3 * Math.sin(t * .55 + ph) + Math.max(-10, Math.min(10, vel / 90))).toFixed(2)}deg)`;
+  a._mv.style.filter = Math.abs(vel) > 60 ? `blur(${Math.min(4, Math.abs(vel) / 500).toFixed(2)}px)` : 'none';
+  a._turn.style.transform = `perspective(1800px) rotateY(${(4 * Math.sin(t * .55 + ph) + Math.max(-10, Math.min(10, vel / 90))).toFixed(2)}deg)`;
+  a._body.style.transform = `translateY(${ty.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  const sh = a._mv.querySelector('.shadow');
+  sh.style.transform = `scaleX(${(1 + .002 * ty).toFixed(3)})`; sh.style.opacity = (1 + .01 * ty).toFixed(3);
 }
 
 window.render = async t => {

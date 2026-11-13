@@ -1,0 +1,256 @@
+{
+ "canvas": [
+  820,
+  1240
+ ],
+ "feet": [
+  410,
+  1215
+ ],
+ "head_canvas": [
+  640,
+  720
+ ],
+ "bodies": {
+  "front/neutral": {
+   "src": "assets/lib/bodies/front_neutral.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 287.0,
+    "top": 184.0,
+    "scale": 0.3702
+   }
+  },
+  "front/presenting": {
+   "src": "assets/lib/bodies/front_presenting.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 297.9,
+    "top": 183.4,
+    "scale": 0.3722
+   }
+  },
+  "front/explain_both": {
+   "src": "assets/lib/bodies/front_explain_both.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 281.0,
+    "top": 182.7,
+    "scale": 0.3797
+   }
+  },
+  "front/thinking_chin": {
+   "src": "assets/lib/bodies/front_thinking_chin.webp",
+   "headless": false
+  },
+  "front/shrug": {
+   "src": "assets/lib/bodies/front_shrug.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 269.9,
+    "top": 182.9,
+    "scale": 0.3659
+   }
+  },
+  "front/waving": {
+   "src": "assets/lib/bodies/front_waving.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 291.2,
+    "top": 183.6,
+    "scale": 0.3697
+   }
+  },
+  "front/point_side": {
+   "src": "assets/lib/bodies/front_point_side.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 239.1,
+    "top": 180.4,
+    "scale": 0.3778
+   }
+  },
+  "front/point_camera": {
+   "src": "assets/lib/bodies/front_point_camera.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 291.3,
+    "top": 182.9,
+    "scale": 0.3772
+   }
+  },
+  "front/arms_crossed": {
+   "src": "assets/lib/bodies/front_arms_crossed.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 292.6,
+    "top": 184.6,
+    "scale": 0.3573
+   }
+  },
+  "front/victory": {
+   "src": "assets/lib/bodies/front_victory.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 284.4,
+    "top": 182.6,
+    "scale": 0.3753
+   }
+  },
+  "front/thumbs_up": {
+   "src": "assets/lib/bodies/front_thumbs_up.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 290.0,
+    "top": 182.7,
+    "scale": 0.3797
+   }
+  },
+  "front/walk_front": {
+   "src": "assets/lib/bodies/front_walk_front.webp",
+   "headless": true,
+   "fit": {
+    "angle": "front",
+    "left": 339.2,
+    "top": 185.0,
+    "scale": 0.3524
+   }
+  },
+  "34left/neutral": {
+   "src": "assets/lib/bodies/34left_neutral.webp",
+   "headless": true,
+   "fit": {
+    "angle": "34left",
+    "left": 291.2,
+    "top": 183.2,
+    "scale": 0.3724
+   }
+  },
+  "34right/neutral": {
+   "src": "assets/lib/bodies/34right_neutral.webp",
+   "headless": true,
+   "fit": {
+    "angle": "34right",
+    "left": 303.3,
+    "top": 182.7,
+    "scale": 0.387
+   }
+  },
+  "back/neutral": {
+   "src": "assets/lib/bodies/back_neutral.webp",
+   "headless": false
+  },
+  "profileright/walk_side": {
+   "src": "assets/lib/bodies/profileright_walk_side.webp",
+   "headless": true,
+   "fit": {
+    "angle": "profileright",
+    "left": 264.1,
+    "top": 181.8,
+    "scale": 0.3775
+   }
+  },
+  "profileright/neutral": {
+   "src": "assets/lib/bodies/profileright_neutral.webp",
+   "headless": true,
+   "fit": {
+    "angle": "profileright",
+    "left": 294.8,
+    "top": 184.5,
+    "scale": 0.349
+   }
+  },
+  "profileleft/neutral": {
+   "src": "assets/lib/bodies/profileleft_neutral.webp",
+   "headless": true,
+   "fit": {
+    "angle": "profileleft",
+    "left": 291.4,
+    "top": 185.5,
+    "scale": 0.3582
+   }
+  }
+ },
+ "heads": {
+  "front": [
+   "neutral",
+   "laugh",
+   "smile",
+   "talk_a",
+   "talk_o",
+   "talk_teeth",
+   "surprised",
+   "concerned",
+   "thinking",
+   "wink",
+   "talk_e",
+   "smirk"
+  ],
+  "34left": [
+   "neutral",
+   "smile",
+   "laugh",
+   "talk_a",
+   "talk_o",
+   "talk_teeth",
+   "surprised",
+   "concerned",
+   "thinking",
+   "smirk",
+   "wink",
+   "talk_e"
+  ],
+  "34right": [
+   "neutral",
+   "smile",
+   "laugh",
+   "talk_a",
+   "talk_o",
+   "talk_teeth",
+   "surprised",
+   "concerned",
+   "thinking",
+   "smirk",
+   "talk_e",
+   "wink"
+  ],
+  "profileleft": [
+   "neutral",
+   "smile",
+   "laugh",
+   "talk_a",
+   "talk_o",
+   "talk_teeth",
+   "surprised",
+   "thinking",
+   "concerned",
+   "smirk",
+   "wink",
+   "talk_e"
+  ],
+  "profileright": [
+   "neutral",
+   "smile",
+   "laugh",
+   "talk_a",
+   "talk_teeth",
+   "talk_o",
+   "thinking",
+   "surprised",
+   "concerned",
+   "smirk",
+   "wink",
+   "talk_e"
+  ]
+ }
+}

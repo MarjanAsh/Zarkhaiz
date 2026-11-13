@@ -30,7 +30,9 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--b
 .hmv{position:absolute;left:0;top:0;width:100%;height:100%}
 .hturn{position:absolute;inset:0;transform-origin:50% 98%}
 .hbody{position:absolute;inset:0;transform-origin:50% 98%}
-.hbody img{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.hgrp{position:absolute;inset:0}
+.hgrp>img:not(.hhead){position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.hhead{position:absolute}
 .hero .shadow{left:26%;right:26%;bottom:calc(2% - 20px);height:40px;background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0))}
 .hero .halo{left:5%;right:5%;top:8%;height:62%}
 #floorwrap{position:absolute;left:0;top:1300px;width:1080px;height:620px;perspective:700px;perspective-origin:50% 0;overflow:hidden;pointer-events:none}

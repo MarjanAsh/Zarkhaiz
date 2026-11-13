@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v010.mp4` (1080x1920, puppet rig). v009 (pose images) and its 4K stay in out/ for comparison.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v012.mp4` (1080x1920, mascot asset library with head swap). v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -172,3 +172,24 @@ Demonstrates the newly generated reusable mascot asset library (`mascot/library/
   - Scene 7 (Only What You Need): `seated_desk` consultation pose.
   - Scene 8-9 (CTA): `seated_desk` at office desk with prominent WhatsApp button & OutputDM badge.
 
+
+## v012: the founder reel with the mascot asset library (bodies + swapped talking heads)
+
+The user (Nov 13): the v010 rig's arms looked unnatural and the single front face/body angle was stiff; build a
+reusable asset library (done: `mascot/library/`), complete the head/body composite test, then update the video.
+(v011 is a separate library showcase another session pushed; v012 is the founder reel itself.)
+
+- Character: library bodies (`prep_lib.py` copies them to `assets/lib/`, WebP, 2.9 MB). The arms are drawn in each
+  body image, so they look natural; no rig joints. Angles: walking entrances use the side-on walk
+  (`profileright/walk_side`, mirrored when he walks in from the right), the intro turns back -> 3/4 -> front, and
+  "looking at the content" keys use the 3/4 body turned toward it.
+- Head swap: each body has a fitted head position (`mascot/library/tools/composite.py`, `head_fit` in
+  `library.json`). On every spoken word the head switches by syllable between `talk_a`, `talk_o`, `talk_e` and
+  `talk_teeth` (vowel of each syllable; held across gaps under 0.12 s); between words it shows the pose's expression
+  (smile, laugh, surprised, concerned, smirk). The mouth moves only by switching images; nothing is warped.
+  `thinking_chin` and the back view keep their own head.
+- The scene tracks still use the old 17 pose names; `LIBMAP` in `main.js` maps them to library bodies + expressions.
+  Motion layers are the v009 ones (anticipation, 0.16 s dissolve, spring settle, lean, breathing, nod on words).
+- Rebuild: `python3 prep_lib.py` first, then the usual steps (events, mix, video, mux) with `_v012` in the name.
+- Open: no acting poses at 3/4 or profile angles yet (only neutral there); mouth timing follows estimated word
+  times (Gemini TTS gives no timestamps); 4K not rendered for v012 yet (same command as before).

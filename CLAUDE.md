@@ -5,15 +5,17 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v010.mp4` (1080x1920), puppet rig. v009 (pose images, also 4K) kept.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v012.mp4` (1080x1920): mascot library bodies + swapped talking heads
+  (`video/README.md`, v012). v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
-- Character: puppet rig from one A-pose image, `mascot/rig/RIG.md` (from v010). The old 17 pose images: `mascot/character/CHARACTER.md`.
+- Character: from v012 the mascot library (`mascot/library/`, bodies + head swap). Before: puppet rig `mascot/rig/RIG.md` (v010),
+  the 17 pose images `mascot/character/CHARACTER.md` (v009).
 - Mascot asset library v1 (the user's direction from 2026-11-13: build reusable assets, no rendering for now):
   `mascot/library/` (117 assets, `library.json`, contact sheets in `sheets/`), read `mascot/library/README.md`.
 
 ## The user's standing rules for the reel
-- Character: the puppet rig (mascot/rig) from v010; before that only the 17 poses in `mascot/character/poses`. Never the angry pose, never a
-  face or mouth warp; the mouth moves only by switching to an open-mouth pose.
+- Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose, never a
+  face or mouth warp; the mouth moves only by switching images (open-mouth pose or swapped talking head).
 - The character moves with the spoken words (pose and position changes on words), not just fading in.
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".
