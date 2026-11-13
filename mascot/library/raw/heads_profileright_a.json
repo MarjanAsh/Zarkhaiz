@@ -1,0 +1,25 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "fda4e31134024ee68cc538093951e8a5",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated the image; saving it to the working directory was blocked by a filesystem error.",
+ "id": "heads_profileright_a",
+ "kind": "head",
+ "angle": "profileright",
+ "rows": 2,
+ "cols": 3,
+ "cells": [
+  "neutral",
+  "smile",
+  "laugh",
+  "talk_a",
+  "talk_o",
+  "talk_teeth"
+ ],
+ "size": "1536x1024",
+ "prompt": "An expression sheet: a grid of 2 rows x 3 columns, 6 head-and-neck busts of the same man, all exact side profile facing the viewer's right, all the same size and the same head position in each cell, evenly spaced with clear white space between them, each bust cut cleanly just below the shirt collar (head, neck, collar only, no shoulders). Expressions: row 1, column 1: neutral relaxed face, mouth closed; row 1, column 2: warm friendly closed-mouth smile; row 1, column 3: big happy laugh, mouth wide open, eyes squinting with joy; row 2, column 1: talking, mouth open wide on an 'A' (aah) sound, relaxed brows; row 2, column 2: talking, lips rounded on an 'O' sound; row 2, column 3: talking, lips apart with teeth closed (as on 'S' or 'T'). Glasses on in every cell. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T17:55:21Z"
+}

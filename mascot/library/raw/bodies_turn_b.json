@@ -1,0 +1,22 @@
+{
+ "provider": "chatgpt-bridge",
+ "model": "ChatGPT (Codex image_gen)",
+ "bridge_job": "db21273daf4449a282d2b3fd9cf3fd18",
+ "bridge_mode": "upload",
+ "account": null,
+ "references": true,
+ "reply": "Generated the image, but saving it to the working directory was blocked by a filesystem permission error.",
+ "id": "bodies_turn_b",
+ "kind": "body",
+ "rows": 1,
+ "cols": 3,
+ "cells": [
+  "profileleft",
+  "profileright",
+  "back"
+ ],
+ "pose": "neutral",
+ "size": "1536x1024",
+ "prompt": "A character turnaround sheet: 3 full-body figures of the same man side by side, head to toe with feet visible, all the same height and standing on the same baseline, evenly spaced: left figure in exact side profile facing the viewer's left; middle figure in exact side profile facing the viewer's right; right figure seen from directly behind (back view, back of the head). Neutral relaxed standing pose, arms hanging naturally at the sides. Character: exactly the same 3D stylized animated man as in the reference images: same round full face, fair-wheatish skin, thick voluminous jet-black hair swept up and back, thick dark eyebrows, full neatly groomed black beard and moustache, thin clear rectangular glasses with silver rims, broad slightly heavy build. Outfit exactly as the references: black two-button suit jacket, black button-up shirt with collar, no tie, black trousers, black belt with silver buckle, black leather shoes, small gold pocket square in the left breast pocket (his left), dark wristwatch on his left wrist. Same high-end 3D animated feature-film render style, same proportions. Do not slim him, do not make him younger, do not change the face. Plain flat pure white background (#FFFFFF), even soft studio light, no cast shadow and no floor shadow, no text, no labels, no watermark, no frame. Nothing cropped unless stated.",
+ "created": "2026-11-13T17:57:50Z"
+}
