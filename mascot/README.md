@@ -103,6 +103,17 @@ Identity references for every generation: `rig/source.webp` + `character/refs/sh
   the Gemini API needs it in `x-goog-api-key` (as the `zarkhaiz` environment has it). Fix it in the environment's
   network secrets to use Gemini here.
 
-### Status
+### Status (2026-11-13, later)
 Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 head sheets of 6 expressions,
-2 body turnaround sheets, 12 acting poses, 2 hand sheets, 1 arm sheet). Generation waits for the bridge quota.
+2 body turnaround sheets, 12 acting poses, 2 hand sheets, 1 arm sheet). No library image is generated yet.
+- The user fixed the Gemini key header (`x-goog-api-key`): auth works and the image models are listed, but every
+  image model answers 429 "free tier limit: 0". Billing must be enabled on the AI Studio key.
+- The bridge quota came back (13:39 UTC), but the bridge cannot pass reference images to Codex (Codex cannot
+  load URLs; the bridge accepts only `{"prompt"}`), so it would draw the man from text alone and drift.
+  The bridge change needed is in `library/README.md` ("Bridge upgrade").
+- User decision: providers must fall back automatically when one runs out. `gen.py` now does
+  gemini → openai → bridge with saved cool-downs (`library/README.md`, "Providers and automatic fallback").
+- The user will add another GPT key. If it is an OpenAI API key it replaces the current one (no credits) in the
+  environment's network secrets; a second ChatGPT account goes on the bridge as a second `CODEX_HOME`.
+Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
+(regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.

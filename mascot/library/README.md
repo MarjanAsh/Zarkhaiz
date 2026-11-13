@@ -54,9 +54,40 @@ Names:
 
 ```
 pip install rembg scipy pillow            # rembg downloads birefnet-general-lite (224 MB) on first use
-python3 mascot/library/tools/gen.py --backend bridge --par 2      # only jobs whose raw/<job>.png is missing
+python3 mascot/library/tools/gen.py --par 2                       # only jobs whose raw/<job>.png is missing
 python3 mascot/library/tools/gen.py --only pose_shrug --redo      # regenerate one (the old raw is kept as _takeN)
 python3 mascot/library/tools/post.py                              # cut, normalize, sheets, library.json
 ```
 
-`raw/cutout/` is a local cache of background-removed images and is not committed.
+`raw/cutout/` (background-removed cache) and `raw/.providers.json` (provider cool-downs) are local, not committed.
+
+## Providers and automatic fallback (user request, 2026-11-13)
+
+The user asked: when one provider's limit runs out, move to the next one automatically. `gen.py` does this.
+Each job tries the providers in `--providers` order (default `gemini,openai,bridge`):
+
+| Provider | What it calls | References | Marked exhausted when |
+|---|---|---|---|
+| `gemini` | `generateContent` on gemini-3-pro-image, then gemini-3.1-flash-image, then gemini-2.5-flash-image (each model has its own quota) | 4 refs inline | HTTP 429 (per-day or `limit: 0` = 6 h cool-down; per-minute = 2 min), 401/403/404 |
+| `openai` | `/v1/images/edits` gpt-image-2, then gpt-image-1.5 | 4 refs uploaded | `insufficient_quota` / no credits (whole account), `rate_limit` (that model, 2 min) |
+| `bridge` | ChatGPT bridge (Codex `image_gen`, ChatGPT plan) | only if the bridge supports image upload (below) | "usage limit" reply, or no image upload |
+| `bridge-noref` | same, text prompt only | none: the face will drift; use only on request | "usage limit" |
+
+A provider marked exhausted is skipped by later jobs until its cool-down ends (`--reset` forgets the cool-downs).
+Transient errors get one retry on the same provider. Every raw `.json` records the provider and model used.
+
+Keys: the network proxy injects them; nothing in the repo reads or stores a key. Gemini needs its key under the
+header `x-goog-api-key` (fixed in the "AI Tools" environment on 2026-11-13) and billing on the Google AI Studio
+project: the free tier allows 0 image requests, which is the 429 seen on 2026-11-13. The OpenAI API key has no
+credits. The proxy sends one key per host, so a second OpenAI API key cannot sit next to the first one in the
+environment: replace the exhausted key with the new one (Network secrets, host `api.openai.com`, header
+`Authorization`, prefix `Bearer`). A second ChatGPT account (plan sign-in) belongs on the bridge (below).
+
+### Bridge upgrade (needed for the bridge to use reference images)
+The bridge today takes only `{"prompt"}` (bodies over roughly 100-500 KB get HTTP 400) and Codex cannot fetch URLs from its
+sandbox, so it cannot see the character references. Change on the VPS (`~/chatgpt-bridge`):
+1. Accept `"images": [{"name": "source.jpg", "data": "<base64>"}]` in `POST /jobs` (allow bodies up to ~3 MB),
+   save each file into the job directory and pass each one to Codex: `codex exec -i source.jpg -i sheet1.jpg ... "<prompt>"`.
+2. Return `"images": true` from `GET /health`. `gen.py` sends images to the bridge only when it sees this.
+3. Optional, for a second ChatGPT account: keep one `CODEX_HOME` per account (`CODEX_HOME=~/.codex2 codex login`) and,
+   when a job fails with "usage limit", rerun it with the next `CODEX_HOME`.
