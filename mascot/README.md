@@ -113,7 +113,8 @@ Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 h
   The bridge change needed is in `library/README.md` ("Bridge upgrade").
 - User decision: providers must fall back automatically when one runs out. `gen.py` now does
   gemini → openai → bridge with saved cool-downs (`library/README.md`, "Providers and automatic fallback").
-- The user will add another GPT key. If it is an OpenAI API key it replaces the current one (no credits) in the
-  environment's network secrets; a second ChatGPT account goes on the bridge as a second `CODEX_HOME`.
+- The user added a new OpenAI API key (replaced the old one in the "AI Tools" environment, 2026-11-13). Tested twice,
+  a minute apart: still `credit_balance_exhausted`, so that OpenAI account has no credits either (check
+  platform.openai.com → Settings → Billing). A second ChatGPT account would go on the bridge as a second `CODEX_HOME`.
 Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
 (regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.
