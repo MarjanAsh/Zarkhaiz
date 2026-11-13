@@ -155,3 +155,20 @@ hands. Rig details: `mascot/rig/RIG.md`.
 - The face is never warped and the mouth does not move (the standing rule).
 - Open: 2D only (no back view, no walking legs), and only a 1080p render so far; 4K uses the same
   command as before. Blender (`bpy`) can be installed here, but a true 3D animation needs a 3D model of the character first.
+
+## v011: complete mascot library showcase (ChatGPT generated angles & poses)
+
+Demonstrates the newly generated reusable mascot asset library (`mascot/library/`) in a full 38.7s vertical reel (1080x1920, 30 fps), using Python Pillow + FFmpeg rawvideo pipeline.
+
+- Output file: `video/outputdm-reel/out/outputdm_mascot_library_showcase_v011.mp4`
+- Stills: `video/outputdm-reel/stills/v011/` (`scene1_hook.jpg`, `scene2_walking.jpg`, `scene3_laptop.jpg`, `scene6_system.jpg`, `scene8_desk.jpg`)
+- Renderer: `video/outputdm-reel/render_v011_showcase.py` (renders at ~35-40 fps directly without web browser overhead).
+- Integrated Mascot Assets:
+  - Scene 1 (Hook): `standing_explain` (3/4 angle) + Audit card.
+  - Scene 2 (Founder Greeting): `walking_front` centered entrance + Founder Leadership badge.
+  - Scene 3 (Since 2018): `standing_laptop` holding open laptop + Proven Track Record card.
+  - Scene 4-5 (Growth Leaks): `three_quarter_left` looking across at the 3 leaks diagnostic cards.
+  - Scene 6 (One System): `excited` celebration pose with 5 connected service pipeline nodes.
+  - Scene 7 (Only What You Need): `seated_desk` consultation pose.
+  - Scene 8-9 (CTA): `seated_desk` at office desk with prominent WhatsApp button & OutputDM badge.
+
