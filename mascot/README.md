@@ -121,6 +121,11 @@ Pipeline written and dry-run tested (`library/tools/`): 28 generation jobs (10 h
   the bwrap crash; Part B: image upload + account rotation in the bridge). `gen.py` now tries the bridge in `url`
   mode (Codex downloads the references) or `upload` mode (when `/health` says `"images": true`).
   `library/refs/source.jpg` is a JPG copy of `rig/source.webp` for those downloads.
+- VPS fix applied by the user (2026-11-13): `/health` reports `"images": true` and a 4-image upload (387 KB) is
+  accepted. Not yet tested whether Codex sees the images: the first account's Codex usage limit (separate from
+  ChatGPT chat; 5-hour and weekly windows) was full ("try again at 5:32 PM", still full at 15:34 UTC, so the VPS
+  clock is not UTC+2). The user's second OpenAI API key also returns `credit_balance_exhausted`. Second ChatGPT
+  account on the bridge: prompt given to the user (`CODEX_HOMES` rotation, Part B3), not confirmed yet.
 Next: when the user says "VPS fix ho gaya", run `gen.py --reset --only bodies_turn_a`, check the face, then the rest.
 Next: once any provider has quota with references, run `gen.py`, check every image for face/outfit drift
 (regenerate with `--only <job> --redo`), run `post.py`, review the contact sheets, commit.
