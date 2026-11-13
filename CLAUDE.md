@@ -5,12 +5,12 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v009.mp4` (1080x1920) and
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v010.mp4` (1080x1920), puppet rig. v009 (pose images, also 4K) kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
-- Character file: `mascot/character/CHARACTER.md` (17 poses and the rules). Read it before every video.
+- Character: puppet rig from one A-pose image, `mascot/rig/RIG.md` (from v010). The old 17 pose images: `mascot/character/CHARACTER.md`.
 
 ## The user's standing rules for the reel
-- Character: only the poses in `mascot/character/poses` (17, see CHARACTER.md). Never the angry pose, never a
+- Character: the puppet rig (mascot/rig) from v010; before that only the 17 poses in `mascot/character/poses`. Never the angry pose, never a
   face or mouth warp; the mouth moves only by switching to an open-mouth pose.
 - The character moves with the spoken words (pose and position changes on words), not just fading in.
 - Motion graphics are big and bold.

@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v009.mp4` (1080x1920) and `outputdm_founder_reel_v009_4k.mp4` (2160x3840)
+Final files: `outputdm-reel/out/outputdm_founder_reel_v010.mp4` (1080x1920, puppet rig). v009 (pose images) and its 4K stay in out/ for comparison.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -58,7 +58,7 @@ python3 build_timeline.py
 node $LIB/core/render/events.mjs . --size 1080x1920
 $LIB/.venv/bin/python mix.py
 node $LIB/core/render/video.mjs . --fps 30 --workers 3 --size 1080x1920 --out out/video.mp4
-ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v009.mp4
+ffmpeg -i out/video.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -shortest out/outputdm_founder_reel_v010.mp4
 ```
 
 4K: the page layout stays 1080x1920 and is drawn at 2x. `page.mjs` in lemo-opuscar fixes `deviceScaleFactor: 1`;
@@ -140,3 +140,18 @@ and the voice must say "kaam kar rahe hain".
   spoken "hain" (checked by transcription: cutting the last 0.3 s removes the word). The v007 splice is gone.
 - Limits: arms and legs move by switching between drawn poses, not by bending joints; the mouth moves only
   through poses with an open mouth.
+
+## v010: puppet rig, body parts move instead of image swaps
+
+The user asked (chat, Nov 13) for a character whose arms and head move smoothly, "like Blender", instead of
+switching between pose images. He chose option 1, a 2D puppet rig, and sent one A-pose image with 4 gesture
+hands. Rig details: `mascot/rig/RIG.md`.
+
+- The character is now one rig: body, head, and per arm an upper arm, a forearm and hands, each turning
+  on its joint. All 17 pose names in the scene tracks map onto 15 rig gestures (wave, point, present,
+  explain, think, hand on chest, thumbs up, fist, victory, surprised, shrug...).
+- Blender-style animation: eased keys, overlapping action (the shoulder leads and the elbow follows),
+  a spring settle, breathing, idle sway, a head nod and a forearm beat on every spoken word.
+- The face is never warped and the mouth does not move (the standing rule).
+- Open: 2D only (no back view, no walking legs), and only a 1080p render so far; 4K uses the same
+  command as before. Blender (`bpy`) can be installed here, but a true 3D animation needs a 3D model of the character first.
