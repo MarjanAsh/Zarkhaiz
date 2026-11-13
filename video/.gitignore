@@ -8,3 +8,5 @@ outputdm-reel/out/video*.mp4
 outputdm-reel/out/.video*_segs*
 outputdm-reel/out/*.lock
 outputdm-reel/mix.wav
+# old LeapTalk test clips and OpenRouter docs from an abandoned attempt, kept local only
+motion/
