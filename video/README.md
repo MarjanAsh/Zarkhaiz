@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v013.mp4` (1080x1920, 60 fps, one smooth library character). v012 (library, choppy) kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v014.mp4` (1080x1920, 60 fps, QA passed: `outputdm-reel/qa/v014/qa.md`). v013 and v012 kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -220,3 +220,16 @@ character that faded in and out (7 times), and 47 whooshes (one per pose change)
 The user's rule, now Rule 1 in `CLAUDE.md`: before working, look at all installed skills, plugins, connectors, then
 MCP servers, and use the fitting ones (task-observer, video-pipeline-doctor, animate/choreograph, media-use,
 video-export-qa for this reel). Next: run video-export-qa and a choreograph review on v013.
+
+## v014: QA (video-export-qa) and choreography (choreograph) fixes on v013
+
+Skills used, per the user's Rule 1: task-observer (observation workspace `skill-observations/` at the repo root,
+2 observations logged), video-export-qa (its script lives on the user's Mac, so each check was run with ffmpeg),
+choreograph (the character is support, never the lead).
+- QA failures in v013, fixed: the first frame was empty (the hook now shows at 0 s, the character is already on
+  stage); at 6 s the character stood over the OutputDM founder card (the key that moved him aside had been dropped
+  by the 1.5 s hold rule: keys that move him more than 120 px are now always kept, and in the intro he steps aside
+  on "Zarkhaiz", before the card arrives); audio was 96 kHz (now 48 kHz).
+- Still WARN (user to decide): captions sit at 1408-1498 px, below the 168-1330 px safe band of the QA skill; the
+  character's feet are at 1392 px, so moving them up means a smaller character or captions over him.
+- NOT PERFORMED: music ducking by ear. Full table: `outputdm-reel/qa/v014/qa.md`.

@@ -132,7 +132,10 @@ function buildHero() {
   const keys = [];
   for (const key of all) {
     const last = keys[keys.length - 1];
-    if (!last || key.first || (key.t - last.t >= MIN_HOLD && firstT(key.si + 1) - key.t >= 1.1)) keys.push(key);
+    // choreography: the character is support, never the lead, so a key that moves him aside (to uncover a card)
+    // is always kept; other pose changes wait MIN_HOLD
+    const moves = last && Math.abs(key.cx - last.cx) > 120;
+    if (!last || key.first || moves || (key.t - last.t >= MIN_HOLD && firstT(key.si + 1) - key.t >= 1.1)) keys.push(key);
   }
   for (const key of keys) {
     let [b, expr] = LIBMAP[key.pose] || LIBMAP.confident;
@@ -170,7 +173,7 @@ function buildHero() {
   a._sched = sched.map(s => ({ t: s.t, e: s.e || baseAt(s.t + .001) }));
   a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = 0;
   a._speech = words;
-  add(a, keys[0].t, TL.dur, 'slide', { d: .9 });
+  add(a, -.95, TL.dur, 'slide', { d: .9 });   // fully on stage at the first frame (QA: hook visible at 0 s)
   return a;
 }
 // giant outlined word behind the scene, drifting sideways
@@ -191,7 +194,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
 // 1 · hook
 {
   const { t0, t1 } = sc.hook;
-  heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', t0 + .05, W('l01', 'lekin') - .1, t1);
+  heading('Marketing pe<br>paisa lag raha hai,', 'lekin customers nahi aa rahe?', -.6, W('l01', 'lekin') - .1, t1);   // the hook is on screen at frame 0
   ghost('PAISA?', 690, t0 + .2, t1, 300, -1);
   const rows = [
     ['Ads', 'chal rahe hain', W('l01', 'paisa'), true],
@@ -223,7 +226,7 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   add(sq, t0 + .05, t1, 'fade');
   ghost('ZARKHAIZ', 560, t0 + .1, t1, 300, 1);
   // he turns round to greet, then steps aside and presents the company card
-  hero('intro', 1120, [[0, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'arms_crossed', 540], [W('l02', 'outputdm') - .3, 'presenting', 250, true]], t0 + .02, t1, 'up');
+  hero('intro', 1120, [[0, 'peace', 540], [W('l02', 'main') - .1, 'confident', 540], [W('l02', 'zarkhaiz') - .05, 'presenting', 250, true]], t0 + .02, t1, 'up');
   const c = el(`<div class="abs card big" style="padding:34px 36px;width:580px"></div>`, { left: '452px', top: '760px' });
   el('<img src="assets/logo_icon.png" style="width:170px;display:block;margin-bottom:14px">', {}, c);
   el('<div class="lbl" style="margin-bottom:8px;font-size:28px">Founder</div>', {}, c);

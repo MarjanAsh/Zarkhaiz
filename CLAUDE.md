@@ -19,8 +19,9 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v013.mp4` (1080x1920, 60 fps): one smooth library character,
-  swapped talking heads, no movement sounds (`video/README.md`, v013). v012 kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v014.mp4` (1080x1920, 60 fps, 48 kHz): one smooth library
+  character, swapped talking heads, no movement sounds, QA in `video/outputdm-reel/qa/v014/qa.md`. v013, v012 kept.
+- Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v012 the mascot library (`mascot/library/`, bodies + head swap). Before: puppet rig `mascot/rig/RIG.md` (v010),
   the 17 pose images `mascot/character/CHARACTER.md` (v009).
