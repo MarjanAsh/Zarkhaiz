@@ -1,5 +1,19 @@
 # Zarkhaiz / OutputDM: notes for every Claude session
 
+## Rule 1 (the user's first and fixed rule, 2026-11-14): look at everything installed before working
+Before any work in a session, and again before each new kind of task:
+1. Look through the user's **skills, plugins and connectors** first (the skills list in the system prompt,
+   `ListSkills` / `ListPlugins` / `ListConnectors` where available), including the user's own customised ones.
+2. Then look at the **MCP servers and their tools** (the deferred tools list, `ToolSearch`).
+3. Pick the ones that fit the task and use them smartly. Start with `anthropic-skills:task-observer` (its own rule:
+   before the first tool call of a session). For video work this means at least `video-pipeline-doctor` (new
+   container), `animate` / `choreograph` (motion), `media-use` (cutouts, images, audio) and `video-export-qa`
+   (after every render, before delivering).
+4. Only then do the work. In the reply, say which skills, plugins, connectors and MCP tools were used and why
+   any obvious one was skipped.
+Why: in the 2026-11-13 session none of the user's 100+ installed skills were used, the work took the expensive
+route (the v012 choppy reel), and the user's credits ran out.
+
 Read this first, then `video/README.md` (the reel, its version history and how to rebuild it)
 and `mascot/README.md` (the character images).
 

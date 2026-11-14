@@ -215,3 +215,8 @@ character that faded in and out (7 times), and 47 whooshes (one per pose change)
   ding .16 -> .12 (`mix.py`). Events: 84 -> 28 (pops/ticks on cards only).
 - 60 fps render (`video.mjs --fps 60`).
 - Open: 4K not rendered; poses at 3/4/profile angles beyond neutral still missing.
+
+## Decision (Nov 14): use the installed skills first
+The user's rule, now Rule 1 in `CLAUDE.md`: before working, look at all installed skills, plugins, connectors, then
+MCP servers, and use the fitting ones (task-observer, video-pipeline-doctor, animate/choreograph, media-use,
+video-export-qa for this reel). Next: run video-export-qa and a choreograph review on v013.
