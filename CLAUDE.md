@@ -19,9 +19,9 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v015.mp4` (1080x1920, 60 fps, 48 kHz): the animated
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, 48 kHz): the animated
   character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens, mouth patches), QA in
-  `video/outputdm-reel/qa/v015/qa.md`. v014, v013, v012 kept.
+  `video/outputdm-reel/qa/v016/qa.md`. v015 to v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v015 `mascot/anim/` (read its README: one master body, bridge edits as keys, FILM in-betweens,
@@ -38,7 +38,8 @@ and `mascot/README.md` (the character images).
 - Line 3 must say "kaam kar rahe hain".
 - No blinking: check every frame's brightness for single-frame dips before delivering a render.
 - Smooth character (v015): never swap whole body or head images. Poses are edits of ONE master, arms move through
-  in-between frames, only the mouth patch changes on words.
+  in-between frames, only the mouth patch changes on words. No eyes-to-chin face patches (they read as a face inside
+  the face); every frame's cutout edge is cleaned by `mascot/anim/tools/edges.py`.
 - Ultra smooth (v013): one character for the whole reel, poses held >= 1.5 s with 0.4 s dissolves, no sound on
   character movements (the swish annoyed the user), render at 60 fps.
 

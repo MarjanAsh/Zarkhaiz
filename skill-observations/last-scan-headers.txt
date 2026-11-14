@@ -36,3 +36,22 @@ reference: video/outputdm-reel/qa/v014/qa.md
 commands_verified: "ls /Users/zarkhaiz/.video-pipeline — run, No such file or directory"
 next_actor: review
 ---
+# 0003-character-animation-from-stills.md
+id: 3
+title: "Smooth character motion from stills: edit one master image, interpolate between edits, patch only the mouth"
+status: open
+type: open-source
+skill: []
+proposes_skill: [character-animation-from-stills]
+target_file: []
+siblings_checked: "none — no family registry; media-use and animate were read as candidates, neither covers character animation from generated stills"
+area: "character animation for explainer reels"
+date: 2026-11-14
+session_context: "Founder reel v012-v015 (video/README.md v015, mascot/anim/README.md)"
+parked_until:
+resolved:
+resolution:
+reference: mascot/anim/README.md
+commands_verified: none
+next_actor: review
+---

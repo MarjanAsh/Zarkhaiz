@@ -152,6 +152,8 @@ def main():
         meta["faces"][e] = {"src": f"face/{e}.webp", "kind": "mouth" if faces.KIND[e] is faces.MOUTH else "face", "cc": cc}
     meta["face_box"] = [x0, y0, w, h]
     (OUT / "anim.json").write_text(json.dumps(meta, indent=1))
+    import edges
+    print(edges.run(), "frames edge-cleaned")
     n = sum(1 for _ in OUT.rglob("*.webp")); mb = sum(p.stat().st_size for p in OUT.rglob("*.webp")) / 1e6
     print(f"{n} files, {mb:.1f} MB, {len(meta['trans'])} transitions")
 

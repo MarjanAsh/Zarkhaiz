@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v015.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v015/qa.md`). v014, v013, v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v016/qa.md`). v015 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -258,3 +258,18 @@ What changed (only the character; background, graphics, captions, voice and musi
   a canvas with 'lighter' (CSS plus-lighter did not work in the render and made half the body see-through).
 - Rebuild: see `mascot/anim/README.md`, then the usual events / mix / video (60 fps) / mux steps.
 - Open: front view only; hands are soft for 2-3 frames in the fastest part of a move; no head turn or blink yet.
+
+## v016: character clean-up (face, edges, stance)
+
+User (Nov 14): v015 is better, but the face shows a "face inside a face", the outline looks cut-and-pasted and jagged,
+and the stance is one stiff pose. Character only; background untouched.
+- Face: the eyes-to-chin patches (concerned, laugh) were smaller than the master head, so the master's jaw and beard
+  showed around them as a second face. They are no longer used: only mouth patches (talk_a / talk_o / talk_e, and
+  smile after the last line).
+- Edges: `mascot/anim/tools/edges.py` pulls the alpha of every frame in by about 2 px and feathers it (the white
+  fringe of the generated background and the jagged rembg edge are gone). `build_anim.py` runs it at the end.
+- Stance: a slow weight shift (lean about 1 degree and 9 px side to side, two periods mixed) on top of breathing.
+- Declined, with the reason given to the user: installing OmniRoute / awesome-free-llm-apis as a router for Claude.
+  A cloud session cannot change or monitor its own model and quota, the container is temporary, and such a router
+  sends the user's work to third-party free endpoints.
+- Open: real posture changes (hip shift, head turn, 3/4 stance) need new bridge keys of the whole body; blink.

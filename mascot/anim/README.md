@@ -24,6 +24,10 @@ pose changes were dissolves between unrelated images, so the arms never travelle
   few expression changes. Nothing is warped; the mouth changes by switching patches (the user's rule).
 - **Alpha**: master alpha outside the gesture box, a white key inside it, colour un-premultiplied.
 
+- **Edges** (`tools/edges.py`, run by the build): alpha pulled in about 2 px and feathered on every frame.
+- From v016 the reel uses mouth patches only; the face patches (concerned, laugh, surprised) are built but unused,
+  because they are smaller than the master head and read as a face inside the face.
+
 ## Files
 - `raw/`: master and the GPT keys (originals). `out/`: built frames (`L/`, `R/`), `face/`, `anim.json`
   (`trans["L:rest>present"]` = list of frame files; `states`, `half`, `face_box`).

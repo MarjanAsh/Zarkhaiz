@@ -342,9 +342,8 @@ const HERO = buildHero({
       [sc.only.t0 - .3, 'rest'], [W('l07', 'business') - .1, 'explain'],
       [W('l08', 'whatsapp') - .2, 'rest'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'rest']],
 }, [
-  { e: 'concerned', t0: W('l01', 'lekin') - .1, t1: sc.hook.t1 - .15 },
-  { e: 'concerned', t0: W('l04', 'kho') - .1, t1: L('l04').t1 + .15 },
-  { e: 'laugh', t0: L('l09').t1 + .55, t1: TL.dur + 1 },
+  // mouth-only patches only: the eyes-to-chin patches (concerned, laugh) read as a face inside the face (v016)
+  { e: 'smile', t0: L('l09').t1 + .55, t1: TL.dur + 1 },
 ]);
 
 // ---------- captions + watermark ----------
@@ -422,8 +421,9 @@ function drawHero(a, t) {
   // whole body: slow breathing, a gentle sway, a small lift while he speaks
   const breathe = Math.sin(t * 1.6);
   const ty = -2.5 * breathe - 5 * sp;
-  const rot = .45 * Math.sin(t * .7) + .6 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
-  a._mv.style.transform = `translateX(${(x + 4 * Math.sin(t * .45)).toFixed(2)}px)`;
+  // weight shift: he leans slowly from one leg to the other, a little more while he speaks
+  const rot = 1.0 * Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1) + .5 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
+  a._mv.style.transform = `translateX(${(x + 9 * Math.sin(t * .62 - .4)).toFixed(2)}px)`;
   a._turn.style.transform = `perspective(1800px) rotateY(${(2.5 * Math.sin(t * .4) + Math.max(-6, Math.min(6, vel / 120))).toFixed(2)}deg)`;
   a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${(1 + .004 * breathe).toFixed(4)}, ${(1 + .006 * breathe).toFixed(4)})`;
 }
