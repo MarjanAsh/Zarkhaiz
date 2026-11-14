@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v014.mp4` (1080x1920, 60 fps, QA passed: `outputdm-reel/qa/v014/qa.md`). v013 and v012 kept. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase stay in out/ for comparison.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v015.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v015/qa.md`). v014, v013, v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -233,3 +233,28 @@ choreograph (the character is support, never the lead).
 - Still WARN (user to decide): captions sit at 1408-1498 px, below the 168-1330 px safe band of the QA skill; the
   character's feet are at 1392 px, so moving them up means a smaller character or captions over him.
 - NOT PERFORMED: music ducking by ear. Full table: `outputdm-reel/qa/v014/qa.md`.
+
+## v015: the character is really animated (GPT keyframes through the bridge + in-between frames)
+
+User (Nov 14): "bilkul smooth nahi hai", everything else is fine, work only on the character, use ChatGPT through the
+bridge (no Muse), storyboards or whatever it takes.
+
+Measured causes in v014: (1) every expression head was its own generated image and they did not line up (talk heads
+5 px higher, some 17-23 px narrower), so the whole head jumped on every word; (2) pose changes were dissolves between
+unrelated images, so arms never moved.
+
+What changed (only the character; background, graphics, captions, voice and music are untouched):
+- New character system `mascot/anim` (read its README). One master body; gesture keys are bridge EDITS of that master
+  (only the arm changes); FILM in-between frames between the keys; each arm is its own half of the body, so the arms
+  act independently. 11 bridge images, 166 frames, 3.8 MB in `assets/anim/`.
+- Mouth: small patches over the master head (talk_a / talk_o / talk_e), so head, hair, eyes and glasses never move.
+  Two expression patches: concerned on "lekin customers nahi aa rahe?" and "kho dete hain", laugh after the last line.
+- Storyboard (bottom of `main.js`, `buildHero({L: [...], R: [...]}, faces)`): per arm `[time, state]` on spoken words.
+  L (viewer's left arm): present on "paisa", explain on "lekin", wave on "Assalam o Alaikum", present on "Lahore",
+  explain on "businesses", explain/present/explain through the leaks, present on "sirf", present on "WhatsApp",
+  wave at the end. R: explain with L, present to the OutputDM card and to the services list.
+- A held pose is one sharp key frame (mixing neighbouring frames there showed a doubled hand); life comes from slow
+  breathing and sway of the whole body. Moves take 0.6-1.0 s on a smootherstep ease; neighbouring frames are mixed on
+  a canvas with 'lighter' (CSS plus-lighter did not work in the render and made half the body see-through).
+- Rebuild: see `mascot/anim/README.md`, then the usual events / mix / video (60 fps) / mux steps.
+- Open: front view only; hands are soft for 2-3 frames in the fastest part of a move; no head turn or blink yet.

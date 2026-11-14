@@ -19,11 +19,13 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v014.mp4` (1080x1920, 60 fps, 48 kHz): one smooth library
-  character, swapped talking heads, no movement sounds, QA in `video/outputdm-reel/qa/v014/qa.md`. v013, v012 kept.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v015.mp4` (1080x1920, 60 fps, 48 kHz): the animated
+  character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens, mouth patches), QA in
+  `video/outputdm-reel/qa/v015/qa.md`. v014, v013, v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
-- Character: from v012 the mascot library (`mascot/library/`, bodies + head swap). Before: puppet rig `mascot/rig/RIG.md` (v010),
+- Character: from v015 `mascot/anim/` (read its README: one master body, bridge edits as keys, FILM in-betweens,
+  mouth patches). v012-v014 used `mascot/library/` bodies + head swap (choppy: do not go back to swapping whole images). Before: puppet rig `mascot/rig/RIG.md` (v010),
   the 17 pose images `mascot/character/CHARACTER.md` (v009).
 - Mascot asset library v1 (the user's direction from 2026-11-13: build reusable assets, no rendering for now):
   `mascot/library/` (117 assets, `library.json`, contact sheets in `sheets/`), read `mascot/library/README.md`.
@@ -35,6 +37,8 @@ and `mascot/README.md` (the character images).
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".
 - No blinking: check every frame's brightness for single-frame dips before delivering a render.
+- Smooth character (v015): never swap whole body or head images. Poses are edits of ONE master, arms move through
+  in-between frames, only the mouth patch changes on words.
 - Ultra smooth (v013): one character for the whole reel, poses held >= 1.5 s with 0.4 s dissolves, no sound on
   character movements (the swish annoyed the user), render at 60 fps.
 
@@ -43,6 +47,8 @@ and `mascot/README.md` (the character images).
   `/home/user/lemomo-ai/lemo-opuscar`, `npm install`, a `.venv` from `requirements.txt`.
   For 4K, its `core/render/page.mjs` needs `deviceScaleFactor: +process.env.LEMO_DSF || 1`
   (see `video/README.md`, Rebuild).
+- Character animation build: `pip install torch --index-url https://download.pytorch.org/whl/cpu`, `opencv-python-headless`,
+  and the FILM model in `/home/user/models/` (commands in `mascot/anim/README.md`).
 - Gemini TTS: the Google AI Studio key is a network secret on the `zarkhaiz` and `AI Tools` environments (header
   `x-goog-api-key`); pass any dummy file as `GEMINI_KEY_FILE`, the proxy adds the real key. Image generation
   needs billing on that key (free tier limit is 0). Never commit keys.

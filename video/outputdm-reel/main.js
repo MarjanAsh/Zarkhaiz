@@ -87,93 +87,69 @@ function heading(h1, sub, tH, tSub, tout, top = 262) {
   return { h, s };
 }
 
-// ---------- hero: the character from the mascot asset library (v012) ----------
-// Bodies and heads come from mascot/library (ChatGPT bridge, see mascot/library/README.md), copied by prep_lib.py.
-// Every body shares one 820x1240 canvas with the feet in the same place, so swapping bodies reads as movement.
-// The arms are drawn in the body images (natural arms, no rig joints). The head is a separate layer fitted to each
-// body: on spoken words it switches between mouth shapes (talk_a / talk_o / talk_e / talk_teeth) by syllable, and
-// on the pose keys it shows the pose's expression (smile, laugh, surprised, concerned...). The face is never warped:
-// the mouth only moves by switching to another head image (the user's rule). Poses keep the v009 motion layers:
-// anticipation dip, 0.16 s dissolve with a short blur, spring settle, lean into steps, breathing, nod on words.
-const LIBJ = await (await fetch('assets/lib/lib.json')).json();
-// the scene tracks still use the 17 pose names of the v009 character; each maps to a library body + expression.
-// 'look' is a 3/4 body turned toward the content: 34left when the hero stands on the right half, else 34right.
-const LIBMAP = {
-  confident: ['look/neutral', 'smile'], presenting: ['front/presenting', 'smile'], explain: ['front/explain_both', 'neutral'],
-  thinking: ['front/thinking_chin', null], surprised: ['front/shrug', 'surprised'], oh_no: ['front/shrug', 'concerned'],
-  panic: ['front/shrug', 'surprised'], peace: ['front/waving', 'smile'], back_look: ['back/neutral', null],
-  turn: ['look/neutral', 'smile'], side_point: ['front/point_camera', 'smile'], point_screen: ['front/point_side', 'smile'],
-  point_camera: ['front/point_camera', 'smirk'], idea: ['look/neutral', 'surprised'], laugh: ['front/neutral', 'laugh'],
-  arms_crossed: ['front/arms_crossed', 'smile'], victory: ['front/victory', 'laugh'], triumph: ['front/thumbs_up', 'laugh'],
-  walk: ['profileright/walk_side', 'smile'],
-};
-const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392;
-const heroes = [];
+// ---------- hero: one animated character (v015) ----------
+// Built by mascot/anim (see its README): ONE master body. Head, torso and legs are the same pixels in every frame.
+// Each arm is its own half of the body canvas and plays clips made of GPT keyframes (rest -> mid -> end, edits of
+// the master through the ChatGPT bridge) with FILM in-between frames, so the arm really travels; nothing dissolves
+// between poses. The mouth is a small patch over the master head (talk_a / talk_o / talk_e), so the head outline
+// and hair never change. The face is never warped (the user's rule): the mouth changes by switching patches.
+const ANIM = await (await fetch('assets/anim/anim.json')).json();
+const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090;
 const smooth = x => x * x * (3 - 2 * x);
-// mouth: one open shape per spoken word (talk_o for o/u words, else talk_a), closed between words when the gap is
-// 0.15 s or more. Heads cross-fade over 0.07 s, so the mouth opens and closes softly instead of popping.
-function mouthOf(w) { const v = (w.w.toLowerCase().match(/[aeiou]/) || ['a'])[0]; return v === 'o' || v === 'u' ? 'talk_o' : 'talk_a'; }
-const TRACKS = [];   // every scene adds its keys; ONE character plays them all (built below the scenes)
+const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
+function mouthOf(w) { const v = (w.w.toLowerCase().match(/[aeiou]/) || ['a'])[0]; return v === 'o' || v === 'u' ? 'talk_o' : (v === 'i' || v === 'e') ? 'talk_e' : 'talk_a'; }
+const ANIM_IMGS = [];
+const TRACKS = [];   // the scenes only say where he stands: [time, (unused pose), centre-x]
 function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
-const MIN_HOLD = 1.5, HERO_H = 1090;
-function buildHero() {
+function buildHero(ARMS, FACES) {
   const h = HERO_H, w = Math.round(h * PW / PH), k = w / PW;
   const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
   el('<div class="halo"></div>', {}, mv); el('<div class="shadow"></div>', {}, mv);
   const turn = el('<div class="hturn"></div>', {}, mv);
   const body = el('<div class="hbody"></div>', {}, turn);
-  // all keys in time order; the first key of each scene is kept (it sets the scene's mark), the others only
-  // when the pose has been held MIN_HOLD seconds and the next scene is not about to start
-  const all = [];
-  TRACKS.forEach(({ track, tin }, si) => track.map(([t, pose, x, flip]) => ({ t: Math.max(t, tin), pose, cx: x, flip: !!flip }))
-    .sort((p, q) => p.t - q.t).forEach((key, i) => all.push({ ...key, first: i === 0, si, t: i === 0 && si > 0 ? tin - .45 : key.t })));   // he moves to the new scene's mark while the old scene fades
-  const firstT = si => TRACKS[si] ? Math.max(TRACKS[si].track.reduce((m, q) => Math.min(m, q[0]), 1e9), TRACKS[si].tin) : 1e9;
-  const keys = [];
-  for (const key of all) {
-    const last = keys[keys.length - 1];
-    // choreography: the character is support, never the lead, so a key that moves him aside (to uncover a card)
-    // is always kept; other pose changes wait MIN_HOLD
-    const moves = last && Math.abs(key.cx - last.cx) > 120;
-    if (!last || key.first || moves || (key.t - last.t >= MIN_HOLD && firstT(key.si + 1) - key.t >= 1.1)) keys.push(key);
-  }
-  for (const key of keys) {
-    let [b, expr] = LIBMAP[key.pose] || LIBMAP.confident;
-    if (b.startsWith('look/')) b = (key.cx > 540 ? '34left/' : '34right/') + b.slice(5);
-    key.body = b; key.expr = expr || 'smile'; key.key = b + (key.flip ? '|f' : ''); key.x = key.cx - w / 2;
-  }
-  a._track = keys;
-  a._grp = {};
-  for (const key of keys) {
-    if (a._grp[key.key]) continue;
-    const B = LIBJ.bodies[key.body];
-    const g = el(`<div class="hgrp" style="transform:${key.flip ? 'scaleX(-1)' : 'none'};opacity:0"></div>`, {}, body);
-    el(`<img src="${B.src}">`, {}, g);
-    g._heads = {};
-    if (B.headless) {
-      const f = B.fit, hw = 640 * f.scale * k, hh = 720 * f.scale * k;
-      for (const e of LIBJ.heads[f.angle])
-        g._heads[e] = el(`<img class="hhead" src="assets/lib/heads/${f.angle}/${e}.webp" style="left:${(f.left * k).toFixed(1)}px;top:${(f.top * k).toFixed(1)}px;width:${hw.toFixed(1)}px;height:${hh.toFixed(1)}px;opacity:0">`, {}, g);
+  // where he stands: the first key of each scene (he glides there while the old scene fades) and every key that
+  // moves him aside
+  const marks = [];
+  TRACKS.forEach(({ track, tin }, si) => track.map(([t, , x]) => ({ t: Math.max(t, tin), cx: x })).sort((p, q) => p.t - q.t)
+    .forEach((key, i) => { const last = marks[marks.length - 1]; if (i === 0) marks.push({ t: si > 0 ? tin - .45 : key.t, cx: key.cx }); else if (Math.abs(key.cx - last.cx) > 120) marks.push(key); }));
+  a._marks = marks.map(m => ({ t: m.t, x: m.cx - w / 2 }));
+  // arms: per side a list of clips [start, duration, frames]
+  a._side = {};
+  for (const s of ['L', 'R']) {
+    const [x0, x1] = ANIM.half[s];
+    const box = el(`<div style="position:absolute;left:${(x0 * k).toFixed(2)}px;top:0;width:${((x1 - x0) * k).toFixed(2)}px;height:${h}px;isolation:isolate"></div>`, {}, body);
+    const clips = [], files = new Set([ANIM.states[s].rest]);
+    let cur = 'rest', free = -9;
+    for (const [t, state] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
+      if (state === cur) continue;
+      const fr = ANIM.trans[`${s}:${cur}>${state}`];
+      if (!fr) throw new Error(`no arm clip ${s}:${cur}>${state}`);
+      const d = Math.min(1.05, .36 + .0125 * fr.length), t0 = Math.max(t, free + .12);   // longer clips take longer; never cut a move short
+      clips.push({ t0, d, fr }); fr.forEach(f => files.add(f)); cur = state; free = t0 + d;
     }
-    a._grp[key.key] = g;
+    // the two neighbouring frames are mixed on a canvas ('lighter' adds the two weighted layers: a true cross-fade)
+    const cv = el(`<canvas width="${x1 - x0}" height="${PH}" style="position:absolute;left:0;top:0;width:100%;height:100%"></canvas>`, {}, box);
+    const imgs = {};
+    for (const f of files) { const im = new Image(); im.src = `assets/anim/${f}`; imgs[f] = im; ANIM_IMGS.push(im); }
+    a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1 };
   }
-  // head schedule: [t, expr] segments for the whole reel
-  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0), sched = [];
-  const baseAt = t => { let e = keys[0].expr; for (const q of keys) if (t >= q.t) e = q.expr; return e; };
+  // face: patches over the master head
+  const [fx, fy, fw, fh] = ANIM.face_box;
+  const fbox = el(`<div style="position:absolute;left:${(fx * k).toFixed(2)}px;top:${(fy * k).toFixed(2)}px;width:${(fw * k).toFixed(2)}px;height:${(fh * k).toFixed(2)}px"></div>`, {}, body);
+  a._face = {};
+  for (const [e, f] of Object.entries(ANIM.faces)) a._face[e] = el(`<img src="assets/anim/${f.src}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;z-index:${f.kind === 'mouth' ? 2 : 1}">`, {}, fbox);
+  // mouth schedule: one open shape per word, closed (no patch) between words when the gap is 0.15 s or more
+  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0), sched = [{ t: -9, e: null }];
   words.forEach((wd, i) => {
     const nx = words[i + 1];
     sched.push({ t: wd.t0, e: mouthOf(wd) });
     const end = Math.max(wd.t0 + .12, wd.t0 + .75 * (wd.t1 - wd.t0));
-    if (!nx || nx.t0 - end >= .15) sched.push({ t: end, e: null });       // null = the pose's expression
+    if (!nx || nx.t0 - end >= .15) sched.push({ t: end, e: null });
   });
-  keys.forEach(q => sched.push({ t: q.t, e: undefined }));                 // a pose change re-reads the base
-  sched.sort((p, q) => p.t - q.t);
-  let open = null;
-  for (const s of sched) { if (s.e === undefined) s.e = open; else open = s.e; }
-  a._sched = sched.map(s => ({ t: s.t, e: s.e || baseAt(s.t + .001) }));
-  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._ph = 0;
-  a._speech = words;
-  add(a, -.95, TL.dur, 'slide', { d: .9 });   // fully on stage at the first frame (QA: hook visible at 0 s)
+  a._sched = sched; a._expr = FACES;
+  a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._speech = words;
+  add(a, -.95, TL.dur, 'slide', { d: .9 });
   return a;
 }
 // giant outlined word behind the scene, drifting sideways
@@ -350,7 +326,26 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   hero('cta', 1040, [[0, 'idea', 840], [W('l08', 'growth') - .05, 'side_point', 830], [W('l08', 'whatsapp') - .15, 'point_screen', 820, true], [W('l08', 'karein') - .05, 'point_camera', 830], [W('l09', 'outputdm') - .15, 'presenting', 830], [W('l09', 'com') - .05, 'peace', 835], [L('l09').t1 + .5, 'laugh', 840], [L('l09').t1 + 1.6, 'victory', 840]], t0 + .1, t1 + 1, 'walkR');
 }
 
-const HERO = buildHero();
+// the character's storyboard: what each arm does on which word ("L" = the arm on the viewer's left)
+const HERO = buildHero({
+  L: [[W('l01', 'paisa') - .15, 'present'], [W('l01', 'lekin') - .15, 'explain'],
+      [sc.intro.t0 - .3, 'wave'], [W('l02', 'main') - .05, 'rest'],
+      [W('l03', 'lahore') - .2, 'present'], [W('l03', 'businesses') - .15, 'explain'],
+      [sc.leaks.t0 - .15, 'rest'], [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'present'], [W('l05', 'follow-up') + .2, 'explain'],
+      [sc.system.t0 - .45, 'rest'], [W('l06', 'system') - .2, 'explain'],
+      [sc.only.t0 - .3, 'rest'], [W('l07', 'sirf') - .15, 'present'], [W('l07', 'business') - .1, 'explain'],
+      [W('l08', 'whatsapp') - .2, 'present'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'wave']],
+  R: [[W('l01', 'lekin') - .15, 'explain'], [sc.intro.t0 - .3, 'rest'],
+      [W('l02', 'zarkhaiz') + .3, 'present'], [sc.since.t0 - .4, 'rest'], [W('l03', 'businesses') - .15, 'explain'],
+      [sc.leaks.t0 - .15, 'rest'], [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'rest'], [W('l05', 'follow-up') + .2, 'explain'],
+      [sc.system.t0 - .45, 'rest'], [W('l06', 'content') - .25, 'present'], [W('l06', 'system') - .2, 'explain'],
+      [sc.only.t0 - .3, 'rest'], [W('l07', 'business') - .1, 'explain'],
+      [W('l08', 'whatsapp') - .2, 'rest'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'rest']],
+}, [
+  { e: 'concerned', t0: W('l01', 'lekin') - .1, t1: sc.hook.t1 - .15 },
+  { e: 'concerned', t0: W('l04', 'kho') - .1, t1: L('l04').t1 + .15 },
+  { e: 'laugh', t0: L('l09').t1 + .55, t1: TL.dur + 1 },
+]);
 
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
@@ -380,9 +375,8 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
-const FADE = .4, HFADE = .07;
+const HFADE = .07, EFADE = .25;
 function speechEnv(a, t) {
-  // how much he is speaking around t, smoothed (rises over ~0.25 s, falls over ~0.4 s)
   let v = 0;
   for (const w of a._speech) {
     if (w.t0 > t + .3) break;
@@ -391,37 +385,47 @@ function speechEnv(a, t) {
   }
   return v;
 }
+function drawArm(S, t, sp) {
+  // position inside the current clip, in frames
+  let c = null;
+  for (const q of S.clips) if (t >= q.t0) c = q;
+  let fr, pos;
+  if (!c) { fr = S.clips[0].fr; pos = 0; }
+  else { fr = c.fr; const p = seg(t, c.t0, c.t0 + c.d); pos = smoother(p) * (fr.length - 1); }
+  const n = fr.length - 1;
+  // a held pose is one sharp key frame: mixing neighbouring frames there would show a doubled hand
+  if (!c) pos = 0;
+  const i = Math.max(0, Math.min(n - 1, Math.floor(pos))), f = Math.max(0, Math.min(1, pos - i));
+  const A = S.imgs[fr[i]], B = S.imgs[fr[i + 1]], g = S.ctx;
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+  g.clearRect(0, 0, g.canvas.width, g.canvas.height);
+  if (B === A || f <= 0) g.drawImage(A, 0, 0);
+  else { g.globalAlpha = 1 - f; g.drawImage(A, 0, 0); g.globalCompositeOperation = 'lighter'; g.globalAlpha = f; g.drawImage(B, 0, 0); }
+}
 function drawHero(a, t) {
-  const tr = a._track; let i = 0;
-  for (let j = 0; j < tr.length; j++) if (t >= tr[j].t) i = j;
-  const k = tr[i], pv = tr[i - 1] || k;
-  // glide to the new mark over 1.0 s on a smooth ease (no blur, no hop)
-  const m = smooth(seg(t, k.t, k.t + 1.0)), x = pv.x + (k.x - pv.x) * m;
-  const vel = (k.x - pv.x) * 6 * seg(t, k.t, k.t + 1.0) * (1 - seg(t, k.t, k.t + 1.0)) / 1.0;
-  // pose change: the new body fades in over 0.4 s on top of the old one, which stays opaque until covered
-  const changed = i > 0 && pv.key !== k.key, u = t - k.t, pin = changed ? smooth(seg(u, 0, FADE)) : 1;
-  // head: current schedule entry, cross-faded from the previous one
+  // where he stands: a 1.0 s glide between marks
+  const M = a._marks; let i = 0;
+  for (let j = 0; j < M.length; j++) if (t >= M[j].t) i = j;
+  const k = M[i], pv = M[i - 1] || k, u = seg(t, k.t, k.t + 1.0);
+  const x = pv.x + (k.x - pv.x) * smooth(u), vel = (k.x - pv.x) * 6 * u * (1 - u);
+  const sp = speechEnv(a, t);
+  drawArm(a._side.L, t, sp); drawArm(a._side.R, t, sp);
+  // mouth: the current patch fades in over the previous one
   const S = a._sched; let si = 0;
   for (let j = 0; j < S.length; j++) if (t >= S[j].t) si = j;
   const hc = S[si].e, hp = (S[si - 1] || S[si]).e, hm = smooth(seg(t, S[si].t, S[si].t + HFADE));
-  for (const [key, g] of Object.entries(a._grp)) {
-    let o = 0, z = 0;
-    if (key === k.key) { o = pin; z = 2; }
-    else if (changed && key === pv.key && u < FADE) { o = 1; z = 1; }
-    g.style.opacity = o; g.style.zIndex = z; g.style.display = o > 0 ? 'block' : 'none';
-    if (o > 0) for (const [e, im] of Object.entries(g._heads)) {
-      const v = e === hc ? (hc === hp ? 1 : hm) : (e === hp ? 1 : 0);    // new head fades in over the old one
-      im.style.opacity = v; im.style.zIndex = e === hc ? 2 : 1; im.style.display = v > 0 ? 'block' : 'none';
-    }
-  }
-  // idle life: slow breathing and a gentle sway; speaking adds a small, smoothed lift and lean
-  const sp = speechEnv(a, t), breathe = Math.sin(t * 1.6);
-  const ty = -2.5 * breathe - 6 * sp;
-  const rot = .5 * Math.sin(t * .7) + .8 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
-  const sx = 1 + .004 * breathe, sy = 1 + .006 * breathe;
+  const op = {};
+  if (hc) op[hc] = hc === hp ? 1 : hm;
+  if (hp && hp !== hc) op[hp] = 1 - hm;
+  for (const q of a._expr) { const v = smooth(seg(t, q.t0, q.t0 + EFADE)) * (1 - smooth(seg(t, q.t1, q.t1 + EFADE))); if (v > 0) op[q.e] = Math.max(op[q.e] || 0, v); }
+  for (const [e, im] of Object.entries(a._face)) im.style.opacity = (op[e] || 0).toFixed(3);
+  // whole body: slow breathing, a gentle sway, a small lift while he speaks
+  const breathe = Math.sin(t * 1.6);
+  const ty = -2.5 * breathe - 5 * sp;
+  const rot = .45 * Math.sin(t * .7) + .6 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
   a._mv.style.transform = `translateX(${(x + 4 * Math.sin(t * .45)).toFixed(2)}px)`;
   a._turn.style.transform = `perspective(1800px) rotateY(${(2.5 * Math.sin(t * .4) + Math.max(-6, Math.min(6, vel / 120))).toFixed(2)}deg)`;
-  a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${(1 + .004 * breathe).toFixed(4)}, ${(1 + .006 * breathe).toFixed(4)})`;
 }
 
 window.render = async t => {
@@ -448,7 +452,7 @@ window.render = async t => {
       btn.style.border = on ? '2px solid var(--gold)' : '2px solid transparent';
       n.style.left = px((1080 - n.offsetWidth) / 2);
     }
-    if (n._track) drawHero(n, t);
+    if (n._marks) drawHero(n, t);
   }
   for (const b of bars) { const [a, e, f, to] = b._bar; b.firstElementChild.style.width = (100 * (f + (to - f) * eio(seg(t, a, e)))) + '%'; }
   for (const w of wires) { const [a, e, h] = w._wire; w.style.height = px(h * seg(t, a, e)); }
@@ -505,7 +509,8 @@ window.EV = EV.sort((a, b) => a.t - b.t);
 await document.fonts.load('800 92px Playfair'); await document.fonts.load('italic 700 52px Playfair');
 await document.fonts.load('700 42px Jost'); await document.fonts.load('500 29px Jost'); await document.fonts.load('600 24px Jost');
 await document.fonts.load('900 64px Playfair'); await document.fonts.load('800 54px Jost');
-await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
+await Promise.all([...document.images, ...ANIM_IMGS].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
+await Promise.all(ANIM_IMGS.map(i => i.decode().catch(() => {})));
 await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
 await document.fonts.ready;
 await window.render(0);

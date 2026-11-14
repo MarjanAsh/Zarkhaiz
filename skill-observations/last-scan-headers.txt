@@ -1,0 +1,38 @@
+# 0001-skills-not-checked-before-work.md
+id: 1
+title: "Installed skills never checked before a long multi-step media task"
+status: open
+type: open-source
+skill: []
+proposes_skill: []
+target_file: [CLAUDE.md]
+siblings_checked: "none — no skill family registry exists in this workspace; target is the project instructions file"
+area: "session start / tool selection"
+date: 2026-11-14
+session_context: "Mascot asset library and founder reel v012-v013 (video/README.md, v012 and v013 sections)"
+parked_until:
+resolved:
+resolution:
+reference: CLAUDE.md
+commands_verified: none
+next_actor: review
+---
+# 0002-video-export-qa-no-portable-fallback.md
+id: 2
+title: "video-export-qa hard-wires a local Mac toolchain and cannot run in a cloud container"
+status: open
+type: open-source
+skill: [video-export-qa]
+proposes_skill: []
+target_file: []
+siblings_checked: "no family registry; video-pipeline-doctor, video-transcribe, video-edit read the same toolchain.env — assumed same issue, not checked"
+area: "section 1, Automated pass"
+date: 2026-11-14
+session_context: "QA of the founder reel v013/v014 (video/outputdm-reel/qa/v014/qa.md)"
+parked_until:
+resolved:
+resolution:
+reference: video/outputdm-reel/qa/v014/qa.md
+commands_verified: "ls /Users/zarkhaiz/.video-pipeline — run, No such file or directory"
+next_actor: review
+---

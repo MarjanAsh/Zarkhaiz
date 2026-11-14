@@ -142,3 +142,8 @@ The user's other decisions in this session: Codex limits are separate from ChatG
 (bwrap/AppArmor) is not needed for image generation, so the AppArmor profile was left optional.
 Open: acting poses at other angles, a composite test of head-on-torso and arm+hand on a body, rig update to use
 the library, the second ChatGPT account on the bridge (rotation, `GPT_INSTRUCTIONS.md` Part B3).
+
+## Animated character (reel v015, 2026-11-14)
+`mascot/anim/`: one master body, gesture keyframes as ChatGPT-bridge edits of that master, FILM in-between frames,
+mouth patches from the library heads. Read `mascot/anim/README.md`. The library (`mascot/library/`) stays the source
+of the master body and of the face patches.
