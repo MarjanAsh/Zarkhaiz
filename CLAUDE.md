@@ -32,6 +32,11 @@ and `mascot/README.md` (the character images).
   `mascot/library/` (117 assets, `library.json`, contact sheets in `sheets/`), read `mascot/library/README.md`.
 
 ## The user's standing rules for the reel
+- Plan first (the user's request, Nov 15): before building or rendering anything, tell the user in chat what you
+  will do and wait for the go-ahead. Show cheap test stills before any long render. The character is being finalised
+  for a series of videos, so it must be right before more reels are made.
+- Proportions and angles (Nov 15, on v018): the head looks too big for the body; the body must also move through
+  different angles (front, 3/4), not stay front-on. Planned for v019, not built yet (see `video/README.md`).
 - Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose. Face (v017, the user
   asked for a new face by any means): the whole head is animated from the ONE master image with LivePortrait; never
   paste mouth or face patches again (they read as stickers). From v018: NO talking mouth, only small expressions

@@ -336,3 +336,14 @@ What changed (character only):
 - Open: the legs and torso are still one drawn pose (no steps, no knee bend, no turn to 3/4). A fully fluid mascot
   needs either a rigged model of the character or a video-generation model driven from the master image; both need
   a GPU or a paid service, which this session did not have. 4K not rendered.
+
+## Feedback on v018 (Nov 15), v019 not built yet
+User: the face looks bigger than the body; the body should move too, through different angles; the rest of the
+movement is smooth, make it smoother still; tell me what you will do BEFORE building; the character will be used for
+a series, so make it perfect. The plan was given in chat and waits for the user's go-ahead:
+1. head about 8-10 % smaller (scaled at the neck) with a comparison still for approval;
+2. body turns front <-> 3/4 left/right from `mascot/library/bodies/34left|34right/neutral.png` with FILM in-betweens,
+   each angle with its own LivePortrait head; if the turn ghosts, new in-between keys are needed from the ChatGPT
+   bridge (only reachable from the `zarkhaiz` environment);
+3. smoother: slower eased arm moves, head frames at 30 per second;
+4. test stills and a 5 s test clip first, the full render only after the user approves.
