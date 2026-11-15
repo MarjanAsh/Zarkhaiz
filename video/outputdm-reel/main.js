@@ -91,17 +91,20 @@ function heading(h1, sub, tH, tSub, tout, top = 262) {
 // Built by mascot/anim (see its README): ONE master body. Head, torso and legs are the same pixels in every frame.
 // Each arm is its own half of the body canvas and plays clips made of GPT keyframes (rest -> mid -> end, edits of
 // the master through the ChatGPT bridge) with FILM in-between frames, so the arm really travels; nothing dissolves
-// between poses. The mouth is a small patch over the master head (talk_a / talk_o / talk_e), so the head outline
-// and hair never change. The face is never warped (the user's rule): the mouth changes by switching patches.
+// between poses. The head (v017) is a 30 fps sequence made by mascot/anim/tools/build_face.py: the master's own face
+// re-posed by LivePortrait (mouth follows the voice loudness, expression per line, blinks, small nods). In each frame
+// the master's head is removed from the body (erase mask) and the head patch is added in its place.
 const ANIM = await (await fetch('assets/anim/anim.json')).json();
+const FACE = await (await fetch('assets/anim/face.json')).json();
+const FACE_IMGS = {};
+for (const f of new Set([FACE.erase, ...FACE.frames])) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
 const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090;
 const smooth = x => x * x * (3 - 2 * x);
 const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
-function mouthOf(w) { const v = (w.w.toLowerCase().match(/[aeiou]/) || ['a'])[0]; return v === 'o' || v === 'u' ? 'talk_o' : (v === 'i' || v === 'e') ? 'talk_e' : 'talk_a'; }
 const ANIM_IMGS = [];
 const TRACKS = [];   // the scenes only say where he stands: [time, (unused pose), centre-x]
 function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
-function buildHero(ARMS, FACES) {
+function buildHero(ARMS) {
   const h = HERO_H, w = Math.round(h * PW / PH), k = w / PW;
   const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
@@ -132,22 +135,9 @@ function buildHero(ARMS, FACES) {
     const cv = el(`<canvas width="${x1 - x0}" height="${PH}" style="position:absolute;left:0;top:0;width:100%;height:100%"></canvas>`, {}, box);
     const imgs = {};
     for (const f of files) { const im = new Image(); im.src = `assets/anim/${f}`; imgs[f] = im; ANIM_IMGS.push(im); }
-    a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1 };
+    a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1, x0 };
   }
-  // face: patches over the master head
-  const [fx, fy, fw, fh] = ANIM.face_box;
-  const fbox = el(`<div style="position:absolute;left:${(fx * k).toFixed(2)}px;top:${(fy * k).toFixed(2)}px;width:${(fw * k).toFixed(2)}px;height:${(fh * k).toFixed(2)}px"></div>`, {}, body);
-  a._face = {};
-  for (const [e, f] of Object.entries(ANIM.faces)) a._face[e] = el(`<img src="assets/anim/${f.src}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;z-index:${f.kind === 'mouth' ? 2 : 1}">`, {}, fbox);
-  // mouth schedule: one open shape per word, closed (no patch) between words when the gap is 0.15 s or more
-  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0), sched = [{ t: -9, e: null }];
-  words.forEach((wd, i) => {
-    const nx = words[i + 1];
-    sched.push({ t: wd.t0, e: mouthOf(wd) });
-    const end = Math.max(wd.t0 + .12, wd.t0 + .75 * (wd.t1 - wd.t0));
-    if (!nx || nx.t0 - end >= .15) sched.push({ t: end, e: null });
-  });
-  a._sched = sched; a._expr = FACES;
+  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0);
   a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._speech = words;
   add(a, -.95, TL.dur, 'slide', { d: .9 });
   return a;
@@ -341,10 +331,7 @@ const HERO = buildHero({
       [sc.system.t0 - .45, 'rest'], [W('l06', 'content') - .25, 'present'], [W('l06', 'system') - .2, 'explain'],
       [sc.only.t0 - .3, 'rest'], [W('l07', 'business') - .1, 'explain'],
       [W('l08', 'whatsapp') - .2, 'rest'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'rest']],
-}, [
-  // mouth-only patches only: the eyes-to-chin patches (concerned, laugh) read as a face inside the face (v016)
-  { e: 'smile', t0: L('l09').t1 + .55, t1: TL.dur + 1 },
-]);
+});
 
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
@@ -374,7 +361,6 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
-const HFADE = .07, EFADE = .25;
 function speechEnv(a, t) {
   let v = 0;
   for (const w of a._speech) {
@@ -400,6 +386,11 @@ function drawArm(S, t, sp) {
   g.clearRect(0, 0, g.canvas.width, g.canvas.height);
   if (B === A || f <= 0) g.drawImage(A, 0, 0);
   else { g.globalAlpha = 1 - f; g.drawImage(A, 0, 0); g.globalCompositeOperation = 'lighter'; g.globalAlpha = f; g.drawImage(B, 0, 0); }
+  // head: take the master's head out of the body, then add this moment's head patch (additive = an exact blend)
+  const [bx, by] = FACE.box, fi = Math.max(0, Math.min(FACE.frames.length - 1, Math.floor(t * FACE.fps + 1e-6)));
+  g.globalAlpha = 1; g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[FACE.erase], bx - S.x0, by);
+  g.globalCompositeOperation = 'lighter'; g.drawImage(FACE_IMGS[FACE.frames[fi]], bx - S.x0, by);
+  g.globalCompositeOperation = 'source-over';
 }
 function drawHero(a, t) {
   // where he stands: a 1.0 s glide between marks
@@ -409,15 +400,6 @@ function drawHero(a, t) {
   const x = pv.x + (k.x - pv.x) * smooth(u), vel = (k.x - pv.x) * 6 * u * (1 - u);
   const sp = speechEnv(a, t);
   drawArm(a._side.L, t, sp); drawArm(a._side.R, t, sp);
-  // mouth: the current patch fades in over the previous one
-  const S = a._sched; let si = 0;
-  for (let j = 0; j < S.length; j++) if (t >= S[j].t) si = j;
-  const hc = S[si].e, hp = (S[si - 1] || S[si]).e, hm = smooth(seg(t, S[si].t, S[si].t + HFADE));
-  const op = {};
-  if (hc) op[hc] = hc === hp ? 1 : hm;
-  if (hp && hp !== hc) op[hp] = 1 - hm;
-  for (const q of a._expr) { const v = smooth(seg(t, q.t0, q.t0 + EFADE)) * (1 - smooth(seg(t, q.t1, q.t1 + EFADE))); if (v > 0) op[q.e] = Math.max(op[q.e] || 0, v); }
-  for (const [e, im] of Object.entries(a._face)) im.style.opacity = (op[e] || 0).toFixed(3);
   // whole body: slow breathing, a gentle sway, a small lift while he speaks
   const breathe = Math.sin(t * 1.6);
   const ty = -2.5 * breathe - 5 * sp;
@@ -509,7 +491,7 @@ window.EV = EV.sort((a, b) => a.t - b.t);
 await document.fonts.load('800 92px Playfair'); await document.fonts.load('italic 700 52px Playfair');
 await document.fonts.load('700 42px Jost'); await document.fonts.load('500 29px Jost'); await document.fonts.load('600 24px Jost');
 await document.fonts.load('900 64px Playfair'); await document.fonts.load('800 54px Jost');
-await Promise.all([...document.images, ...ANIM_IMGS].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
+await Promise.all([...document.images, ...ANIM_IMGS, ...Object.values(FACE_IMGS)].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
 await Promise.all(ANIM_IMGS.map(i => i.decode().catch(() => {})));
 await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
 await document.fonts.ready;

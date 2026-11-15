@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v016/qa.md`). v015 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v017.mp4` (1080x1920, 60 fps, animated character from `mascot/anim` with the new LivePortrait head, QA: `outputdm-reel/qa/v017/qa.md`). v016 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -273,3 +273,41 @@ and the stance is one stiff pose. Character only; background untouched.
   A cloud session cannot change or monitor its own model and quota, the container is temporary, and such a router
   sends the user's work to third-party free endpoints.
 - Open: real posture changes (hip shift, head turn, 3/4 stance) need new bridge keys of the whole body; blink.
+
+## v017: a new face (the master's own face animated by LivePortrait)
+
+User (Nov 14-15): everything else is fine, but the face is still very bad: its movement and its expression are both
+wrong. Make the face again by any means (Blender, a GitHub repo, anything); if he does not speak word by word, a
+correct expression is enough; do a critical analysis; research well-rated repos and install what is needed.
+
+Critical analysis of the v016 face (frames compared):
+- The mouth was a pasted patch cut from a *laughing* library head: on every word a wide open laugh popped in and out,
+  and the jaw, cheeks and beard around it never moved. It read as a sticker.
+- Eyes and brows were frozen for 39 s: no blink, no expression change, the same smile on "customers nahi aa rahe?".
+- The head never moved on its own (only the whole body swayed).
+
+What changed (only the head; body, arms, graphics, captions, voice and music are untouched):
+- Tool: LivePortrait (github.com/KlingAIResearch/LivePortrait, MIT, about 19k stars), run on CPU. It re-poses ONE
+  source photo, here `mascot/anim/raw/master.png`, so every frame is the same man, hair and glasses.
+- `mascot/anim/tools/build_face.py` writes one head frame per 1/30 s of the reel from a parameter track:
+  the mouth opens with the loudness of the real voiceover (`vo/*.wav`), rounder on o/u words; smile and brows change
+  per line (engaged on line 1, concerned from "lekin" and on the leak lines, warm on the greeting, the system line and
+  the CTA, biggest smile after the last line); blinks every 3-4.5 s; a small nod at each line start; a slow idle turn.
+- In the page (`drawArm` in `main.js`) the master's head is removed from the body with `head/erase.png` and the head
+  patch of that moment is added in its place, so there is no patch edge and no second face.
+- The old mouth patches and the word-by-word mouth schedule are gone from the page.
+- This replaces the old rule "never a face or mouth warp": the user asked for a new face by any means, and this
+  model moves the whole face together (jaw, cheeks, eyes), which the v005 WebGL warp did not.
+
+Research on the user's request (repos with high ratings):
+- Chosen: LivePortrait, the best-rated tool made exactly for this job (expressions and mouth on one still portrait).
+- Not used: Blender (needs a 3D model of the character; a flat cutout cannot give a moving face), ComfyUI and
+  stable-diffusion-webui (100k+ stars, but they are hosts for models and need a GPU), SadTalker / Wav2Lip (older,
+  lower quality mouths, change the identity more).
+- The session ran on the `AI Video Editor` environment; the user approved adding the Hugging Face hosts
+  (`huggingface.co`, `us.aws.cdn.hf.co` and its CDN names) and `download.pytorch.org` to it. The ChatGPT bridge is not
+  reachable from that environment (it is on `zarkhaiz`), so no new GPT images were made.
+- Rebuild: `mascot/anim/README.md` (Head), then `cp -r mascot/anim/out/head mascot/anim/out/face.json
+  video/outputdm-reel/assets/anim/` and the usual events / mix / video (60 fps) / mux steps.
+- Open: the mouth follows loudness, not exact letters (no lip-sync to each sound); the head runs at 30 fps inside the
+  60 fps reel; 4K not rendered.

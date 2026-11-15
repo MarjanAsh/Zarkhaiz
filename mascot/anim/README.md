@@ -18,7 +18,7 @@ pose changes were dissolves between unrelated images, so the arms never travelle
   every step is small and the arm really travels. Gesture -> gesture goes through each gesture's first key.
 - **Two independent arms**: the body canvas (820x1240) is split into the viewer's left half (L) and right half (R),
   overlapping by 3 identical pixels. Each half plays its own clips, so the arms combine freely.
-- **Face** (`tools/faces.py`): library heads are registered to the master head (ECC on the eye region), colour-matched
+- **Face, v015-v016 only, replaced by Head below** (`tools/faces.py`): library heads are registered to the master head (ECC on the eye region), colour-matched
   and blended through a feathered ellipse. Talking uses mouth-only patches (talk_a / talk_o / talk_e), so the head
   outline, hair, eyes and glasses never change. Face patches (concerned, laugh, surprised) cover eyes to chin for the
   few expression changes. Nothing is warped; the mouth changes by switching patches (the user's rule).
@@ -27,6 +27,30 @@ pose changes were dissolves between unrelated images, so the arms never travelle
 - **Edges** (`tools/edges.py`, run by the build): alpha pulled in about 2 px and feathered on every frame.
 - From v016 the reel uses mouth patches only; the face patches (concerned, laugh, surprised) are built but unused,
   because they are smaller than the master head and read as a face inside the face.
+
+## Head (from reel v017): LivePortrait
+The v016 mouth patches looked pasted (a laughing mouth popping on a frozen face). From v017 the whole head is a
+30 fps sequence of the master's own face re-posed by LivePortrait.
+- `tools/lp_face.py`: `Face(master).render(lip=, smile=, brow=, eye=, woo=, pitch=, yaw=, roll=, ...)` -> the master
+  image with that expression (the model's retargeting sliders, no driving video).
+- `tools/build_face.py`: the parameter track for the reel (mouth from the voiceover loudness, expression keys per
+  line, blinks, nods, idle turn) -> `out/head/*.webp` (RGBA patches, box in `out/face.json`), `out/head/erase.png`.
+  Frames are named by a hash of their parameters, so a rerun only renders what changed.
+- Expressions are edited in `track()` in `build_face.py`: `keys = [(time, smile, brow), ...]`.
+- Safe ranges seen on this face: lip 0-0.4, smile -0.3..1.3, brow -25..25, eye 0 (closed)..0.3, yaw/pitch +-5,
+  roll +-3, woo up to 10. `aaa` above 30 breaks the mouth; smile with eye about 0.22 reads as a wink.
+- Install and run (CPU, about 5 s per frame, about 85 min for the reel with two processes):
+```
+git clone --depth 1 https://github.com/KlingAIResearch/LivePortrait /home/user/LivePortrait
+pip install torch torchvision opencv-python-headless onnx onnxruntime pyyaml scikit-image imageio lmdb tyro rich pykalman scipy
+# weights (629 MB) from https://huggingface.co/KlingTeam/LivePortrait/resolve/main/ into LivePortrait/pretrained_weights/:
+#   liveportrait/base_models/{appearance_feature_extractor,motion_extractor,spade_generator,warping_module}.pth
+#   liveportrait/retargeting_models/stitching_retargeting_module.pth, liveportrait/landmark.onnx
+#   insightface/models/buffalo_l/{2d106det,det_10g}.onnx
+for k in 0 1; do LP_THREADS=2 python3 mascot/anim/tools/build_face.py --part $k 2 & done; wait
+python3 mascot/anim/tools/build_face.py --finish
+```
+  Network: needs huggingface.co and us.aws.cdn.hf.co (allowed on the `AI Video Editor` environment since Nov 15).
 
 ## Files
 - `raw/`: master and the GPT keys (originals). `out/`: built frames (`L/`, `R/`), `face/`, `anim.json`
