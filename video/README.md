@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v017.mp4` (1080x1920, 60 fps, animated character from `mascot/anim` with the new LivePortrait head, QA: `outputdm-reel/qa/v017/qa.md`). v016 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v018.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`: LivePortrait head with small expressions and a closed mouth, body lit for the stage, QA: `outputdm-reel/qa/v018/qa.md`). v017 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -311,3 +311,28 @@ Research on the user's request (repos with high ratings):
   video/outputdm-reel/assets/anim/` and the usual events / mix / video (60 fps) / mux steps.
 - Open: the mouth follows loudness, not exact letters (no lip-sync to each sound); the head runs at 30 fps inside the
   60 fps reel; 4K not rendered.
+
+## v018: small expressions only, and a character that sits in the scene (not a sticker)
+
+User (Nov 15) on v017: the face and body character is still weak; wants a more accurate, ultra smooth cartoon; only
+a small expression, NOT a talking mouth; the character should be a smooth mascot, not cut out like a sticker.
+
+What made v017 read as a sticker (frames checked): the figure was lit flat for a white studio and pasted on a dark
+gold stage with a clean hard edge; the whole cutout rocked rigidly around its feet and turned like a card
+(`rotate` + `rotateY` on one image); the mouth flapped with teeth on every sound; the head updated at 30 fps inside
+a 60 fps reel.
+
+What changed (character only):
+- Mouth: closed for the whole reel. `build_face.py` now gives only small changes of smile and brows per line, blinks,
+  a small nod at each line start and a slow head turn. The voice-driven mouth is removed.
+- Smoothness: head frames are sampled 15 times a second (30 through blinks) and `drawPose` in `main.js` blends the two
+  neighbouring frames by time, so the head moves on every one of the 60 frames a second.
+- One figure: both body halves and the head are joined on one pose canvas (`drawPose`), then lit for the stage:
+  a warm rim light along the outline (the gold light behind him), legs falling off into the dark floor, a little
+  warm fill from the upper left, a soft warm glow, and a faint floor reflection under the shoes.
+- Body motion: the rigid tilt and the card-like turn are gone. The pose is drawn row by row with a soft bend
+  (`bend()` and the loop in `drawHero`): feet planted, hips shift slowly from one leg to the other, shoulders go a
+  little the other way, the head follows, and the chest widens with each breath.
+- Open: the legs and torso are still one drawn pose (no steps, no knee bend, no turn to 3/4). A fully fluid mascot
+  needs either a rigged model of the character or a video-generation model driven from the master image; both need
+  a GPU or a paid service, which this session did not have. 4K not rendered.

@@ -98,7 +98,7 @@ const ANIM = await (await fetch('assets/anim/anim.json')).json();
 const FACE = await (await fetch('assets/anim/face.json')).json();
 const FACE_IMGS = {};
 for (const f of new Set([FACE.erase, ...FACE.frames])) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
-const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090;
+const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090, PAD = 40;
 const smooth = x => x * x * (3 - 2 * x);
 const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
 const ANIM_IMGS = [];
@@ -121,7 +121,6 @@ function buildHero(ARMS) {
   a._side = {};
   for (const s of ['L', 'R']) {
     const [x0, x1] = ANIM.half[s];
-    const box = el(`<div style="position:absolute;left:${(x0 * k).toFixed(2)}px;top:0;width:${((x1 - x0) * k).toFixed(2)}px;height:${h}px;isolation:isolate"></div>`, {}, body);
     const clips = [], files = new Set([ANIM.states[s].rest]);
     let cur = 'rest', free = -9;
     for (const [t, state] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
@@ -132,11 +131,17 @@ function buildHero(ARMS) {
       clips.push({ t0, d, fr }); fr.forEach(f => files.add(f)); cur = state; free = t0 + d;
     }
     // the two neighbouring frames are mixed on a canvas ('lighter' adds the two weighted layers: a true cross-fade)
-    const cv = el(`<canvas width="${x1 - x0}" height="${PH}" style="position:absolute;left:0;top:0;width:100%;height:100%"></canvas>`, {}, box);
+    const cv = document.createElement('canvas'); cv.width = x1 - x0; cv.height = PH;
     const imgs = {};
     for (const f of files) { const im = new Image(); im.src = `assets/anim/${f}`; imgs[f] = im; ANIM_IMGS.push(im); }
     a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1, x0 };
   }
+  // v018: the two halves and the head are joined on one pose canvas, lit for the stage, then drawn row by row to
+  // the visible canvas with a soft bend (weight shift, breathing): the figure moves like a body, not like a card
+  const mk = (cw, ch) => { const c = document.createElement('canvas'); c.width = cw; c.height = ch; return c.getContext('2d'); };
+  a._pose = mk(PW, PH); a._tmp = mk(PW, PH); a._rim = mk(PW, PH);
+  const out = el(`<canvas width="${PW + 2 * PAD}" height="${PH}" style="position:absolute;left:${(-PAD * k).toFixed(2)}px;top:0;width:${((PW + 2 * PAD) * k).toFixed(2)}px;height:${h}px;-webkit-box-reflect:below ${(-2 * (PH - PFEET) * k + 4).toFixed(1)}px linear-gradient(transparent 82%, rgba(0,0,0,.20))"></canvas>`, {}, body);
+  a._out = out.getContext('2d');
   const words = TL.words.slice().sort((p, q) => p.t0 - q.t0);
   a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._speech = words;
   add(a, -.95, TL.dur, 'slide', { d: .9 });
@@ -386,10 +391,45 @@ function drawArm(S, t, sp) {
   g.clearRect(0, 0, g.canvas.width, g.canvas.height);
   if (B === A || f <= 0) g.drawImage(A, 0, 0);
   else { g.globalAlpha = 1 - f; g.drawImage(A, 0, 0); g.globalCompositeOperation = 'lighter'; g.globalAlpha = f; g.drawImage(B, 0, 0); }
-  // head: take the master's head out of the body, then add this moment's head patch (additive = an exact blend)
-  const [bx, by] = FACE.box, fi = Math.max(0, Math.min(FACE.frames.length - 1, Math.floor(t * FACE.fps + 1e-6)));
-  g.globalAlpha = 1; g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[FACE.erase], bx - S.x0, by);
-  g.globalCompositeOperation = 'lighter'; g.drawImage(FACE_IMGS[FACE.frames[fi]], bx - S.x0, by);
+}
+// the body's bend: how far a row follows the hip shift (0 at the feet, 1 at the hips, less at the shoulders, the
+// head a little more again), as a smooth curve of n (0 = feet, 1 = top of the head)
+const BEND = [[0, 0], [.43, 1], [.66, .3], [1, .55]];
+function bend(n) {
+  for (let i = 1; i < BEND.length; i++) if (n <= BEND[i][0]) { const [n0, v0] = BEND[i - 1], [n1, v1] = BEND[i]; return v0 + (v1 - v0) * smooth((n - n0) / (n1 - n0)); }
+  return BEND[BEND.length - 1][1];
+}
+function drawPose(a, t) {
+  const g = a._pose, L = a._side.L, R = a._side.R, mid = PW / 2;
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'none';
+  g.clearRect(0, 0, PW, PH);
+  g.drawImage(L.ctx.canvas, 0, 0, mid, PH, 0, 0, mid, PH);
+  g.drawImage(R.ctx.canvas, mid - R.x0, 0, PW - mid, PH, mid, 0, PW - mid, PH);
+  // head: take the master's head out of the body, then add this moment's head (two neighbouring head frames mixed
+  // by time; additive = an exact blend, so the head moves at the reel's full frame rate)
+  const [bx, by] = FACE.box, T = FACE.t;
+  let i = 0; while (i < T.length - 2 && T[i + 1] <= t) i++;
+  const f = Math.max(0, Math.min(1, (t - T[i]) / (T[i + 1] - T[i])));
+  g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[FACE.erase], bx, by);
+  g.globalCompositeOperation = 'lighter';
+  g.globalAlpha = 1 - f; g.drawImage(FACE_IMGS[FACE.frames[i]], bx, by);
+  if (f > 0) { g.globalAlpha = f; g.drawImage(FACE_IMGS[FACE.frames[i + 1]], bx, by); }
+  g.globalAlpha = 1;
+  // stage light. Rim: the outline band (figure minus the figure pulled in by 4 px) glows warm, like the gold light
+  // behind him; legs fall off into the dark floor; a little warm fill from the upper left
+  const e = a._tmp, r = a._rim;
+  e.globalCompositeOperation = 'copy'; e.drawImage(g.canvas, 0, 0);
+  e.globalCompositeOperation = 'destination-in';
+  for (const [dx, dy] of [[4, 0], [-4, 0], [0, 4], [0, -4]]) e.drawImage(g.canvas, dx, dy);
+  r.globalCompositeOperation = 'copy'; r.drawImage(g.canvas, 0, 0);
+  r.globalCompositeOperation = 'destination-out'; r.drawImage(e.canvas, 0, 0);
+  r.globalCompositeOperation = 'source-in'; r.fillStyle = 'rgb(255,188,96)'; r.fillRect(0, 0, PW, PH);
+  g.globalCompositeOperation = 'source-atop';
+  let gr = g.createLinearGradient(0, 560, 0, PH); gr.addColorStop(0, 'rgba(10,5,2,0)'); gr.addColorStop(1, 'rgba(10,5,2,.42)');
+  g.fillStyle = gr; g.fillRect(0, 0, PW, PH);
+  gr = g.createRadialGradient(240, 260, 0, 240, 260, 820); gr.addColorStop(0, 'rgba(255,186,92,.10)'); gr.addColorStop(1, 'rgba(255,186,92,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, PW, PH);
+  g.filter = 'blur(2.5px)'; g.globalAlpha = .42; g.drawImage(r.canvas, 0, 0); g.filter = 'none'; g.globalAlpha = 1;
   g.globalCompositeOperation = 'source-over';
 }
 function drawHero(a, t) {
@@ -400,14 +440,20 @@ function drawHero(a, t) {
   const x = pv.x + (k.x - pv.x) * smooth(u), vel = (k.x - pv.x) * 6 * u * (1 - u);
   const sp = speechEnv(a, t);
   drawArm(a._side.L, t, sp); drawArm(a._side.R, t, sp);
-  // whole body: slow breathing, a gentle sway, a small lift while he speaks
-  const breathe = Math.sin(t * 1.6);
-  const ty = -2.5 * breathe - 5 * sp;
-  // weight shift: he leans slowly from one leg to the other, a little more while he speaks
-  const rot = 1.0 * Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1) + .5 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
-  a._mv.style.transform = `translateX(${(x + 9 * Math.sin(t * .62 - .4)).toFixed(2)}px)`;
-  a._turn.style.transform = `perspective(1800px) rotateY(${(2.5 * Math.sin(t * .4) + Math.max(-6, Math.min(6, vel / 120))).toFixed(2)}deg)`;
-  a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${(1 + .004 * breathe).toFixed(4)}, ${(1 + .006 * breathe).toFixed(4)})`;
+  drawPose(a, t);
+  // body motion (v018): no rigid tilt and no card-like turn. The hips shift slowly from one leg to the other with the
+  // feet planted, the shoulders go a little the other way, the chest widens with each breath
+  const breathe = Math.sin(t * 1.6), shift = 7 * (Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1));
+  const lean = Math.max(-14, Math.min(14, vel / 55));
+  const o = a._out; o.clearRect(0, 0, PW + 2 * PAD, PH);
+  for (let y = 0; y < PH; y++) {
+    const n = Math.max(0, 1 - y / PFEET);
+    const dx = shift * bend(n) + lean * n * n;
+    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c);
+    o.drawImage(a._pose.canvas, 0, y, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1);
+  }
+  a._mv.style.transform = `translateX(${x.toFixed(2)}px)`;
+  a._body.style.transform = `translateY(${(-1.6 * breathe - 2 * sp).toFixed(2)}px)`;
 }
 
 window.render = async t => {

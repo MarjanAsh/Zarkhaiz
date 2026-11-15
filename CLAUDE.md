@@ -18,11 +18,11 @@ Read this first, then `video/README.md` (the reel, its version history and how t
 and `mascot/README.md` (the character images).
 
 ## Where the work is
-- Branch: `claude/vibrant-shannon-i2w0rk` (v017, Nov 15; it continues `ccr-e371ce1b-168zzm`). Continue on the newest of the two unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v017.mp4` (1080x1920, 60 fps, 48 kHz): the animated
+- Branch: `claude/vibrant-shannon-i2w0rk` (v018, Nov 15; it continues `ccr-e371ce1b-168zzm`). Continue on the newest of the two unless the user names another branch.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v018.mp4` (1080x1920, 60 fps, 48 kHz): the animated
   character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens for the arms; from v017 the head is
   the master's face animated by LivePortrait, `mascot/anim/tools/build_face.py`), QA in
-  `video/outputdm-reel/qa/v017/qa.md`. v016 to v012 kept.
+  `video/outputdm-reel/qa/v018/qa.md`. v017 to v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v015 `mascot/anim/` (read its README: one master body, bridge edits as keys, FILM in-betweens,
@@ -34,7 +34,10 @@ and `mascot/README.md` (the character images).
 ## The user's standing rules for the reel
 - Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose. Face (v017, the user
   asked for a new face by any means): the whole head is animated from the ONE master image with LivePortrait; never
-  paste mouth or face patches again (they read as stickers), and a correct expression matters more than word-by-word lips.
+  paste mouth or face patches again (they read as stickers). From v018: NO talking mouth, only small expressions
+  (smile, brows, blinks, small head moves).
+- Not a sticker (v018): the character must sit in the scene: lit for the stage (rim light, dark legs, reflection),
+  no rigid tilt or card-like turn of the whole cutout; body motion is a soft bend with planted feet.
 - The character moves with the spoken words (pose and position changes on words), not just fading in.
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".

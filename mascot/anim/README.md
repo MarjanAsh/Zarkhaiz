@@ -33,13 +33,13 @@ The v016 mouth patches looked pasted (a laughing mouth popping on a frozen face)
 30 fps sequence of the master's own face re-posed by LivePortrait.
 - `tools/lp_face.py`: `Face(master).render(lip=, smile=, brow=, eye=, woo=, pitch=, yaw=, roll=, ...)` -> the master
   image with that expression (the model's retargeting sliders, no driving video).
-- `tools/build_face.py`: the parameter track for the reel (mouth from the voiceover loudness, expression keys per
-  line, blinks, nods, idle turn) -> `out/head/*.webp` (RGBA patches, box in `out/face.json`), `out/head/erase.png`.
+- `tools/build_face.py`: the parameter track for the reel (from v018 a closed mouth: small smile and brow keys per
+  line, blinks, nods, idle turn; 15 frames a second, 30 through blinks, the page blends neighbours) -> `out/head/*.webp` (RGBA patches, box in `out/face.json`), `out/head/erase.png`.
   Frames are named by a hash of their parameters, so a rerun only renders what changed.
 - Expressions are edited in `track()` in `build_face.py`: `keys = [(time, smile, brow), ...]`.
 - Safe ranges seen on this face: lip 0-0.4, smile -0.3..1.3, brow -25..25, eye 0 (closed)..0.3, yaw/pitch +-5,
   roll +-3, woo up to 10. `aaa` above 30 breaks the mouth; smile with eye about 0.22 reads as a wink.
-- Install and run (CPU, about 5 s per frame, about 85 min for the reel with two processes; 1065 frames, 9.3 MB):
+- Install and run (CPU, about 5 s per frame, about 45 min for the reel with two processes; 557 frames):
 ```
 git clone --depth 1 https://github.com/KlingAIResearch/LivePortrait /home/user/LivePortrait
 pip install torch torchvision opencv-python-headless onnx onnxruntime pyyaml scikit-image imageio lmdb tyro rich pykalman scipy
