@@ -36,3 +36,9 @@ cut from a different expression image read as a sticker on a frozen face. What w
 face with a portrait-animation model (LivePortrait retargeting parameters, no driving video): mouth from voice
 loudness, expression keys per line, blinks, nods; the master's head is erased from the body by a soft mask and the
 head patch added back additively. The skill should prefer whole-face re-posing over mouth patches.
+
+**Further instance (2026-11-15, reel v018):** the user rejected the voice-driven talking mouth as well ("just small
+expression, not talking mouth") and called the figure a "sticker". Two additions for the skill: (1) ask early whether
+a still-based character should talk at all; small expressions with a closed mouth are often what is wanted;
+(2) a cutout reads as a sticker when it is lit for a white studio and moved rigidly: light it for the scene (rim
+light, falloff, reflection) and bend it row by row with planted feet instead of rotating the whole image.
