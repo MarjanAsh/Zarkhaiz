@@ -39,7 +39,7 @@ The v016 mouth patches looked pasted (a laughing mouth popping on a frozen face)
 - Expressions are edited in `track()` in `build_face.py`: `keys = [(time, smile, brow), ...]`.
 - Safe ranges seen on this face: lip 0-0.4, smile -0.3..1.3, brow -25..25, eye 0 (closed)..0.3, yaw/pitch +-5,
   roll +-3, woo up to 10. `aaa` above 30 breaks the mouth; smile with eye about 0.22 reads as a wink.
-- Install and run (CPU, about 5 s per frame, about 85 min for the reel with two processes):
+- Install and run (CPU, about 5 s per frame, about 85 min for the reel with two processes; 1065 frames, 9.3 MB):
 ```
 git clone --depth 1 https://github.com/KlingAIResearch/LivePortrait /home/user/LivePortrait
 pip install torch torchvision opencv-python-headless onnx onnxruntime pyyaml scikit-image imageio lmdb tyro rich pykalman scipy

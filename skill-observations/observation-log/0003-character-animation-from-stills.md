@@ -30,3 +30,9 @@ regions; hold poses on one sharp key.
 
 **Principle:** Separately generated images of one character never line up; motion needs frames that share every
 pixel except the part that moves.
+
+**Further instance (2026-11-15, reel v017):** the "patch only the mouth" half of this recipe failed on review: a mouth
+cut from a different expression image read as a sticker on a frozen face. What worked was re-posing the one master
+face with a portrait-animation model (LivePortrait retargeting parameters, no driving video): mouth from voice
+loudness, expression keys per line, blinks, nods; the master's head is erased from the body by a soft mask and the
+head patch added back additively. The skill should prefer whole-face re-posing over mouth patches.
