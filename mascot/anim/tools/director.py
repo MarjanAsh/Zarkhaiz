@@ -51,7 +51,7 @@ CUES = {
 }
 SELF_AMBIGUOUS = {"mein"}          # "mein" is mostly "in"; only "main" counts as "I"
 WORD2CONCEPT = {w: c for c, ws in CUES.items() for w in ws if w not in SELF_AMBIGUOUS}
-PRIORITY = {"number": 9, "greet": 9, "cta": 8, "you": 7, "question": 7, "list": 6, "emphasis": 6, "negation": 6,
+PRIORITY = {"number": 9, "greet": 9, "cta": 8, "you": 7, "question": 7, "list": 7.5, "emphasis": 6, "negation": 6,
             "brand": 5, "positive": 5, "connect": 5, "problem": 4, "contrast": 4, "self": 3, "place": 3}
 
 # ---------- the semantic gesture library ----------
@@ -62,7 +62,7 @@ PRIORITY = {"number": 9, "greet": 9, "cta": 8, "you": 7, "question": 7, "list": 
 G = lambda **kw: kw
 GESTURES = {
     "wave_hello":     G(purpose="greeting, goodbye", arm=[("L", "wave")], face=("happy", .8), head=("nod", .7), body=None, hold=(.5, .9), dur=(.7, 1.2), emotions="warm", repeat=0),
-    "count":          G(purpose="a number or a list item: 1 to 5 fingers", arm=[("L", "count{n}"), ("R", "count{n}"), ("@content", "present")], face=("explaining", .6), head=("nod", .4), body=None, hold=(.7, 1.4), dur=(.45, .8), emotions="any", repeat=1),
+    "count":          G(purpose="a number or a list item: 1 to 5 fingers", arm=[("L", "count{n}"), ("R", "count{n}"), ("@content", "present")], face=("explaining", .6), head=("nod", .4), body=None, hold=(.7, 1.4), dur=(.45, .8), emotions="any", repeat=5),
     "point_you":      G(purpose="you, your business: the viewer", arm=[("L", "point_camera"), ("R", "point_camera"), ("both", "explain")], face=("reassuring", .6), head=("forward", .6), body=("lean_fwd", .6), hold=(.5, 1.0), dur=(.45, .8), emotions="warm", repeat=1),
     "point_content":  G(purpose="look at this: a card, a name, a place on screen", arm=[("@content", "point_side"), ("@content", "present")], face=("explaining", .5), head=None, body=None, hold=(.7, 1.6), dur=(.5, .9), emotions="any", repeat=2, gaze="content"),
     "present_item":   G(purpose="a list item or a fact appears", arm=[("@content", "present"), ("@free", "present")], face=("explaining", .5), head=("nod", .3), body=None, hold=(.6, 1.4), dur=(.5, .9), emotions="any", repeat=2, gaze="content"),
@@ -120,6 +120,7 @@ def line_intent(text, concepts):
 
 
 def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahore", "pakistan", "uae", "2018")):
+    brands, places = tuple(brands), tuple(places)
     reel = Path(reel)
     lines = json.loads((reel / "lines.json").read_text())
     PH = json.loads((reel / "phonemes.json").read_text())["lines"]
@@ -181,6 +182,14 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
             while j < len(words) - 1 and toks[j] in ("aur", "ya", "and", "or"):
                 j += 1
             items = commas + [min(len(words) - 1, j)]
+            for j2 in range(j + 1, min(len(words) - 1, j + 3)):         # "..., SEO aur automation": one more item after "aur"
+                if toks[j2] in ("aur", "ya", "and", "or"):
+                    items.append(j2 + 1); break
+            # "2018 se, Lahore se, ..." is a row of facts, not a list to count: items that are (or follow) a place or a
+            # brand keep that meaning, and counting needs three real items
+            items = [i for i in items if toks[i] not in places + brands and (i == 0 or toks[i - 1] not in places + brands)]
+            if len(items) < 3:
+                items = []
             for k_, i in enumerate(items):
                 cues = [q for q in cues if q["i"] != i or PRIORITY[q["c"]] > PRIORITY["list"]]
                 if not any(q["i"] == i for q in cues):
@@ -250,8 +259,8 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
                                 arm_move(s, st, ts, d)
                             pending[s] = max(free[s], stroke) + g["hold"][1] * (1.25 - .5 * energy)
                         for s in ("L", "R"):                       # the other arm goes home unless it shares the pose
-                            if s not in sides and state[s] != "rest" and pending[s] is None:
-                                pending[s] = free[s] + .1
+                            if s not in sides and state[s] != "rest":
+                                pending[s] = min(pending[s] if pending[s] is not None else 1e9, max(free[s] + .35, stroke - .15))
                         for s in ("L", "R"):
                             if s not in sides:
                                 flush(s, stroke)
@@ -284,9 +293,15 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
             for s in ("L", "R"):
                 flush(s, stroke)
         # ---- after the line: the arms go home in the pause (a planned return is kept, at the latest shortly after) ----
+        nxt = PH[lines[li + 1]["id"]]["words"] if li + 1 < len(lines) else None
         for s in ("L", "R"):
             if state[s] != "rest":
-                pending[s] = min(pending[s] if pending[s] is not None else 1e9, max(free[s] + .5, t1 + .2))
+                home = max(free[s] + .5, t1 + .2)
+                if nxt and nxt[0]["t0"] - t1 < .9:        # the next line follows at once: keep the pose into it
+                    home = min(nxt[-1]["t1"] + .2, max(free[s], t1) + 1.7)
+                    pending[s] = home
+                else:
+                    pending[s] = min(pending[s] if pending[s] is not None else 1e9, home)
         out["face"].append({"t": round(t1 + .25, 3), "expr": "slight_smile", "k": .6})
     for s in ("L", "R"):
         flush(s)

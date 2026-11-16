@@ -41,9 +41,10 @@ body_controls = {
     "turn tl / tr": "slight whole-body turn toward the cards (5 in-between frames), only while both arms rest",
     "glide": "he moves across the stage between scenes (1 s, eased)",
 }
-# v019, counted from the v019 files (anim.json states, build_face.py track, main.js)
-before = {"arm states L": 3, "arm states R": 2, "hand shapes": 2, "expression presets": 0, "face controls used": 4,
-          "mouth shapes": 1, "head events": 1, "body controls": 2, "semantic gestures": 0, "director rules (concepts)": 0,
+# v019, counted from the v019 files: anim.json states; build_face.py track (smile, brow, lids for blinks, pitch, yaw,
+# roll; closed mouth; a nod per line); main.js (weight shift, breathing, body turn, glide)
+before = {"arm states L": 3, "arm states R": 2, "hand shapes": 2, "expression presets": 0, "face controls used": 6,
+          "mouth shapes": 1, "head events": 1, "body controls": 4, "semantic gestures": 0, "director rules (concepts)": 0,
           "word times": "estimated from word length"}
 hand_shapes = sorted({"open palm up (present, explain, shrug)", "open hand facing camera (wave, count 5)", "stop palm",
                       "index pointing at camera", "index pointing sideways", "one finger", "two fingers", "three fingers",

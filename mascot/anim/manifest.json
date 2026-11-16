@@ -1,0 +1,1616 @@
+{
+ "character": "OutputDM founder mascot, front view, one master image (raw/master.png)",
+ "rig": {
+  "root": "stage position (glide)",
+  "hips": "weight shift, body turn",
+  "torso": "lean, breathing",
+  "shoulders": [
+   "shrug",
+   "shoulder_l",
+   "shoulder_r"
+  ],
+  "arms": {
+   "L (viewer's left = his right arm)": [
+    "count1",
+    "count2",
+    "count3",
+    "count4",
+    "count5",
+    "explain",
+    "fist_pump",
+    "point_camera",
+    "point_side",
+    "present",
+    "shrug",
+    "thumbs_up",
+    "wave"
+   ],
+   "R (viewer's right = his left arm)": [
+    "chop",
+    "count3",
+    "explain",
+    "ok",
+    "point_side",
+    "present",
+    "shrug",
+    "stop",
+    "thumbs_up"
+   ]
+  },
+  "neck/head": [
+   "nod",
+   "shake",
+   "tilt",
+   "forward",
+   "look_up",
+   "look_down",
+   "pitch",
+   "yaw",
+   "roll"
+  ],
+  "face": [
+   "eye",
+   "gx",
+   "gy",
+   "brow",
+   "brow_l",
+   "brow_r",
+   "smile",
+   "pout",
+   "lip",
+   "speech mouth",
+   "pitch",
+   "yaw",
+   "roll"
+  ],
+  "legs": "planted (no clips yet)"
+ },
+ "face_controls": {
+  "eye": "lid opening: 0 closed, .30 open, up to .42 wide; blinks close it for .23 s",
+  "gx": "gaze left (-) / right (+), about +-12",
+  "gy": "gaze down (-) / up (+), about +-10",
+  "brow": "both eyebrows: + raised, - lowered and drawn together, +-25",
+  "brow_l": "the eyebrow on the viewer's left alone",
+  "brow_r": "the eyebrow on the viewer's right alone",
+  "smile": "mouth corners: -0.6 frown .. 1.3 broad smile",
+  "pout": "lips pushed forward",
+  "lip": "emotional mouth opening (only while he is not speaking)",
+  "speech mouth": "21 expression keypoints generated from the voice (lips, jaw, cheeks), 25 per second",
+  "pitch": "head down (+) / up (-), +-6 degrees",
+  "yaw": "head turn, +-7 degrees plus the body-turn yaw",
+  "roll": "head tilt, +-4 degrees"
+ },
+ "expression_presets": {
+  "neutral": {
+   "controls": {},
+   "use": "listening, between lines"
+  },
+  "slight_smile": {
+   "controls": {
+    "smile": 0.45
+   },
+   "use": "default friendly face"
+  },
+  "happy": {
+   "controls": {
+    "smile": 0.9,
+    "brow": 4,
+    "eye": 0.3
+   },
+   "use": "good news, greeting"
+  },
+  "very_happy": {
+   "controls": {
+    "smile": 1.3,
+    "brow": 7,
+    "eye": 0.3,
+    "lip": 0.1
+   },
+   "use": "payoff, big result"
+  },
+  "excited": {
+   "controls": {
+    "smile": 1.0,
+    "brow": 16,
+    "eye": 0.38,
+    "lip": 0.12,
+    "pitch": -2
+   },
+   "use": "energy, announcement"
+  },
+  "confident": {
+   "controls": {
+    "smile": 0.55,
+    "brow": -3,
+    "eye": 0.3,
+    "pitch": -1.5
+   },
+   "use": "claims, credentials"
+  },
+  "serious": {
+   "controls": {
+    "smile": -0.45,
+    "brow": -16,
+    "eye": 0.3
+   },
+   "use": "important statement"
+  },
+  "angry": {
+   "controls": {
+    "smile": -0.5,
+    "brow": -22,
+    "eye": 0.3,
+    "pitch": 2
+   },
+   "use": "NOT for this character's reels (user rule); kept for completeness"
+  },
+  "frustrated": {
+   "controls": {
+    "smile": -0.6,
+    "brow": -20,
+    "brow_l": -4,
+    "eye": 0.3,
+    "roll": 2.5
+   },
+   "use": "pain point"
+  },
+  "shocked": {
+   "controls": {
+    "smile": -0.1,
+    "brow": 24,
+    "eye": 0.42,
+    "lip": 0.22,
+    "pitch": -2.5
+   },
+   "use": "big surprise"
+  },
+  "surprised": {
+   "controls": {
+    "brow": 24,
+    "eye": 0.4,
+    "lip": 0.12,
+    "pitch": -1.5
+   },
+   "use": "unexpected fact"
+  },
+  "confused": {
+   "controls": {
+    "smile": -0.3,
+    "brow_l": 24,
+    "brow_r": -16,
+    "eye": 0.3,
+    "roll": 3.5,
+    "gx": 3
+   },
+   "use": "question he cannot answer"
+  },
+  "curious": {
+   "controls": {
+    "smile": 0.2,
+    "brow_l": 24,
+    "brow_r": 8,
+    "eye": 0.34,
+    "roll": -3,
+    "pitch": -1.5
+   },
+   "use": "question, lean in"
+  },
+  "thinking": {
+   "controls": {
+    "smile": 0.05,
+    "brow_r": 18,
+    "brow_l": -8,
+    "eye": 0.3,
+    "gx": 9,
+    "gy": 7,
+    "roll": 2.5
+   },
+   "use": "considering, looking up and away"
+  },
+  "worried": {
+   "controls": {
+    "smile": -0.6,
+    "brow": 20,
+    "brow_l": 4,
+    "eye": 0.33,
+    "pitch": 1.5
+   },
+   "use": "risk, problem for the viewer"
+  },
+  "sad": {
+   "controls": {
+    "smile": -0.6,
+    "brow": 14,
+    "eye": 0.3,
+    "gy": -3,
+    "pitch": 3.5
+   },
+   "use": "loss"
+  },
+  "disappointed": {
+   "controls": {
+    "smile": -0.55,
+    "brow": -8,
+    "eye": 0.3,
+    "gy": -3,
+    "pitch": 2.5,
+    "roll": -2
+   },
+   "use": "result that failed"
+  },
+  "skeptical": {
+   "controls": {
+    "smile": -0.25,
+    "brow_l": 25,
+    "brow_r": -16,
+    "eye": 0.3,
+    "yaw": -2.5,
+    "roll": 2
+   },
+   "use": "doubt about a claim"
+  },
+  "sarcastic": {
+   "controls": {
+    "smile": 0.5,
+    "brow_r": 24,
+    "brow_l": -10,
+    "eye": 0.3,
+    "roll": -2.5
+   },
+   "use": "ironic aside"
+  },
+  "proud": {
+   "controls": {
+    "smile": 0.8,
+    "brow": 3,
+    "eye": 0.3,
+    "pitch": -3
+   },
+   "use": "achievement"
+  },
+  "nervous": {
+   "controls": {
+    "smile": 0.3,
+    "brow": 16,
+    "eye": 0.34,
+    "gx": -7
+   },
+   "use": "awkward admission"
+  },
+  "embarrassed": {
+   "controls": {
+    "smile": 0.6,
+    "brow": 6,
+    "eye": 0.3,
+    "gy": -3,
+    "pitch": 3,
+    "roll": 2
+   },
+   "use": "self-deprecating"
+  },
+  "impressed": {
+   "controls": {
+    "smile": 0.4,
+    "brow": 20,
+    "eye": 0.37,
+    "pitch": -1.5,
+    "lip": 0.06
+   },
+   "use": "praise of something"
+  },
+  "explaining": {
+   "controls": {
+    "smile": 0.3,
+    "brow": 6,
+    "eye": 0.31
+   },
+   "use": "teaching, the default while speaking"
+  },
+  "questioning": {
+   "controls": {
+    "smile": 0.1,
+    "brow": 20,
+    "eye": 0.34,
+    "roll": 3,
+    "pitch": -1.5
+   },
+   "use": "asking the viewer"
+  },
+  "disagreeing": {
+   "controls": {
+    "smile": -0.5,
+    "brow": -14,
+    "eye": 0.3,
+    "yaw": 3
+   },
+   "use": "no, not this (with a head shake)"
+  },
+  "agreeing": {
+   "controls": {
+    "smile": 0.6,
+    "brow": 5,
+    "eye": 0.3,
+    "pitch": 2
+   },
+   "use": "yes (with a nod)"
+  },
+  "celebrating": {
+   "controls": {
+    "smile": 1.3,
+    "brow": 14,
+    "eye": 0.3,
+    "lip": 0.16,
+    "pitch": -3
+   },
+   "use": "win"
+  },
+  "suspicious": {
+   "controls": {
+    "smile": -0.35,
+    "brow": -18,
+    "eye": 0.3,
+    "gx": -8,
+    "yaw": 2.5
+   },
+   "use": "something is off"
+  },
+  "reassuring": {
+   "controls": {
+    "smile": 0.65,
+    "brow": 4,
+    "eye": 0.3,
+    "pitch": 1,
+    "roll": -1.5
+   },
+   "use": "calm promise, CTA"
+  }
+ },
+ "intensity_levels": {
+  "subtle": 0.25,
+  "moderate": 0.5,
+  "strong": 0.75,
+  "exaggerated": 1.0
+ },
+ "head_events": {
+  "nod": "pitch down and back",
+  "shake": "two quick yaw swings: no",
+  "tilt": "roll to one side and back",
+  "forward": "chin a little down, toward the viewer",
+  "look_up": "pitch up and back",
+  "look_down": "pitch down and back"
+ },
+ "body_controls": {
+  "lean_fwd": "upper body toward the camera (grows up to 2.8 %, drops up to 9 px), hips and feet stay",
+  "lean_back": "the opposite: a small recoil",
+  "shrug": "both shoulders up to 9 px, the neck shortens",
+  "shoulder_l": "the shoulder on the viewer's left alone",
+  "shoulder_r": "the shoulder on the viewer's right alone",
+  "weight shift": "automatic: hips drift from one leg to the other, feet planted",
+  "breathing": "automatic: the chest widens slightly with each breath",
+  "turn tl / tr": "slight whole-body turn toward the cards (5 in-between frames), only while both arms rest",
+  "glide": "he moves across the stage between scenes (1 s, eased)"
+ },
+ "hand_shapes": [
+  "OK sign",
+  "closed fist",
+  "flat blade hand (chop)",
+  "four fingers",
+  "index pointing at camera",
+  "index pointing sideways",
+  "one finger",
+  "open hand facing camera (wave, count 5)",
+  "open palm up (present, explain, shrug)",
+  "relaxed hanging hand",
+  "stop palm",
+  "three fingers",
+  "thumbs-up",
+  "two fingers"
+ ],
+ "arm_clips": {
+  "L": {
+   "states": [
+    "count1",
+    "count2",
+    "count3",
+    "count4",
+    "count5",
+    "explain",
+    "fist_pump",
+    "point_camera",
+    "point_side",
+    "present",
+    "shrug",
+    "thumbs_up",
+    "wave"
+   ],
+   "transitions (frames)": {
+    "rest>present": 21,
+    "present>rest": 21,
+    "rest>explain": 21,
+    "explain>rest": 21,
+    "rest>wave": 41,
+    "wave>rest": 41,
+    "rest>point_camera": 21,
+    "point_camera>rest": 21,
+    "rest>point_side": 21,
+    "point_side>rest": 21,
+    "rest>count1": 21,
+    "count1>rest": 21,
+    "rest>count2": 21,
+    "count2>rest": 21,
+    "rest>count3": 21,
+    "count3>rest": 21,
+    "rest>count4": 21,
+    "count4>rest": 21,
+    "rest>count5": 21,
+    "count5>rest": 21,
+    "rest>thumbs_up": 21,
+    "thumbs_up>rest": 21,
+    "rest>fist_pump": 21,
+    "fist_pump>rest": 21,
+    "rest>shrug": 21,
+    "shrug>rest": 21,
+    "present>explain": 31,
+    "explain>present": 31,
+    "present>wave": 51,
+    "wave>present": 51,
+    "present>point_camera": 31,
+    "point_camera>present": 31,
+    "present>point_side": 31,
+    "point_side>present": 31,
+    "present>count1": 31,
+    "count1>present": 31,
+    "present>count2": 41,
+    "count2>present": 41,
+    "present>count3": 41,
+    "count3>present": 41,
+    "present>count4": 41,
+    "count4>present": 41,
+    "present>count5": 41,
+    "count5>present": 41,
+    "present>thumbs_up": 41,
+    "thumbs_up>present": 41,
+    "present>fist_pump": 41,
+    "fist_pump>present": 41,
+    "present>shrug": 41,
+    "shrug>present": 41,
+    "explain>wave": 51,
+    "wave>explain": 51,
+    "explain>point_camera": 31,
+    "point_camera>explain": 31,
+    "explain>point_side": 41,
+    "point_side>explain": 41,
+    "explain>count1": 31,
+    "count1>explain": 31,
+    "explain>count2": 41,
+    "count2>explain": 41,
+    "explain>count3": 41,
+    "count3>explain": 41,
+    "explain>count4": 41,
+    "count4>explain": 41,
+    "explain>count5": 41,
+    "count5>explain": 41,
+    "explain>thumbs_up": 31,
+    "thumbs_up>explain": 31,
+    "explain>fist_pump": 41,
+    "fist_pump>explain": 41,
+    "explain>shrug": 31,
+    "shrug>explain": 31,
+    "wave>point_camera": 61,
+    "point_camera>wave": 61,
+    "wave>point_side": 61,
+    "point_side>wave": 61,
+    "wave>count1": 61,
+    "count1>wave": 61,
+    "wave>count2": 61,
+    "count2>wave": 61,
+    "wave>count3": 61,
+    "count3>wave": 61,
+    "wave>count4": 61,
+    "count4>wave": 61,
+    "wave>count5": 61,
+    "count5>wave": 61,
+    "wave>thumbs_up": 61,
+    "thumbs_up>wave": 61,
+    "wave>fist_pump": 61,
+    "fist_pump>wave": 61,
+    "wave>shrug": 61,
+    "shrug>wave": 61,
+    "point_camera>point_side": 41,
+    "point_side>point_camera": 41,
+    "point_camera>count1": 41,
+    "count1>point_camera": 41,
+    "point_camera>count2": 41,
+    "count2>point_camera": 41,
+    "point_camera>count3": 41,
+    "count3>point_camera": 41,
+    "point_camera>count4": 41,
+    "count4>point_camera": 41,
+    "point_camera>count5": 41,
+    "count5>point_camera": 41,
+    "point_camera>thumbs_up": 41,
+    "thumbs_up>point_camera": 41,
+    "point_camera>fist_pump": 41,
+    "fist_pump>point_camera": 41,
+    "point_camera>shrug": 41,
+    "shrug>point_camera": 41,
+    "point_side>count1": 41,
+    "count1>point_side": 41,
+    "point_side>count2": 41,
+    "count2>point_side": 41,
+    "point_side>count3": 41,
+    "count3>point_side": 41,
+    "point_side>count4": 41,
+    "count4>point_side": 41,
+    "point_side>count5": 41,
+    "count5>point_side": 41,
+    "point_side>thumbs_up": 41,
+    "thumbs_up>point_side": 41,
+    "point_side>fist_pump": 41,
+    "fist_pump>point_side": 41,
+    "point_side>shrug": 41,
+    "shrug>point_side": 41,
+    "count1>count2": 11,
+    "count2>count1": 11,
+    "count1>count3": 21,
+    "count3>count1": 21,
+    "count1>count4": 31,
+    "count4>count1": 31,
+    "count1>count5": 41,
+    "count5>count1": 41,
+    "count1>thumbs_up": 41,
+    "thumbs_up>count1": 41,
+    "count1>fist_pump": 41,
+    "fist_pump>count1": 41,
+    "count1>shrug": 41,
+    "shrug>count1": 41,
+    "count2>count3": 11,
+    "count3>count2": 11,
+    "count2>count4": 21,
+    "count4>count2": 21,
+    "count2>count5": 31,
+    "count5>count2": 31,
+    "count2>thumbs_up": 41,
+    "thumbs_up>count2": 41,
+    "count2>fist_pump": 41,
+    "fist_pump>count2": 41,
+    "count2>shrug": 41,
+    "shrug>count2": 41,
+    "count3>count4": 11,
+    "count4>count3": 11,
+    "count3>count5": 21,
+    "count5>count3": 21,
+    "count3>thumbs_up": 41,
+    "thumbs_up>count3": 41,
+    "count3>fist_pump": 41,
+    "fist_pump>count3": 41,
+    "count3>shrug": 41,
+    "shrug>count3": 41,
+    "count4>count5": 11,
+    "count5>count4": 11,
+    "count4>thumbs_up": 41,
+    "thumbs_up>count4": 41,
+    "count4>fist_pump": 41,
+    "fist_pump>count4": 41,
+    "count4>shrug": 41,
+    "shrug>count4": 41,
+    "count5>thumbs_up": 41,
+    "thumbs_up>count5": 41,
+    "count5>fist_pump": 41,
+    "fist_pump>count5": 41,
+    "count5>shrug": 41,
+    "shrug>count5": 41,
+    "thumbs_up>fist_pump": 41,
+    "fist_pump>thumbs_up": 41,
+    "thumbs_up>shrug": 41,
+    "shrug>thumbs_up": 41,
+    "fist_pump>shrug": 41,
+    "shrug>fist_pump": 41
+   }
+  },
+  "R": {
+   "states": [
+    "chop",
+    "count3",
+    "explain",
+    "ok",
+    "point_side",
+    "present",
+    "shrug",
+    "stop",
+    "thumbs_up"
+   ],
+   "transitions (frames)": {
+    "rest>present": 21,
+    "present>rest": 21,
+    "rest>explain": 21,
+    "explain>rest": 21,
+    "rest>point_side": 21,
+    "point_side>rest": 21,
+    "rest>thumbs_up": 21,
+    "thumbs_up>rest": 21,
+    "rest>chop": 21,
+    "chop>rest": 21,
+    "rest>ok": 21,
+    "ok>rest": 21,
+    "rest>stop": 21,
+    "stop>rest": 21,
+    "rest>count3": 21,
+    "count3>rest": 21,
+    "rest>shrug": 21,
+    "shrug>rest": 21,
+    "present>explain": 31,
+    "explain>present": 31,
+    "present>point_side": 31,
+    "point_side>present": 31,
+    "present>thumbs_up": 31,
+    "thumbs_up>present": 31,
+    "present>chop": 41,
+    "chop>present": 41,
+    "present>ok": 41,
+    "ok>present": 41,
+    "present>stop": 41,
+    "stop>present": 41,
+    "present>count3": 41,
+    "count3>present": 41,
+    "present>shrug": 41,
+    "shrug>present": 41,
+    "explain>point_side": 41,
+    "point_side>explain": 41,
+    "explain>thumbs_up": 41,
+    "thumbs_up>explain": 41,
+    "explain>chop": 31,
+    "chop>explain": 31,
+    "explain>ok": 31,
+    "ok>explain": 31,
+    "explain>stop": 31,
+    "stop>explain": 31,
+    "explain>count3": 41,
+    "count3>explain": 41,
+    "explain>shrug": 31,
+    "shrug>explain": 31,
+    "point_side>thumbs_up": 41,
+    "thumbs_up>point_side": 41,
+    "point_side>chop": 41,
+    "chop>point_side": 41,
+    "point_side>ok": 41,
+    "ok>point_side": 41,
+    "point_side>stop": 41,
+    "stop>point_side": 41,
+    "point_side>count3": 41,
+    "count3>point_side": 41,
+    "point_side>shrug": 41,
+    "shrug>point_side": 41,
+    "thumbs_up>chop": 41,
+    "chop>thumbs_up": 41,
+    "thumbs_up>ok": 41,
+    "ok>thumbs_up": 41,
+    "thumbs_up>stop": 41,
+    "stop>thumbs_up": 41,
+    "thumbs_up>count3": 41,
+    "count3>thumbs_up": 41,
+    "thumbs_up>shrug": 41,
+    "shrug>thumbs_up": 41,
+    "chop>ok": 41,
+    "ok>chop": 41,
+    "chop>stop": 41,
+    "stop>chop": 41,
+    "chop>count3": 41,
+    "count3>chop": 41,
+    "chop>shrug": 41,
+    "shrug>chop": 41,
+    "ok>stop": 41,
+    "stop>ok": 41,
+    "ok>count3": 41,
+    "count3>ok": 41,
+    "ok>shrug": 41,
+    "shrug>ok": 41,
+    "stop>count3": 41,
+    "count3>stop": 41,
+    "stop>shrug": 41,
+    "shrug>stop": 41,
+    "count3>shrug": 41,
+    "shrug>count3": 41
+   }
+  }
+ },
+ "gestures": {
+  "wave_hello": {
+   "purpose": "greeting, goodbye",
+   "arm candidates": [
+    [
+     "L",
+     "wave"
+    ]
+   ],
+   "face": [
+    "happy",
+    0.8
+   ],
+   "head": [
+    "nod",
+    0.7
+   ],
+   "body": null,
+   "hold s": [
+    0.5,
+    0.9
+   ],
+   "clip length s": [
+    0.7,
+    1.2
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 0
+  },
+  "count": {
+   "purpose": "a number or a list item: 1 to 5 fingers",
+   "arm candidates": [
+    [
+     "L",
+     "count{n}"
+    ],
+    [
+     "R",
+     "count{n}"
+    ],
+    [
+     "@content",
+     "present"
+    ]
+   ],
+   "face": [
+    "explaining",
+    0.6
+   ],
+   "head": [
+    "nod",
+    0.4
+   ],
+   "body": null,
+   "hold s": [
+    0.7,
+    1.4
+   ],
+   "clip length s": [
+    0.45,
+    0.8
+   ],
+   "emotions": "any",
+   "max repeats in a row": 5
+  },
+  "point_you": {
+   "purpose": "you, your business: the viewer",
+   "arm candidates": [
+    [
+     "L",
+     "point_camera"
+    ],
+    [
+     "R",
+     "point_camera"
+    ],
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "reassuring",
+    0.6
+   ],
+   "head": [
+    "forward",
+    0.6
+   ],
+   "body": [
+    "lean_fwd",
+    0.6
+   ],
+   "hold s": [
+    0.5,
+    1.0
+   ],
+   "clip length s": [
+    0.45,
+    0.8
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 1
+  },
+  "point_content": {
+   "purpose": "look at this: a card, a name, a place on screen",
+   "arm candidates": [
+    [
+     "@content",
+     "point_side"
+    ],
+    [
+     "@content",
+     "present"
+    ]
+   ],
+   "face": [
+    "explaining",
+    0.5
+   ],
+   "head": null,
+   "body": null,
+   "hold s": [
+    0.7,
+    1.6
+   ],
+   "clip length s": [
+    0.5,
+    0.9
+   ],
+   "emotions": "any",
+   "max repeats in a row": 2
+  },
+  "present_item": {
+   "purpose": "a list item or a fact appears",
+   "arm candidates": [
+    [
+     "@content",
+     "present"
+    ],
+    [
+     "@free",
+     "present"
+    ]
+   ],
+   "face": [
+    "explaining",
+    0.5
+   ],
+   "head": [
+    "nod",
+    0.3
+   ],
+   "body": null,
+   "hold s": [
+    0.6,
+    1.4
+   ],
+   "clip length s": [
+    0.5,
+    0.9
+   ],
+   "emotions": "any",
+   "max repeats in a row": 2
+  },
+  "explain_open": {
+   "purpose": "explaining, describing, 'we do this'",
+   "arm candidates": [
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "explaining",
+    0.6
+   ],
+   "head": null,
+   "body": null,
+   "hold s": [
+    0.8,
+    2.0
+   ],
+   "clip length s": [
+    0.6,
+    1.0
+   ],
+   "emotions": "any",
+   "max repeats in a row": 1
+  },
+  "question_shrug": {
+   "purpose": "a question, uncertainty",
+   "arm candidates": [
+    [
+     "both",
+     "shrug"
+    ],
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "questioning",
+    0.8
+   ],
+   "head": [
+    "tilt",
+    0.8
+   ],
+   "body": [
+    "shrug",
+    0.8
+   ],
+   "hold s": [
+    0.6,
+    1.1
+   ],
+   "clip length s": [
+    0.5,
+    0.9
+   ],
+   "emotions": "any",
+   "max repeats in a row": 0
+  },
+  "emphasis_chop": {
+   "purpose": "an important word: only, really, must",
+   "arm candidates": [
+    [
+     "R",
+     "chop"
+    ],
+    [
+     "L",
+     "fist_pump"
+    ],
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "serious",
+    0.5
+   ],
+   "head": [
+    "nod",
+    0.9
+   ],
+   "body": [
+    "lean_fwd",
+    0.5
+   ],
+   "hold s": [
+    0.4,
+    0.8
+   ],
+   "clip length s": [
+    0.4,
+    0.7
+   ],
+   "emotions": "any",
+   "max repeats in a row": 1
+  },
+  "stop_no": {
+   "purpose": "no, never, stop",
+   "arm candidates": [
+    [
+     "R",
+     "stop"
+    ],
+    [
+     "L",
+     "count5"
+    ]
+   ],
+   "face": [
+    "disagreeing",
+    0.6
+   ],
+   "head": [
+    "shake",
+    0.9
+   ],
+   "body": [
+    "lean_back",
+    0.4
+   ],
+   "hold s": [
+    0.5,
+    0.9
+   ],
+   "clip length s": [
+    0.4,
+    0.7
+   ],
+   "emotions": "cool",
+   "max repeats in a row": 0
+  },
+  "head_no": {
+   "purpose": "a soft 'not': face and head only, the arms stay",
+   "arm candidates": [],
+   "face": [
+    "worried",
+    0.5
+   ],
+   "head": [
+    "shake",
+    0.6
+   ],
+   "body": null,
+   "hold s": [
+    0,
+    0
+   ],
+   "clip length s": [
+    0,
+    0
+   ],
+   "emotions": "cool",
+   "max repeats in a row": 9
+  },
+  "thumbs_good": {
+   "purpose": "good, free, the benefit",
+   "arm candidates": [
+    [
+     "L",
+     "thumbs_up"
+    ],
+    [
+     "R",
+     "thumbs_up"
+    ],
+    [
+     "@content",
+     "present"
+    ]
+   ],
+   "face": [
+    "happy",
+    0.8
+   ],
+   "head": [
+    "nod",
+    0.6
+   ],
+   "body": null,
+   "hold s": [
+    0.6,
+    1.1
+   ],
+   "clip length s": [
+    0.45,
+    0.8
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 0
+  },
+  "ok_precise": {
+   "purpose": "exactly, precisely, just right",
+   "arm candidates": [
+    [
+     "R",
+     "ok"
+    ],
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "confident",
+    0.6
+   ],
+   "head": [
+    "nod",
+    0.4
+   ],
+   "body": null,
+   "hold s": [
+    0.5,
+    1.0
+   ],
+   "clip length s": [
+    0.45,
+    0.8
+   ],
+   "emotions": "any",
+   "max repeats in a row": 0
+  },
+  "celebrate": {
+   "purpose": "a win, the payoff",
+   "arm candidates": [
+    [
+     "L",
+     "fist_pump"
+    ],
+    [
+     "L",
+     "thumbs_up"
+    ],
+    [
+     "L",
+     "wave"
+    ]
+   ],
+   "face": [
+    "celebrating",
+    0.8
+   ],
+   "head": [
+    "look_up",
+    0.5
+   ],
+   "body": [
+    "lean_back",
+    0.3
+   ],
+   "hold s": [
+    0.5,
+    1.0
+   ],
+   "clip length s": [
+    0.5,
+    0.9
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 0
+  },
+  "brand_present": {
+   "purpose": "his own name, the company",
+   "arm candidates": [
+    [
+     "@free",
+     "present"
+    ],
+    [
+     "@content",
+     "present"
+    ]
+   ],
+   "face": [
+    "proud",
+    0.7
+   ],
+   "head": [
+    "nod",
+    0.5
+   ],
+   "body": null,
+   "hold s": [
+    0.7,
+    1.4
+   ],
+   "clip length s": [
+    0.5,
+    0.9
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 1
+  },
+  "bring_together": {
+   "purpose": "joining things into one",
+   "arm candidates": [
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "confident",
+    0.6
+   ],
+   "head": [
+    "nod",
+    0.5
+   ],
+   "body": [
+    "lean_fwd",
+    0.4
+   ],
+   "hold s": [
+    0.7,
+    1.4
+   ],
+   "clip length s": [
+    0.6,
+    1.0
+   ],
+   "emotions": "any",
+   "max repeats in a row": 1
+  },
+  "problem_face": {
+   "purpose": "a loss or a problem: face and body only",
+   "arm candidates": [],
+   "face": [
+    "worried",
+    0.7
+   ],
+   "head": [
+    "tilt",
+    0.5
+   ],
+   "body": [
+    "lean_back",
+    0.4
+   ],
+   "hold s": [
+    0,
+    0
+   ],
+   "clip length s": [
+    0,
+    0
+   ],
+   "emotions": "cool",
+   "max repeats in a row": 9
+  },
+  "contrast_turn": {
+   "purpose": "but, however: the thought turns",
+   "arm candidates": [],
+   "face": [
+    "skeptical",
+    0.5
+   ],
+   "head": [
+    "tilt",
+    0.7
+   ],
+   "body": [
+    "shoulder_l",
+    0.6
+   ],
+   "hold s": [
+    0,
+    0
+   ],
+   "clip length s": [
+    0,
+    0
+   ],
+   "emotions": "any",
+   "max repeats in a row": 9
+  },
+  "self_nod": {
+   "purpose": "I, we: a small nod, the arms stay",
+   "arm candidates": [],
+   "face": [
+    "confident",
+    0.5
+   ],
+   "head": [
+    "nod",
+    0.5
+   ],
+   "body": null,
+   "hold s": [
+    0,
+    0
+   ],
+   "clip length s": [
+    0,
+    0
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 9
+  },
+  "call_to_action": {
+   "purpose": "do it now: message, call, follow",
+   "arm candidates": [
+    [
+     "L",
+     "point_camera"
+    ],
+    [
+     "R",
+     "point_camera"
+    ],
+    [
+     "@content",
+     "present"
+    ],
+    [
+     "both",
+     "explain"
+    ]
+   ],
+   "face": [
+    "excited",
+    0.6
+   ],
+   "head": [
+    "forward",
+    0.8
+   ],
+   "body": [
+    "lean_fwd",
+    0.8
+   ],
+   "hold s": [
+    0.6,
+    1.2
+   ],
+   "clip length s": [
+    0.45,
+    0.8
+   ],
+   "emotions": "warm",
+   "max repeats in a row": 1
+  },
+  "return_neutral": {
+   "purpose": "back to the resting stance",
+   "arm candidates": [
+    [
+     "L",
+     "rest"
+    ],
+    [
+     "R",
+     "rest"
+    ]
+   ],
+   "face": [
+    "slight_smile",
+    0.6
+   ],
+   "head": null,
+   "body": null,
+   "hold s": [
+    0,
+    0
+   ],
+   "clip length s": [
+    0.5,
+    1.0
+   ],
+   "emotions": "any",
+   "max repeats in a row": 9
+  }
+ },
+ "concepts": {
+  "greet": {
+   "cue words": [
+    "assalam",
+    "salam",
+    "alaikum",
+    "hello",
+    "hi",
+    "khushamdeed",
+    "welcome"
+   ],
+   "gestures": [
+    "wave_hello"
+   ],
+   "priority": 9
+  },
+  "number": {
+   "cue words": "from the script structure",
+   "gestures": [
+    "count"
+   ],
+   "priority": 9
+  },
+  "you": {
+   "cue words": [
+    "aap",
+    "aapke",
+    "aapka",
+    "aapki",
+    "tum",
+    "tumhara",
+    "apna",
+    "apne",
+    "you",
+    "your"
+   ],
+   "gestures": [
+    "point_you"
+   ],
+   "priority": 7
+  },
+  "question": {
+   "cue words": [
+    "kya",
+    "kyun",
+    "kyon",
+    "kaise",
+    "kab",
+    "kahan",
+    "kaun",
+    "kitna",
+    "kitne",
+    "why",
+    "how",
+    "what",
+    "when",
+    "where"
+   ],
+   "gestures": [
+    "question_shrug"
+   ],
+   "priority": 7
+  },
+  "list": {
+   "cue words": "from the script structure",
+   "gestures": [
+    "count",
+    "present_item",
+    "point_content"
+   ],
+   "priority": 7.5
+  },
+  "emphasis": {
+   "cue words": [
+    "sirf",
+    "waqai",
+    "bilkul",
+    "zaroor",
+    "bohat",
+    "bahut",
+    "sab",
+    "sabse",
+    "hamesha",
+    "must",
+    "important",
+    "zaroori",
+    "hi",
+    "wohi"
+   ],
+   "gestures": [
+    "emphasis_chop",
+    "ok_precise"
+   ],
+   "priority": 6
+  },
+  "negation": {
+   "cue words": [
+    "nahi",
+    "nahin",
+    "na",
+    "mat",
+    "never",
+    "kabhi",
+    "bilkulnahi",
+    "no",
+    "not"
+   ],
+   "gestures": [
+    "head_no",
+    "stop_no"
+   ],
+   "priority": 6
+  },
+  "positive": {
+   "cue words": [
+    "free",
+    "behtareen",
+    "zabardast",
+    "kamyab",
+    "kamyabi",
+    "best",
+    "asaan",
+    "growth",
+    "faida",
+    "munafa"
+   ],
+   "gestures": [
+    "thumbs_good",
+    "present_item"
+   ],
+   "priority": 5
+  },
+  "problem": {
+   "cue words": [
+    "kho",
+    "nuqsan",
+    "mushkil",
+    "masla",
+    "masle",
+    "problem",
+    "rukte",
+    "ruk",
+    "ghalat",
+    "zaya",
+    "barbad",
+    "kam"
+   ],
+   "gestures": [
+    "problem_face"
+   ],
+   "priority": 4
+  },
+  "contrast": {
+   "cue words": [
+    "lekin",
+    "magar",
+    "but",
+    "however",
+    "halanke"
+   ],
+   "gestures": [
+    "contrast_turn"
+   ],
+   "priority": 4
+  },
+  "cta": {
+   "cue words": [
+    "abhi",
+    "karein",
+    "kijiye",
+    "kijiay",
+    "whatsapp",
+    "call",
+    "message",
+    "follow",
+    "visit",
+    "rabta",
+    "click"
+   ],
+   "gestures": [
+    "call_to_action",
+    "point_you"
+   ],
+   "priority": 8
+  },
+  "brand": {
+   "cue words": "from the script structure",
+   "gestures": [
+    "brand_present"
+   ],
+   "priority": 5
+  },
+  "connect": {
+   "cue words": [
+    "jodte",
+    "jorte",
+    "milate",
+    "ikattha"
+   ],
+   "gestures": [
+    "bring_together",
+    "explain_open"
+   ],
+   "priority": 5
+  },
+  "self": {
+   "cue words": [
+    "main",
+    "mein",
+    "hum",
+    "hamara",
+    "hamari",
+    "hamare",
+    "i",
+    "we",
+    "our"
+   ],
+   "gestures": [
+    "self_nod"
+   ],
+   "priority": 3
+  },
+  "place": {
+   "cue words": "from the script structure",
+   "gestures": [
+    "present_item",
+    "point_content"
+   ],
+   "priority": 3
+  }
+ },
+ "capability": {
+  "before v019": {
+   "arm states L": 3,
+   "arm states R": 2,
+   "hand shapes": 2,
+   "expression presets": 0,
+   "face controls used": 6,
+   "mouth shapes": 1,
+   "head events": 1,
+   "body controls": 4,
+   "semantic gestures": 0,
+   "director rules (concepts)": 0,
+   "word times": "estimated from word length"
+  },
+  "after v020": {
+   "arm states L": 13,
+   "arm states R": 9,
+   "hand shapes": 14,
+   "expression presets": 29,
+   "face controls used": 13,
+   "mouth shapes": "continuous (generated from the voice)",
+   "head events": 6,
+   "body controls": 9,
+   "semantic gestures": 20,
+   "director rules (concepts)": 15,
+   "word times": "measured from the audio (forced alignment)"
+  }
+ }
+}

@@ -134,19 +134,7 @@
    "k": 0.5
   },
   {
-   "t": 9.181,
-   "d": 0.8,
-   "expr": "explaining",
-   "k": 0.6
-  },
-  {
-   "t": 10.169,
-   "d": 0.8,
-   "expr": "explaining",
-   "k": 0.6
-  },
-  {
-   "t": 10.555,
+   "t": 9.753,
    "d": 0.8,
    "expr": "explaining",
    "k": 0.5
@@ -185,7 +173,7 @@
    "t": 20.676,
    "d": 0.8,
    "expr": "explaining",
-   "k": 0.5
+   "k": 0.6
   },
   {
    "t": 20.932,
@@ -209,7 +197,7 @@
    "t": 23.132,
    "d": 0.8,
    "expr": "explaining",
-   "k": 0.5
+   "k": 0.6
   },
   {
    "t": 23.773,
@@ -221,7 +209,13 @@
    "t": 24.555,
    "d": 0.8,
    "expr": "explaining",
-   "k": 0.5
+   "k": 0.6
+  },
+  {
+   "t": 25.236,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
   },
   {
    "t": 26.04,
@@ -316,13 +310,7 @@
    "amp": 0.3
   },
   {
-   "t": 9.241,
-   "d": 0.5,
-   "kind": "nod",
-   "amp": 0.4
-  },
-  {
-   "t": 10.615,
+   "t": 9.813,
    "d": 0.5,
    "kind": "nod",
    "amp": 0.3
@@ -349,7 +337,7 @@
    "t": 20.736,
    "d": 0.5,
    "kind": "nod",
-   "amp": 0.3
+   "amp": 0.4
   },
   {
    "t": 22.391,
@@ -364,7 +352,7 @@
    "amp": 0.4
   },
   {
-   "t": 26.1,
+   "t": 25.296,
    "d": 0.5,
    "kind": "nod",
    "amp": 0.4
@@ -414,41 +402,29 @@
    "gy": -1
   },
   {
-   "t": 20.606,
+   "t": 9.683,
    "d": 0.7,
    "gx": -9,
-   "gy": -1
-  },
-  {
-   "t": 23.062,
-   "d": 0.7,
-   "gx": 9,
-   "gy": -1
-  },
-  {
-   "t": 24.485,
-   "d": 0.7,
-   "gx": 9,
    "gy": -1
   }
  ],
  "blinks": [
   1.4,
   5.084,
-  9.672,
+  9.332,
   13.995,
-  18.69,
-  22.908,
-  26.681,
-  31.325,
-  35.855,
-  38.659
+  19.03,
+  21.815,
+  26.592,
+  29.933,
+  33.823,
+  37.24
  ],
  "arms": {
   "L": [
    [
     2.944,
-    "explain",
+    "shrug",
     0.753
    ],
    [
@@ -467,47 +443,82 @@
     0.739
    ],
    [
-    11.679,
+    11.263,
     "rest",
     0.786
    ],
    [
     14.89,
-    "present",
+    "count3",
     0.78
    ],
    [
-    17.098,
-    "explain",
+    18.006,
+    "count1",
+    0.739
+   ],
+   [
+    19.534,
+    "count2",
+    0.588
+   ],
+   [
+    20.326,
+    "count3",
+    0.588
+   ],
+   [
+    21.846,
+    "count1",
+    0.739
+   ],
+   [
+    22.782,
+    "count2",
+    0.588
+   ],
+   [
+    23.471,
+    "count3",
+    0.588
+   ],
+   [
+    24.205,
+    "count4",
+    0.588
+   ],
+   [
+    24.894,
+    "count5",
+    0.588
+   ],
+   [
+    25.582,
+    "count1",
     0.8
    ],
    [
-    18.848,
+    28.173,
     "rest",
     0.786
    ],
    [
-    19.734,
-    "present",
-    0.629
-   ],
-   [
-    21.66,
-    "rest",
-    0.786
-   ],
-   [
-    27.693,
-    "explain",
-    0.7
+    29.059,
+    "point_camera",
+    0.716
    ],
    [
     30.99,
-    "present",
+    "thumbs_up",
     0.8
    ],
    [
-    34.33,
+    32.643,
+    "point_camera",
+    0.8
+   ],
+   [
+    34.624,
     "rest",
     0.786
    ]
@@ -515,46 +526,31 @@
   "R": [
    [
     2.944,
-    "explain",
+    "shrug",
     0.753
    ],
    [
-    4.197,
+    4.331,
     "rest",
     0.786
    ],
    [
-    5.175,
+    5.217,
     "present",
     0.711
    ],
    [
-    7.146,
+    8.161,
     "rest",
     0.786
-   ],
-   [
-    17.153,
-    "explain",
-    0.739
-   ],
-   [
-    18.842,
-    "rest",
-    0.786
-   ],
-   [
-    21.846,
-    "present",
-    0.739
    ],
    [
     27.693,
-    "explain",
+    "chop",
     0.7
    ],
    [
-    30.475,
+    29.193,
     "rest",
     0.786
    ],
@@ -616,6 +612,14 @@
   [
    1.94,
    "front"
+  ],
+  [
+   12.25,
+   "tl"
+  ],
+  [
+   13.89,
+   "front"
   ]
  ],
  "log": [
@@ -643,8 +647,8 @@
    "t": 3.62,
    "concept": "question",
    "gesture": "question_shrug",
-   "arms": "L+R:explain",
-   "why": "first choice not built, used the next one"
+   "arms": "L+R:shrug",
+   "why": ""
   },
   {
    "line": "l02",
@@ -702,39 +706,21 @@
   },
   {
    "line": "l03",
-   "word": "se,",
-   "t": 9.36,
-   "concept": "list",
-   "gesture": "count",
-   "arms": "L:present",
-   "why": "first choice not built, used the next one"
-  },
-  {
-   "line": "l03",
    "word": "Lahore",
    "t": 9.93,
    "concept": "place",
    "gesture": "present_item",
-   "arms": "-",
-   "why": "arms left to 'se,' (list)"
-  },
-  {
-   "line": "l03",
-   "word": "se,",
-   "t": 10.35,
-   "concept": "list",
-   "gesture": "count",
    "arms": "L:present",
-   "why": "first choice not built, used the next one"
+   "why": ""
   },
   {
    "line": "l03",
    "word": "Pakistan",
    "t": 10.73,
-   "concept": "list",
+   "concept": "place",
    "gesture": "present_item",
    "arms": "-",
-   "why": "too soon after the last stroke: face and head only"
+   "why": "arms left to 'Lahore' (place)"
   },
   {
    "line": "l03",
@@ -743,7 +729,7 @@
    "concept": "place",
    "gesture": "present_item",
    "arms": "-",
-   "why": "arms left to 'Pakistan' (list)"
+   "why": "arms left to 'Pakistan' (place)"
   },
   {
    "line": "l04",
@@ -751,8 +737,8 @@
    "t": 15.59,
    "concept": "number",
    "gesture": "count",
-   "arms": "L:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:count3",
+   "why": ""
   },
   {
    "line": "l04",
@@ -769,8 +755,8 @@
    "t": 17.82,
    "concept": "you",
    "gesture": "point_you",
-   "arms": "L+R:explain",
-   "why": "first choice not built, used the next one"
+   "arms": "-",
+   "why": "arms left to 'paate,' (list)"
   },
   {
    "line": "l05",
@@ -787,8 +773,8 @@
    "t": 18.67,
    "concept": "list",
    "gesture": "count",
-   "arms": "-",
-   "why": "arms left to 'aap' (you)"
+   "arms": "L:count1",
+   "why": ""
   },
   {
    "line": "l05",
@@ -805,16 +791,16 @@
    "t": 20.06,
    "concept": "list",
    "gesture": "count",
-   "arms": "L:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:count2",
+   "why": ""
   },
   {
    "line": "l05",
    "word": "follow-up",
    "t": 20.86,
    "concept": "list",
-   "gesture": "present_item",
-   "arms": "L:present",
+   "gesture": "count",
+   "arms": "L:count3",
    "why": ""
   },
   {
@@ -850,16 +836,16 @@
    "t": 22.51,
    "concept": "list",
    "gesture": "count",
-   "arms": "R:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:count1",
+   "why": ""
   },
   {
    "line": "l06",
    "word": "ads,",
    "t": 23.31,
    "concept": "list",
-   "gesture": "present_item",
-   "arms": "R:present",
+   "gesture": "count",
+   "arms": "L:count2",
    "why": ""
   },
   {
@@ -868,16 +854,25 @@
    "t": 23.95,
    "concept": "list",
    "gesture": "count",
-   "arms": "R:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:count3",
+   "why": ""
   },
   {
    "line": "l06",
    "word": "SEO",
    "t": 24.73,
    "concept": "list",
-   "gesture": "present_item",
-   "arms": "R:present",
+   "gesture": "count",
+   "arms": "L:count4",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "automation",
+   "t": 25.42,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count5",
    "why": ""
   },
   {
@@ -886,8 +881,8 @@
    "t": 26.22,
    "concept": "number",
    "gesture": "count",
-   "arms": "R:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:count1",
+   "why": ""
   },
   {
    "line": "l06",
@@ -904,8 +899,8 @@
    "t": 28.32,
    "concept": "emphasis",
    "gesture": "emphasis_chop",
-   "arms": "L+R:explain",
-   "why": "first choice not built, used the next one"
+   "arms": "R:chop",
+   "why": ""
   },
   {
    "line": "l07",
@@ -922,8 +917,8 @@
    "t": 29.48,
    "concept": "you",
    "gesture": "point_you",
-   "arms": "L+R:explain",
-   "why": "first choice not built, used the next one"
+   "arms": "L:point_camera",
+   "why": ""
   },
   {
    "line": "l07",
@@ -940,8 +935,8 @@
    "t": 31.71,
    "concept": "positive",
    "gesture": "thumbs_good",
-   "arms": "L:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:thumbs_up",
+   "why": ""
   },
   {
    "line": "l08",
@@ -958,8 +953,8 @@
    "t": 33.36,
    "concept": "cta",
    "gesture": "call_to_action",
-   "arms": "L:present",
-   "why": "first choice not built, used the next one"
+   "arms": "L:point_camera",
+   "why": ""
   },
   {
    "line": "l08",
