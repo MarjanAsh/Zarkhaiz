@@ -69,15 +69,22 @@ def blob(key, master, side):
     """Where the key really differs from the master on this side: big blobs only (thin re-render edges dropped)."""
     d = cv2.GaussianBlur(np.abs(key.astype(np.float32) - master).sum(2), (0, 0), 5) > 42
     d = cv2.morphologyEx(d.astype(np.uint8), cv2.MORPH_OPEN, np.ones((9, 9), np.uint8))
+    if side == "L":
+        d[:, MID - 8:] = 0
+    else:
+        d[:, :MID + 8] = 0
     n, lab, st, _ = cv2.connectedComponentsWithStats(d)
     m = np.zeros_like(d)
-    for i in range(1, n):
-        if st[i, cv2.CC_STAT_AREA] > 700:
-            m[lab == i] = 1
-    if side == "L":
-        m[:, MID - 8:] = 0
-    else:
-        m[:, :MID + 8] = 0
+    if n > 1:
+        # the arm is always one big blob (20 000 px or more). Image models also re-render small patches elsewhere
+        # (shoes, hair, collar: under 3 000 px): those are kept only next to the arm, where they may be fingers.
+        big = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+        m[lab == big] = 1
+        near = cv2.dilate(m, np.ones((61, 61), np.uint8))
+        for i in range(1, n):
+            a = st[i, cv2.CC_STAT_AREA]
+            if i != big and (a > 5000 or (a > 700 and (near[lab == i]).any())):
+                m[lab == i] = 1
     return cv2.dilate(m, np.ones((33, 33), np.uint8))
 
 
