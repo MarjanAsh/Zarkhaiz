@@ -1,4 +1,6 @@
-# QA: outputdm_founder_reel_v020.mp4 (2026-11-16)
+# QA: outputdm_founder_reel_v020.mp4 (2026-11-16, second render after the user's review)
+
+The first render was rejected by the user (shoulders and face break, not symmetric, cuts). The measured rows below were re-run on the second render.
 
 The video-export-qa skill is not available in this session, so each check was run with ffmpeg/ffprobe and Python.
 
@@ -20,6 +22,10 @@ The video-export-qa skill is not available in this session, so each check was ru
 | No pose cut off by the frame | PASS | first render: the shrug's hand left the frame at the right edge; the director now rejects such poses (log: "shrug would leave the frame here"), re-rendered |
 | Head joined to the body without an edge | PASS (stills) | zoomed frames of the 8 s test, contact.jpg |
 | Character identity | PASS (stills) | every key image compared with the master; 3 Kie images with a shifted figure were regenerated |
+| Cutout outline clean, shoulders whole (the user's complaint) | PASS (stills) | fix_zoom.jpg (6 moments at 2x), fix_arm_sequence.jpg (every 3rd frame of an arm move): no dotted fringe, no shoulder notch |
+| Single-frame jumps (cuts) outside the caption band | PASS | frame-to-frame difference of all 2325 frames: 0 frames above 2.5x both neighbours |
+| Symmetry | PASS (settings) | head roll 0, no tilt, no one-brow accents, no body turns; yaw and pitch within 3.5 degrees |
+| Hands in the fastest part of an arm move | WARN | soft or doubled for 2-3 frames (fix_arm_sequence.jpg, frames 1 and 5), as in v019 |
 | Brand chips pass behind the character at about 9-13 s | WARN | the same since v013 |
 | Captions inside the 168-1330 px safe band | WARN | captions sit at about 1408-1498 px, unchanged since v014 (user to decide) |
 | Motion smoothness in playback | NOT PERFORMED | judged from stills and sequences only; needs watching |
