@@ -18,7 +18,7 @@ from src.utils.crop import prepare_paste_back, paste_back
 from src.utils.retargeting_utils import calc_eye_close_ratio, calc_lip_close_ratio
 
 P0 = dict(aaa=0, eee=0, woo=0, pout=0, smile=0, brow=0, eye=None, lip=None, gx=0, gy=0, wink=0,
-          pitch=0, yaw=0, roll=0)
+          pitch=0, yaw=0, roll=0, exp_delta=None)
 
 
 class Face:
@@ -46,6 +46,8 @@ class Face:
         q = dict(P0); q.update(p)
         i = self.info
         d = i['exp'].clone()
+        if q['exp_delta'] is not None:      # audio-driven expression offsets (audio_motion.py), (21, 3)
+            d = d + torch.as_tensor(q['exp_delta'], dtype=d.dtype).reshape(1, 21, 3)
         s = q['smile']
         d[0, 20, 1] += s * -0.01; d[0, 14, 1] += s * -0.02; d[0, 17, 1] += s * 0.0065; d[0, 17, 2] += s * 0.003
         d[0, 13, 1] += s * -0.00275; d[0, 16, 1] += s * -0.00275; d[0, 3, 1] += s * -0.0035; d[0, 7, 1] += s * -0.0035
