@@ -18,7 +18,8 @@ from src.utils.crop import prepare_paste_back, paste_back
 from src.utils.retargeting_utils import calc_eye_close_ratio, calc_lip_close_ratio
 
 P0 = dict(aaa=0, eee=0, woo=0, pout=0, smile=0, brow=0, eye=None, lip=None, gx=0, gy=0, wink=0,
-          pitch=0, yaw=0, roll=0, exp_delta=None)
+          pitch=0, yaw=0, roll=0, exp_delta=None,
+          brow_l=0, brow_r=0)      # one eyebrow each (viewer's left / right), added to brow
 
 
 class Face:
@@ -51,11 +52,12 @@ class Face:
         s = q['smile']
         d[0, 20, 1] += s * -0.01; d[0, 14, 1] += s * -0.02; d[0, 17, 1] += s * 0.0065; d[0, 17, 2] += s * 0.003
         d[0, 13, 1] += s * -0.00275; d[0, 16, 1] += s * -0.00275; d[0, 3, 1] += s * -0.0035; d[0, 7, 1] += s * -0.0035
-        b = q['brow']
-        if b > 0:
-            d[0, 1, 1] += b * 0.001; d[0, 2, 1] += b * -0.001
-        else:
-            d[0, 1, 0] += b * -0.001; d[0, 2, 0] += b * 0.001; d[0, 1, 1] += b * 0.0003; d[0, 2, 1] += b * -0.0003
+        # eyebrows: keypoint 1 = the brow on the viewer's left, 2 = on the viewer's right (each can move alone)
+        for kp, sgn, b in ((1, 1, q['brow'] + q['brow_l']), (2, -1, q['brow'] + q['brow_r'])):
+            if b > 0:
+                d[0, kp, 1] += sgn * b * 0.001
+            else:
+                d[0, kp, 0] += -sgn * b * 0.001; d[0, kp, 1] += sgn * b * 0.0003
         gx, gy = q['gx'], q['gy']
         if gx > 0:
             d[0, 11, 0] += gx * 0.0007; d[0, 15, 0] += gx * 0.001

@@ -99,7 +99,7 @@ def main():
     quiet = speaking < .03
     rest = np.median(exp[quiet], 0)
     out = ROOT / "out" / "speech"; out.mkdir(parents=True, exist_ok=True)
-    np.savez(out / "motion.npz", exp=(exp - rest).astype(np.float32), fps=fps, speaking=speaking.astype(np.float32),
+    np.savez(out / "motion.npz", exp=(exp - rest).astype(np.float32), rest=rest.astype(np.float32), fps=fps, speaking=speaking.astype(np.float32),
              **{k: (v - np.median(v[quiet])).astype(np.float32) for k, v in rot.items()})
     print("frames", len(exp), "fps", fps, "quiet", int(quiet.sum()))
 
