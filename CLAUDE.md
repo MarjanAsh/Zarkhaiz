@@ -18,11 +18,11 @@ Read this first, then `video/README.md` (the reel, its version history and how t
 and `mascot/README.md` (the character images).
 
 ## Where the work is
-- Branch: `claude/vibrant-shannon-i2w0rk` (v018, Nov 15; it continues `ccr-e371ce1b-168zzm`). Continue on the newest of the two unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v018.mp4` (1080x1920, 60 fps, 48 kHz): the animated
+- Branch: `claude/vibrant-shannon-i2w0rk` (v019, Nov 16; it continues `ccr-e371ce1b-168zzm`). Continue on the newest of the two unless the user names another branch.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v019.mp4` (1080x1920, 60 fps, 48 kHz): the animated
   character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens for the arms; from v017 the head is
   the master's face animated by LivePortrait, `mascot/anim/tools/build_face.py`), QA in
-  `video/outputdm-reel/qa/v018/qa.md`. v017 to v012 kept.
+  `video/outputdm-reel/qa/v019/qa.md`. v018 to v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v015 `mascot/anim/` (read its README: one master body, bridge edits as keys, FILM in-betweens,
@@ -35,8 +35,9 @@ and `mascot/README.md` (the character images).
 - Plan first (the user's request, Nov 15): before building or rendering anything, tell the user in chat what you
   will do and wait for the go-ahead. Show cheap test stills before any long render. The character is being finalised
   for a series of videos, so it must be right before more reels are made.
-- Proportions and angles (Nov 15, on v018): the head looks too big for the body; the body must also move through
-  different angles (front, 3/4), not stay front-on. Planned for v019, not built yet (see `video/README.md`).
+- Proportions and angles (v019, the user's choices): head at 93 % (`HEAD_S` in `main.js`); the body turns only
+  SLIGHTLY toward the content cards (frame 2 of 5 of the front -> 3/4 move, never the full 3/4); the body stays as
+  drawn in the library (no narrowing). Turn times are in `video/outputdm-reel/angles.json`.
 - Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose. Face (v017, the user
   asked for a new face by any means): the whole head is animated from the ONE master image with LivePortrait; never
   paste mouth or face patches again (they read as stickers). From v018: NO talking mouth, only small expressions
@@ -57,8 +58,9 @@ and `mascot/README.md` (the character images).
   `/home/user/lemomo-ai/lemo-opuscar`, `npm install`, a `.venv` from `requirements.txt`.
   For 4K, its `core/render/page.mjs` needs `deviceScaleFactor: +process.env.LEMO_DSF || 1`
   (see `video/README.md`, Rebuild).
-- Character animation build: `pip install torch --index-url https://download.pytorch.org/whl/cpu`, `opencv-python-headless`,
-  and the FILM model in `/home/user/models/` (commands in `mascot/anim/README.md`).
+- Character animation build: `pip install torch torchvision` (PyPI), `opencv-python-headless`, and the FILM model in
+  `/home/user/models/` (from `https://huggingface.co/jkawamoto/frame-interpolation-pytorch/resolve/main/film_net_fp32.pt`;
+  commands in `mascot/anim/README.md`).
 - Head animation: LivePortrait in `/home/user/LivePortrait` + weights (commands in `mascot/anim/README.md`, Head).
   The `AI Video Editor` environment allows the Hugging Face hosts; it does not reach the ChatGPT bridge (that is on `zarkhaiz`).
 - Gemini TTS: the Google AI Studio key is a network secret on the `zarkhaiz` and `AI Tools` environments (header

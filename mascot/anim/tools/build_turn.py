@@ -6,7 +6,8 @@ feet line. FILM makes N in-between frames. Every frame is saved as
   out/turn/<dir>_<i>_head.webp   the head alone (RGBA patch), so the page can draw it smaller (HEAD_S) at its pivot
   out/turn/<dir>_<i>_erase.png   where the page removes the frame's own head first
 and out/turn.json: {"tl": [{"f", "head", "erase", "box": [x, y, w, h], "pivot": [x, y]}, ...], "tr": [...]}.
-Frame 0 is the front pose (arms at rest), the last frame the 3/4 pose.
+Frame 0 is the front pose (arms at rest); the last frame is the end of the SLIGHT turn the user chose (FILM frame
+USE of the full front -> 3/4 move), with FINE in-betweens of its own.
 
 Usage: python3 build_turn.py        (FILM results are cached in out/turn/_film; about 3 min per direction on CPU)
 """
@@ -22,7 +23,9 @@ OUT, LIB = ROOT / "out", ROOT.parent / "library"
 W, H = 820, 1240
 N = 7
 SRC = {"tl": "34left", "tr": "34right"}
-SLIM = .91
+SLIM = 1.0
+USE = 2        # the turn stops at this FILM frame of the full front -> 3/4 move (2 of 8 = a slight turn, the user's choice)
+FINE = 5       # in-between frames of the slight turn
 sys.path.insert(0, str(Path(__file__).parent))
 
 
@@ -43,7 +46,7 @@ def aligned(name):
     im = Image.open(LIB / f"bodies/{name}/neutral.png").convert("RGBA")
     b = bbox(np.array(im))
     k = (bm[3] - bm[1]) / (b[3] - b[1])
-    # the library 3/4 bodies are drawn broader than the front master: SLIM narrows them so the build stays the same
+    # SLIM < 1 would narrow the 3/4 body; the user chose the body as drawn (1.0)
     im2 = im.resize((round(W * k * SLIM), round(H * k)), Image.LANCZOS)
     cv = Image.new("RGBA", (W, H), (255, 255, 255, 0))
     cv.paste(im2, (round((bm[0] + bm[2]) / 2 - (b[0] + b[2]) / 2 * k * SLIM), round(bm[3] - b[3] * k)), im2)
@@ -121,10 +124,11 @@ def main():
     meta = {}
     for d, name in SRC.items():
         a, b = aligned(name)
-        files = [cache / f"{name}_{i}.png" for i in range(N + 2)]
+        files = [cache / f"{name}_{i}.png" for i in range(FINE + 2)]
         if not all(f.exists() for f in files):
             import film
-            seq = [a] + film.interpolate(a, b, N) + [b]
+            part = film.interpolate(a, b, N)[USE - 1]          # how far he turns at most
+            seq = [a] + film.interpolate(a, part, FINE) + [part]
             for f, im in zip(files, seq):
                 Image.fromarray(im).save(f)
         meta[d] = []

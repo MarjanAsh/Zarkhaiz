@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v018.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`: LivePortrait head with small expressions and a closed mouth, body lit for the stage, QA: `outputdm-reel/qa/v018/qa.md`). v017 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v019.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`: head at 93 %, slight body turns toward the cards, LivePortrait head with small expressions and a closed mouth, body lit for the stage, QA: `outputdm-reel/qa/v019/qa.md`). v018 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -362,3 +362,26 @@ a series, so make it perfect. The plan was given in chat and waits for the user'
 - Still to do after approval: the real angle storyboard (turn to the cards at each scene start), a LivePortrait head
   for the 3/4 hold (blink and expression; now the face is still while he is turned), head frames at 30 per second,
   slower eased arm moves, full render, QA.
+
+## v019: smaller head, slight body turns toward the cards (Nov 16)
+
+Decisions the user made in chat:
+- Head size B = 93 % (`HEAD_S = .93`).
+- On the full 3/4 test clip: "do not turn him that much, and use the character as in this picture" (the first turn
+  strip). Asked with numbered frames: the turn goes at most to frame 2 of 5 (a slight turn), and the body stays as
+  drawn in the library (no narrowing; `SLIM = 1.0`).
+- He turns toward the content cards. Mouth closed, small expressions (v018 rule stays).
+
+What was built:
+- `build_turn.py`: the slight turn = FILM frame 2 of the 8-step front -> 3/4 move, with 5 in-betweens of its own
+  (7 frames per direction, `out/turn.json`).
+- `angles.json` (in `video/outputdm-reel`): `{d, yaw, turns: [[time, "tl" | "tr" | "front"], ...]}`. The page reads it
+  for the body and `build_face.py` reads it for the head, which turns 6 degrees with the body. Four turns: at the
+  start (0.2-1.7 s), on "businesses" (10.7-12.4 s), in the system scene toward the list on the right (21.85-23.9 s)
+  and before the CTA (31.55-33.0 s).
+- `main.js`: while he is turned, each turn frame's own head is removed and the live LivePortrait head is put on that
+  frame's collar point (`composeTurnFrame`, `liveHead`), so the face keeps blinking and smiling. The arm storyboard
+  was rewritten around the turns (arms are at rest while he is turned; `buildHero` throws if they are not), and arm
+  moves are about 25 % slower.
+- Open: the user offered a reference for the character and has not sent it yet; no gestures while turned (the gesture
+  keys exist only for the front view); legs still one pose; 4K not rendered.

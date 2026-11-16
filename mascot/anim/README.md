@@ -52,6 +52,11 @@ python3 mascot/anim/tools/build_face.py --finish
 ```
   Network: needs huggingface.co and us.aws.cdn.hf.co (allowed on the `AI Video Editor` environment since Nov 15).
 
+## Body turns (from reel v019)
+`tools/build_turn.py` makes the slight front -> 3/4 turn frames (`out/turn/`, `out/turn.json`) from the library 3/4
+bodies with FILM; each frame has its own head patch, erase mask, box and collar pivot. The page puts the live head on
+the pivot. Copy `out/turn.json` and `out/turn/t?_*` to `video/outputdm-reel/assets/anim/` (not the `_film` cache).
+
 ## Files
 - `raw/`: master and the GPT keys (originals). `out/`: built frames (`L/`, `R/`), `face/`, `anim.json`
   (`trans["L:rest>present"]` = list of frame files; `states`, `half`, `face_box`).

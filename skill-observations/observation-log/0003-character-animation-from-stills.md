@@ -42,3 +42,8 @@ expression, not talking mouth") and called the figure a "sticker". Two additions
 a still-based character should talk at all; small expressions with a closed mouth are often what is wanted;
 (2) a cutout reads as a sticker when it is lit for a white studio and moved rigidly: light it for the scene (rim
 light, falloff, reflection) and bend it row by row with planted feet instead of rotating the whole image.
+
+**Further instance (2026-11-16, reel v019):** what ended the guessing was showing numbered frames and asking the
+user to pick one (head size A-D, turn frame 1-5) before any long render. For the skill: offer numbered visual options
+for every proportion or motion-range decision; a body turn from two separately drawn views works with FILM when the
+views share height and feet line, and the live head can ride on each frame's collar point.

@@ -68,6 +68,22 @@ def track():
         blinks.append(t)
         t += 2.9 + 1.7 * ((math.sin(t * 12.9898) * 43758.5453) % 1)
 
+    # body turns (video/outputdm-reel/angles.json, the same file the page reads): the head turns with the body,
+    # toward the cards ("tl" = the viewer's left = negative yaw)
+    AN = json.loads((REEL / "angles.json").read_text())
+
+    def turn_yaw(t):
+        y, cur, t0 = 0.0, "front", -9
+        ev = AN["turns"]
+        for i, (tt, to) in enumerate(ev):
+            if to == "front":
+                continue
+            t1 = ev[i + 1][0] if i + 1 < len(ev) else 1e9
+            u = (t - tt) / AN["d"] if t < t1 else 1 - (t - t1) / AN["d"]
+            u = min(1.0, max(0.0, u))
+            y += (-1 if to == "tl" else 1) * AN["yaw"] * u * u * u * (u * (u * 6 - 15) + 10)
+        return y
+
     def at(t):
         k = max(j for j in range(len(keys)) if keys[j][0] <= t)
         a, b = keys[max(0, k - 1)], keys[k]
@@ -79,7 +95,7 @@ def track():
             brow += 4 * bump(t, l["t0"], .9)
         p = dict(smile=smile, brow=brow)
         p["pitch"] = 1.0 * math.sin(.7 * t + 2) + 1.8 * nod
-        p["yaw"] = 2.4 * math.sin(.5 * t) + .8 * math.sin(1.3 * t + 1)
+        p["yaw"] = 2.4 * math.sin(.5 * t) + .8 * math.sin(1.3 * t + 1) + turn_yaw(t)
         p["roll"] = .9 * math.sin(.43 * t) + .5 * math.sin(.9 * t + 2)
         e = None
         for bt in blinks:
