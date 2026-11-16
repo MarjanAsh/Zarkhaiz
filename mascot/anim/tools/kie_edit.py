@@ -5,7 +5,7 @@ Usage: python3 kie_edit.py <out.png> "<edit instruction>" <base.png> [<second.pn
 Cost: 6 Kie credits (about $0.03) per image at 1K. The key comes from $KIE_API_KEY (the user's kie-ai skill sets it);
 never write the key into this repository.
 """
-import io, json, os, subprocess, sys, time, urllib.request
+import io, json, os, subprocess, sys, time, urllib.request, uuid
 from PIL import Image
 
 API = "https://api.kie.ai/api/v1"
@@ -31,7 +31,7 @@ def _json(url, body=None):
 
 def upload(path):
     b = io.BytesIO(); Image.open(path).convert("RGB").save(b, "PNG")
-    tmp = f"/tmp/kie_{os.getpid()}_{os.path.basename(path)}"
+    tmp = f"/tmp/kie_{uuid.uuid4().hex}_{os.path.basename(path)}"      # unique: several edits upload the master at once
     open(tmp, "wb").write(b.getvalue())
     out = subprocess.run(["curl", "-sS", "-X", "POST", UPLOAD, "-H", f"Authorization: Bearer {_key()}",
                           "-F", f"file=@{tmp}", "-F", "uploadPath=images/mascot"], capture_output=True, text=True, timeout=180)

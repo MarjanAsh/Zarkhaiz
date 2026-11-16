@@ -31,10 +31,34 @@ LIB = ROOT.parent / "library"
 W, H, MID = 820, 1240, 410
 OVER = 3                      # the halves overlap by a few identical pixels, so no seam can open when scaled
 N = 9                         # in-betweens per segment
-GEST = {"L": ["presentL", "explain", "waveL"], "R": ["presentR", "explain"]}
-NAME = {"presentL": "present", "presentR": "present", "explain": "explain", "waveL": "wave"}
-# keys of each gesture in order from rest to the end pose (the wave is a long move and has four)
-CHAIN = {"presentL": ["mid", "end"], "presentR": ["mid", "end"], "explain": ["mid", "end"], "waveL": ["q1", "mid", "q3", "end"]}
+COUNTS = [f"count{i}L" for i in range(1, 6)]
+GEST = {"L": ["presentL", "explain", "waveL", "pointcamL", "pointsideL", *COUNTS, "thumbsL", "fistL", "shrug"],
+        "R": ["presentR", "explain", "pointsideR", "thumbsR", "chopR", "okR", "stopR", "count3R", "shrug"]}
+NAME = {"presentL": "present", "presentR": "present", "explain": "explain", "waveL": "wave",
+        # v020 (keys made with Kie): the state names the director uses
+        "pointcamL": "point_camera", "pointsideL": "point_side", "pointsideR": "point_side", "thumbsL": "thumbs_up",
+        "thumbsR": "thumbs_up", "fistL": "fist_pump", "chopR": "chop", "okR": "ok", "stopR": "stop", "count3R": "count3",
+        "shrug": "shrug", **{g: g[:-1] for g in COUNTS}}
+# keys of each gesture in order from rest to the end pose (the wave is a long move and has four). A name with an
+# underscore is a whole key file name: the five counts share one in-between (countL_mid).
+CHAIN = {g: ["mid", "end"] for g in NAME}
+CHAIN["waveL"] = ["q1", "mid", "q3", "end"]
+for g in COUNTS:
+    CHAIN[g] = ["countL_mid", "end"]
+# gestures that share the arm position (only the fingers differ): one blob and box for all, and neighbours change
+# directly end -> end (1 -> 2 -> 3 without the hand dropping)
+FAMILY = [COUNTS]
+# gesture pairs that get a direct clip (through each one's first key). Every other pair goes through the rest pose
+# without stopping there; add a pair here when a storyboard needs it often.
+PAIRS = {"L": [("presentL", "explain"), ("presentL", "waveL"), ("explain", "waveL"), ("explain", "pointcamL"),
+               ("presentL", "pointsideL"), ("presentL", "count1L"), ("explain", "count1L"), ("explain", "thumbsL"),
+               ("explain", "shrug"), ("presentL", "pointcamL")],
+         "R": [("presentR", "explain"), ("explain", "chopR"), ("explain", "shrug"), ("presentR", "pointsideR"),
+               ("explain", "okR"), ("explain", "stopR"), ("presentR", "thumbsR")]}
+
+
+def kn(g, nm):
+    return nm if "_" in nm else f"{g}_{nm}"
 
 
 def canvas(p):
@@ -83,11 +107,18 @@ def main():
         return f"{side}/{name}.webp"
 
     for side, gests in GEST.items():
-        gests = [g for g in gests if all((RAW / f"{g}_{nm}.png").exists() for nm in CHAIN[g])]
-        keys, boxes = {}, {}
+        gests = [g for g in gests if all((RAW / f"{kn(g, nm)}.png").exists() for nm in CHAIN[g])]
+        keys, boxes, fam_u = {}, {}, {}
+        for fam in FAMILY:                                # one union blob for a whole family
+            mem = [g for g in fam if g in gests]
+            if mem:
+                names = {kn(g, nm) for g in mem for nm in CHAIN[g]}
+                u = np.maximum.reduce([blob(canvas(RAW / f"{n_}.png"), master, side) for n_ in sorted(names)])
+                for g in mem:
+                    fam_u[g] = u
         for g in gests:
-            ks = {nm: canvas(RAW / f"{g}_{nm}.png") for nm in CHAIN[g]}
-            u = np.maximum.reduce([blob(k, master, side) for k in ks.values()])
+            ks = {kn(g, nm): canvas(RAW / f"{kn(g, nm)}.png") for nm in CHAIN[g]}
+            u = fam_u[g] if g in fam_u else np.maximum.reduce([blob(k, master, side) for k in ks.values()])
             ys, xs = np.nonzero(u)
             box = [max(0, int(xs.min()) - 6), max(0, int(ys.min()) - 6), min(W, int(xs.max()) + 7), min(H, int(ys.max()) + 7)]
             if side == "L":
@@ -97,7 +128,7 @@ def main():
             boxes[g] = box
             f = cv2.GaussianBlur(u.astype(np.float32), (0, 0), 3)[:, :, None]   # union blob: the hanging arm is removed
             for nm, k in ks.items():                                             # in every key of the gesture
-                keys[f"{g}_{nm}"] = master * (1 - f) + k * f
+                keys[nm] = master * (1 - f) + k * f
             print(side, g, "box", box, flush=True)
         keys["rest"] = master
 
@@ -125,7 +156,7 @@ def main():
 
         up = {}
         for g in gests:                                   # rest -> key -> ... -> end
-            chain = ["rest"] + [f"{g}_{nm}" for nm in CHAIN[g]]
+            chain = ["rest"] + [kn(g, nm) for nm in CHAIN[g]]
             fr = []
             for a, b in zip(chain, chain[1:]):
                 sg = seg(a, b, boxes[g])
@@ -133,16 +164,29 @@ def main():
             up[g] = fr
             meta["trans"][f"{side}:rest>{NAME[g]}"] = fr
             meta["trans"][f"{side}:{NAME[g]}>rest"] = fr[::-1]
-        for i, g in enumerate(gests):                     # gesture -> gesture through each one's first key
-            for h in gests[i + 1:]:
+        direct = {}
+        for g, h in PAIRS[side]:                          # chosen pairs: a direct clip through each one's first key
+            if g in gests and h in gests:
                 bx = [min(boxes[g][0], boxes[h][0]), min(boxes[g][1], boxes[h][1]),
                       max(boxes[g][2], boxes[h][2]), max(boxes[g][3], boxes[h][3])]
-                mm = seg(f"{g}_{CHAIN[g][0]}", f"{h}_{CHAIN[h][0]}", bx)
-                path = up[g][::-1][:len(up[g]) - N - 2] + mm + up[h][N + 2:]
+                mm = seg(kn(g, CHAIN[g][0]), kn(h, CHAIN[h][0]), bx)
+                direct[(g, h)] = up[g][::-1][:len(up[g]) - N - 2] + mm + up[h][N + 2:]
+        for fam in FAMILY:                                # family neighbours: end -> end, longer steps chain them
+            mem = [g for g in fam if g in gests]
+            step = {i: seg(kn(mem[i], "end"), kn(mem[i + 1], "end"), boxes[mem[i]]) for i in range(len(mem) - 1)}
+            for i in range(len(mem)):
+                for j in range(i + 1, len(mem)):
+                    path = []
+                    for k_ in range(i, j):
+                        path += step[k_] if not path else step[k_][1:]
+                    direct[(mem[i], mem[j])] = path
+        for i, g in enumerate(gests):
+            for h in gests[i + 1:]:
+                path = direct.get((g, h)) or (direct.get((h, g)) or [])[::-1] or up[g][::-1] + up[h][1:]
                 meta["trans"][f"{side}:{NAME[g]}>{NAME[h]}"] = path
                 meta["trans"][f"{side}:{NAME[h]}>{NAME[g]}"] = path[::-1]
         meta.setdefault("states", {})[side] = {"rest": f"{side}/key_rest.webp",
-                                               **{NAME[g]: f"{side}/key_{g}_end.webp" for g in gests}}
+                                               **{NAME[g]: f"{side}/key_{kn(g, 'end')}.webp" for g in gests}}
 
     # face patches (cropped to the head box)
     P, (x0, y0, w, h) = faces.patches(lib_master)
