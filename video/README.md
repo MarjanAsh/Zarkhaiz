@@ -4,7 +4,7 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v019.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`: head at 93 %, slight body turns toward the cards, LivePortrait head with small expressions and a closed mouth, body lit for the stage, QA: `outputdm-reel/qa/v019/qa.md`). v018 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz: the acting system from `mascot/anim`: lip-sync generated from the voice, 29 expressions, 17 new arm gestures, head and body acting, all chosen by `mascot/anim/tools/director.py` from the script and the real word times; QA: `outputdm-reel/qa/v020/qa.md`). v019 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -385,3 +385,47 @@ What was built:
   moves are about 25 % slower.
 - Open: the user offered a reference for the character and has not sent it yet; no gestures while turned (the gesture
   keys exist only for the front view); legs still one pose; 4K not rendered.
+
+## v020: the acting system (Nov 16)
+
+The user's brief: the character still felt stiff; make it a far more expressive, dialogue-driven presenter (face and
+lip-sync first, then hands and arms, head and torso, a selection engine, tests, documentation). Details of every part
+are in `mascot/anim/README.md` (section v020) and `mascot/anim/manifest.json`.
+
+Decisions the user made in chat (Nov 16):
+- Lip-sync is wanted now (this replaces the v018 rule "no talking mouth"). The first test (a mouth shape per letter)
+  was "not good at all"; the second (mouth generated from the voice, JoyVASA + LivePortrait) is "much better" and is
+  the one used.
+- No paid video generation anywhere. Kie may be used for IMAGES only (the gesture keys were made there: 31 images,
+  186 credits). Higgsfield: images only too, but its connector was not connected in this session.
+- The final work is handed over as a local file; the user updates the repository (this session had no push access).
+
+What changed in this folder:
+- `phonemes.json` (real word and sound times from the audio), `build_timeline.py` uses them: captions and scene cues
+  now sit on the spoken words (the old estimate was up to 0.36 s early).
+- `staging.json`: where he stands per scene. `acting.json`: the whole performance, written by the director.
+- `main.js`: the hand-written arm storyboard is gone; arms, body turns and the new body controls (lean, shrug, one
+  shoulder) are read from `acting.json`. `angles.json` now only gives the turn length and yaw.
+- `assets/anim/`: new arm frames (L, R), `anim.json`, the head frames of the talking face.
+- Test clips: `qa/v020_tests/` (three lip-sync tests, the first 8 s of the reel).
+
+What the director chose for this script (the log is printed by `director.py`): open hands on the question, wave on
+"Assalam", presenting on "Zarkhaiz", "2018", "Lahore"; three fingers on "teen"; counting 1-2-3 on the three leaks
+and 1 to 5 on the five services; one finger on "ek system"; chop on "sirf"; pointing at the camera on "aap" and
+"abhi"; thumbs-up on "Free"; head shakes on "nahi", tilts on "lekin" and on the question, nods on stressed words;
+two slight body turns toward the cards while the arms rest.
+
+Rebuild: the steps in `mascot/anim/README.md` (v020), then as before:
+```
+node $LIB/core/render/events.mjs . --size 1080x1920 && $LIB/.venv/bin/python mix.py
+node $LIB/core/render/video.mjs . --fps 60 --workers 3 --size 1080x1920 --out out/video_v020.mp4
+ffmpeg -i out/video_v020.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -ar 48000 -shortest out/outputdm_founder_reel_v020.mp4
+```
+
+Open:
+- Nobody has watched v020 in playback yet (checked on frames, sequences and measurements only): smoothness, the
+  lip-sync against the sound and the music mix need the user's eyes and ears.
+- Tests with other kinds of dialogue (excited, serious warning) were not made: a new voiceover needs the Gemini TTS
+  key, which this session did not have.
+- Limits of the character system: `mascot/anim/README.md`, "Limits (v020)".
+- Captions still sit at about 1408-1498 px, below the 168-1330 px safe band (unchanged since v014, user to decide).

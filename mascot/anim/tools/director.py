@@ -129,6 +129,23 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
     have = {s: set(anim["states"][s]) for s in ("L", "R")}
     nfr = lambda s, a, b: len(anim["trans"].get(f"{s}:{a}>{b}", [])) or 20
     clip = lambda s, a, b: .45 + .016 * nfr(s, a, b)                 # natural length of an arm clip
+    # how far each arm pose reaches sideways (canvas x of its outermost opaque pixel): a pose that would leave the
+    # frame where he stands in a scene is not used (v020 first render: the shrug's hand was cut off at the edge)
+    from PIL import Image
+    import numpy as np
+    out_dir = Path(anim_json).parent if anim_json else ROOT / "out"
+    reach = {}
+    for s_ in ("L", "R"):
+        for st, f in anim["states"][s_].items():
+            al = np.array(Image.open(out_dir / f).convert("RGBA"))[:, :, 3].max(0) > 40
+            xs = np.nonzero(al)[0] + anim["half"][s_][0]
+            reach[(s_, st)] = int(xs.min() if s_ == "L" else xs.max())
+    STAND = {"right": 830, "left": 240, "centre": 540}                # his centre x on the 1080 stage (main.js tracks)
+    K = 1090 * 820 / 1240 / 820                                       # canvas px -> stage px (HERO_H / PH)
+
+    def fits(s_, st, where):
+        x = STAND.get(where, 540) + (reach[(s_, st)] - 410) * K
+        return -12 <= x <= 1092
 
     out = {"face": [{"t": -9, "expr": "slight_smile", "k": .6}], "accents": [], "head": [], "gaze": [], "blinks": [],
            "arms": {"L": [], "R": []}, "body": [], "turns": [], "log": []}
@@ -235,6 +252,8 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
                         sides = {"@content": [content or "L"], "@free": ["R" if (content or "L") == "L" else "L"], "both": ["L", "R"]}.get(side, [side])
                         if not all(st in have[s] for s in sides):
                             continue
+                        if not all(fits(s, st, side_of) for s in sides):
+                            why.append(f"{st} would leave the frame here"); continue
                         plan, late = [], 0.0
                         for s in sides:
                             # go home first only if there is time to rest in between; otherwise move pose to pose
@@ -267,7 +286,7 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
                         arm_used = f"{'+'.join(sides)}:{st}"
                         last_stroke = stroke; strokes.append(stroke)
                         if st != g["arm"][0][1].replace("{n}", str(q["n"])):
-                            why.append("first choice not built, used the next one")
+                            why.append("used the next choice" if why else "first choice not built, used the next one")
                         break
                     else:
                         why.append("no arm clip for this gesture is built")
