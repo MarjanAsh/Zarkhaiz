@@ -1,4 +1,66 @@
-# Animated character (from reel v015)
+# Animated character (from reel v015; the acting system from v020)
+
+## v020 (Nov 16): the acting system
+The user asked for a far more expressive presenter: more hands, arms, shoulders and face, lip-sync, and gestures
+chosen from the meaning of the words. What was added (all in `tools/`, the full list of controls is `manifest.json`,
+written by `tools/manifest.py`):
+
+| Part | File | What it does |
+|---|---|---|
+| Real word times | `align.py` | Forced alignment (torchaudio MMS_FA, free) of each voice line to its Roman Urdu text -> `video/outputdm-reel/phonemes.json`. Before, word times were guessed from word length and were up to 0.36 s early. `build_timeline.py` now uses these times for captions and scene cues. |
+| Lip-sync | `audio_motion.py`, `speech_face.py` | The mouth, jaw and cheeks are generated from the voice by JoyVASA's motion generator (LivePortrait keypoints, 25 a second) -> `out/speech/motion.npz`. Lips use the generated shape while he speaks and return to the master's mouth in pauses; generated eyelids are not used. |
+| Expressions | `expressions.py` | 12 independent face controls and 30 named presets (29 usable; `angry` is never chosen), intensity 25/50/75/100 %, blending. Sheets: `out/expressions.jpg`, `out/expression_levels.jpg`, `out/face_controls.jpg`. |
+| Arms and hands | `gen_keys.py`, `kie_edit.py`, `build_anim.py` | 17 new arm clips. The viewer's left arm: point_camera, point_side, count1..count5, thumbs_up, fist_pump, shrug (+ present, explain, wave). The right arm: point_side, thumbs_up, chop, ok, stop, count3, shrug (+ present, explain). Keys were made with Kie (GPT Image 2 edits of the master, 31 images, 186 credits). |
+| The director | `director.py` | Script + real word times -> `video/outputdm-reel/acting.json`: expression keys, accents, head events, gaze, blinks, arm clips with start and length, body events, body turns, and a log of why each choice was made. |
+| Head build | `build_face.py` | The head frames now follow `acting.json` and the speech mouth (30 frames a second while he speaks, blinks or acts; 15 otherwise). |
+| Page | `video/outputdm-reel/main.js` | Reads `acting.json` for the arms, turns and the new body controls: lean_fwd, lean_back, shrug, shoulder_l, shoulder_r. |
+
+The first lip-sync try (`visemes.py`: a mouth shape per letter) was rejected by the user as not good at all; it is
+kept only as a record. Do not use it.
+
+### Rebuild for a new script (same character)
+```
+# once per container: see "Install" below
+python3 mascot/anim/tools/align.py                 # phonemes.json (edit SAY in it for numbers and abbreviations)
+(cd video/outputdm-reel && python3 build_timeline.py)
+python3 mascot/anim/tools/audio_motion.py          # out/speech/motion.npz (about 20 s)
+python3 mascot/anim/tools/director.py              # acting.json; READ THE LOG it prints
+for k in 0 1; do LP_THREADS=2 python3 mascot/anim/tools/build_face.py --part $k 2 & done; wait
+python3 mascot/anim/tools/build_face.py --finish   # about 45 min on 4 CPU cores for a 39 s reel
+rm -rf video/outputdm-reel/assets/anim/head; cp -r mascot/anim/out/head video/outputdm-reel/assets/anim/head
+cp mascot/anim/out/face.json mascot/anim/out/anim.json video/outputdm-reel/assets/anim/
+```
+Cheap test first: `build_face.py --upto 8.2` (and `--finish --upto 8.2`) renders only the first seconds.
+Per-line overrides in `lines.json`: `"emotion": "<preset>"`, `"energy": 0..1`, `"intent": "question" | "cta" | ...`.
+Where he stands per scene (the cards are on the other side): `video/outputdm-reel/staging.json`.
+New cue words or gestures: `CUES`, `GESTURES`, `CONCEPT_GESTURES` in `director.py`. A new arm clip: add its keys to
+`KEYS` in `gen_keys.py` and to `GEST`, `NAME` (and `PAIRS` for a direct clip) in `build_anim.py`.
+
+### Install (v020 additions; free, CPU)
+```
+pip install torchaudio --index-url https://download.pytorch.org/whl/cpu; pip install transformers einops tqdm
+git clone --depth 1 https://github.com/jdh-algo/JoyVASA /home/user/JoyVASA
+# into /home/user/JoyVASA/pretrained_weights/:
+#   JoyVASA/motion_generator/motion_generator_hubert_chinese.pt, JoyVASA/motion_template/motion_template.pkl
+#     (https://huggingface.co/jdh-algo/JoyVASA/resolve/main/...)
+#   "TencentGameMate:chinese-hubert-base"/{config.json,preprocessor_config.json,pytorch_model.bin}
+#     (https://huggingface.co/TencentGameMate/chinese-hubert-base/resolve/main/...)
+```
+`align.py` downloads the MMS_FA model (1.2 GB) on first use.
+New keys with Kie: `KEYS_BACKEND=kie KEYS_PARALLEL=4 python3 tools/gen_keys.py` with `KIE_API_KEY` set by the user's
+kie-ai skill (never write the key into the repo). The user allowed Kie for IMAGES only, never video (Nov 16).
+After generating, check every key against the master (a shifted or zoomed figure must be regenerated).
+
+### Limits (v020)
+- Front view only for gestures; the slight body turn happens only while both arms rest.
+- Each arm stays on its own side: no crossed arms, hand on chin, hands together or hand on chest.
+- Legs are planted: no steps or walking clips.
+- Brow and frown changes are small (LivePortrait limits on this face): curious, worried and skeptical read as subtle.
+- Head rotation is limited to about 7 degrees; larger turns need new angle artwork.
+- The lip-sync model was trained mostly on Chinese and English speech; on this Urdu voice the user judged the test
+  "kaafi behtar" (much better). It has no guarantee for other voices.
+- Only pairs listed in `PAIRS` have a direct clip; other gesture-to-gesture moves pass through the rest pose.
+
 
 Why: the user said the v012-v014 character was not smooth at all (2026-11-14) and asked to fix only the character,
 using ChatGPT through the bridge. Measured causes: every expression head was a separately generated image (talk heads
