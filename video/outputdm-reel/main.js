@@ -98,13 +98,19 @@ const ANIM = await (await fetch('assets/anim/anim.json')).json();
 const FACE = await (await fetch('assets/anim/face.json')).json();
 const FACE_IMGS = {};
 for (const f of new Set([FACE.erase, ...FACE.frames])) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
+// body turns (v019, mascot/anim/tools/build_turn.py): whole-body frames front -> 3/4 toward the viewer's left (tl)
+// or right (tr); each frame brings its own head patch, so the head can be drawn at HEAD_S like the front head
+const TURN = await (await fetch('assets/anim/turn.json')).json();
+for (const fr of Object.values(TURN)) for (const q of fr) for (const f of [q.f, q.head, q.erase]) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
+const TURN_D = .8, TURN_PRE = .25;
 const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090, PAD = 40;
+const HEAD_S = .93, HEAD_PX = 405, HEAD_PY = 434;
 const smooth = x => x * x * (3 - 2 * x);
 const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
 const ANIM_IMGS = [];
 const TRACKS = [];   // the scenes only say where he stands: [time, (unused pose), centre-x]
 function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
-function buildHero(ARMS) {
+function buildHero(ARMS, ANGLES = []) {
   const h = HERO_H, w = Math.round(h * PW / PH), k = w / PW;
   const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
@@ -117,6 +123,17 @@ function buildHero(ARMS) {
   TRACKS.forEach(({ track, tin }, si) => track.map(([t, , x]) => ({ t: Math.max(t, tin), cx: x })).sort((p, q) => p.t - q.t)
     .forEach((key, i) => { const last = marks[marks.length - 1]; if (i === 0) marks.push({ t: si > 0 ? tin - .45 : key.t, cx: key.cx }); else if (Math.abs(key.cx - last.cx) > 120) marks.push(key); }));
   a._marks = marks.map(m => ({ t: m.t, x: m.cx - w / 2 }));
+  // body angle: [time, 'tl' | 'tr' | 'front']. A turn is a whole-body clip, so both arms must be at rest when it
+  // starts, and arm moves asked for while he is turned wait until he faces the front again
+  const turns = []; let ang = 'front';
+  for (const [t, to] of ANGLES.slice().sort((p, q) => p[0] - q[0])) {
+    if (to === ang) continue;
+    if (to !== 'front' && ang !== 'front') throw new Error('turn back to the front before turning the other way');
+    if (to !== 'front') turns.push({ dir: to, t0: t, t1: Infinity }); else turns[turns.length - 1].t1 = t;
+    ang = to;
+  }
+  a._turns = turns;
+  const busy = t => { for (const q of turns) if (t > q.t0 - TURN_PRE - .1 && t < q.t1 + TURN_D + TURN_PRE) return q; return null; };
   // arms: per side a list of clips [start, duration, frames]
   a._side = {};
   for (const s of ['L', 'R']) {
@@ -127,7 +144,9 @@ function buildHero(ARMS) {
       if (state === cur) continue;
       const fr = ANIM.trans[`${s}:${cur}>${state}`];
       if (!fr) throw new Error(`no arm clip ${s}:${cur}>${state}`);
-      const d = Math.min(1.05, .36 + .0125 * fr.length), t0 = Math.max(t, free + .12);   // longer clips take longer; never cut a move short
+      const d = Math.min(1.05, .36 + .0125 * fr.length); let t0 = Math.max(t, free + .12);   // longer clips take longer; never cut a move short
+      const tq = busy(t0) || busy(t0 + d);
+      if (tq) { if (cur !== 'rest') throw new Error(`arm ${s} is not at rest for the turn at ${tq.t0.toFixed(2)} s`); t0 = tq.t1 + TURN_D + TURN_PRE + .02; }
       clips.push({ t0, d, fr }); fr.forEach(f => files.add(f)); cur = state; free = t0 + d;
     }
     // the two neighbouring frames are mixed on a canvas ('lighter' adds the two weighted layers: a true cross-fade)
@@ -139,7 +158,7 @@ function buildHero(ARMS) {
   // v018: the two halves and the head are joined on one pose canvas, lit for the stage, then drawn row by row to
   // the visible canvas with a soft bend (weight shift, breathing): the figure moves like a body, not like a card
   const mk = (cw, ch) => { const c = document.createElement('canvas'); c.width = cw; c.height = ch; return c.getContext('2d'); };
-  a._pose = mk(PW, PH); a._tmp = mk(PW, PH); a._rim = mk(PW, PH);
+  a._pose = mk(PW, PH); a._tmp = mk(PW, PH); a._rim = mk(PW, PH); a._c1 = mk(PW, PH); a._c2 = mk(PW, PH); a._fb = mk(PW, PH);
   const out = el(`<canvas width="${PW + 2 * PAD}" height="${PH}" style="position:absolute;left:${(-PAD * k).toFixed(2)}px;top:0;width:${((PW + 2 * PAD) * k).toFixed(2)}px;height:${h}px;-webkit-box-reflect:below ${(-2 * (PH - PFEET) * k + 4).toFixed(1)}px linear-gradient(transparent 82%, rgba(0,0,0,.20))"></canvas>`, {}, body);
   a._out = out.getContext('2d');
   const words = TL.words.slice().sort((p, q) => p.t0 - q.t0);
@@ -336,7 +355,7 @@ const HERO = buildHero({
       [sc.system.t0 - .45, 'rest'], [W('l06', 'content') - .25, 'present'], [W('l06', 'system') - .2, 'explain'],
       [sc.only.t0 - .3, 'rest'], [W('l07', 'business') - .1, 'explain'],
       [W('l08', 'whatsapp') - .2, 'rest'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'rest']],
-});
+}, [[.15, 'tl'], [2.3, 'front']]);
 
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
@@ -399,8 +418,9 @@ function bend(n) {
   for (let i = 1; i < BEND.length; i++) if (n <= BEND[i][0]) { const [n0, v0] = BEND[i - 1], [n1, v1] = BEND[i]; return v0 + (v1 - v0) * smooth((n - n0) / (n1 - n0)); }
   return BEND[BEND.length - 1][1];
 }
-function drawPose(a, t) {
-  const g = a._pose, L = a._side.L, R = a._side.R, mid = PW / 2;
+// the front pose: both arm halves joined, the master's head replaced by this moment's LivePortrait head
+function composeFront(a, t, g) {
+  const L = a._side.L, R = a._side.R, mid = PW / 2;
   g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'none';
   g.clearRect(0, 0, PW, PH);
   g.drawImage(L.ctx.canvas, 0, 0, mid, PH, 0, 0, mid, PH);
@@ -412,9 +432,47 @@ function drawPose(a, t) {
   const f = Math.max(0, Math.min(1, (t - T[i]) / (T[i + 1] - T[i])));
   g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[FACE.erase], bx, by);
   g.globalCompositeOperation = 'lighter';
-  g.globalAlpha = 1 - f; g.drawImage(FACE_IMGS[FACE.frames[i]], bx, by);
-  if (f > 0) { g.globalAlpha = f; g.drawImage(FACE_IMGS[FACE.frames[i + 1]], bx, by); }
-  g.globalAlpha = 1;
+  // the head is drawn a little smaller than in the master (HEAD_S, scaled at the collar): the user found it too big
+  const hw = FACE.box[2] * HEAD_S, hh = FACE.box[3] * HEAD_S, hx = HEAD_PX + (bx - HEAD_PX) * HEAD_S, hy = HEAD_PY + (by - HEAD_PY) * HEAD_S;
+  g.globalAlpha = 1 - f; g.drawImage(FACE_IMGS[FACE.frames[i]], hx, hy, hw, hh);
+  if (f > 0) { g.globalAlpha = f; g.drawImage(FACE_IMGS[FACE.frames[i + 1]], hx, hy, hw, hh); }
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+}
+// one frame of a body turn, its own head drawn at HEAD_S around the frame's collar point
+function composeTurnFrame(q, g) {
+  const [bx, by, bw, bh] = q.box, [px, py] = q.pivot;
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'none';
+  g.clearRect(0, 0, PW, PH); g.drawImage(FACE_IMGS[q.f], 0, 0);
+  g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[q.erase], bx, by);
+  g.globalCompositeOperation = 'lighter'; g.drawImage(FACE_IMGS[q.head], px + (bx - px) * HEAD_S, py + (by - py) * HEAD_S, bw * HEAD_S, bh * HEAD_S);
+  g.globalCompositeOperation = 'source-over';
+}
+// which turn he is in at t: {dir, pos (0 = front ... last = 3/4), w (share of the front pose with the live head)}
+function turnAt(a, t) {
+  for (const q of a._turns) {
+    if (t <= q.t0 - TURN_PRE || t >= q.t1 + TURN_D + TURN_PRE) continue;
+    const n = TURN[q.dir].length - 1;
+    const p = t < q.t1 ? smoother(seg(t, q.t0, q.t0 + TURN_D)) : 1 - smoother(seg(t, q.t1, q.t1 + TURN_D));
+    const w = t < q.t0 ? 1 - smooth(seg(t, q.t0 - TURN_PRE, q.t0)) : t > q.t1 + TURN_D ? smooth(seg(t, q.t1 + TURN_D, q.t1 + TURN_D + TURN_PRE)) : 0;
+    return { dir: q.dir, pos: p * n, w };
+  }
+  return null;
+}
+function drawPose(a, t) {
+  const g = a._pose, tn = turnAt(a, t);
+  if (!tn) composeFront(a, t, g);
+  else {
+    const fr = TURN[tn.dir], i = Math.max(0, Math.min(fr.length - 2, Math.floor(tn.pos))), f = Math.max(0, Math.min(1, tn.pos - i));
+    composeTurnFrame(fr[i], a._c1);
+    if (f > 0) composeTurnFrame(fr[i + 1], a._c2);
+    if (tn.w > 0) composeFront(a, t, a._fb);
+    g.globalCompositeOperation = 'source-over'; g.filter = 'none'; g.clearRect(0, 0, PW, PH);
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = (1 - f) * (1 - tn.w); g.drawImage(a._c1.canvas, 0, 0);
+    if (f > 0) { g.globalAlpha = f * (1 - tn.w); g.drawImage(a._c2.canvas, 0, 0); }
+    if (tn.w > 0) { g.globalAlpha = tn.w; g.drawImage(a._fb.canvas, 0, 0); }
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  }
   // stage light. Rim: the outline band (figure minus the figure pulled in by 4 px) glows warm, like the gold light
   // behind him; legs fall off into the dark floor; a little warm fill from the upper left
   const e = a._tmp, r = a._rim;
@@ -530,7 +588,7 @@ window.render = async t => {
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 };
 
-window.DUR = TL.dur;
+window.DUR = +new URLSearchParams(location.search).get('dur') || TL.dur;
 window.EV = EV.sort((a, b) => a.t - b.t);
 
 // ---------- ready once fonts and every image are loaded ----------

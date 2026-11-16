@@ -347,3 +347,18 @@ a series, so make it perfect. The plan was given in chat and waits for the user'
    bridge (only reachable from the `zarkhaiz` environment);
 3. smoother: slower eased arm moves, head frames at 30 per second;
 4. test stills and a 5 s test clip first, the full render only after the user approves.
+
+### v019 tests so far (Nov 16), full reel NOT rendered yet
+- The user chose head size B = 93 % (`HEAD_S = .93` in `main.js`, scaled at the collar) and wants the body to turn
+  toward the content cards. Reference offered by the user, not received yet.
+- `mascot/anim/tools/build_turn.py`: front -> 3/4 turns ("tl" toward the viewer's left, "tr" right) from the library
+  3/4 bodies (narrowed to 91 % width so the build matches the front master) with 7 FILM in-betweens; each frame has its
+  own head patch, erase mask, box and collar pivot in `out/turn.json`. The FILM model is also on Hugging Face:
+  `https://huggingface.co/jkawamoto/frame-interpolation-pytorch/resolve/main/film_net_fp32.pt`.
+- `main.js`: `buildHero(ARMS, ANGLES)` takes `[time, 'tl' | 'tr' | 'front']`; arm moves wait until he faces the
+  front again; `composeFront` / `composeTurnFrame` / `turnAt` / `drawPose`. The storyboard there is still the TEST one
+  (one turn at 0.15-2.3 s). `?dur=5` (video.mjs `--q 'dur=5'`) renders only the first 5 s.
+- Sent to the user: `qa/v019_tests/head_sizes.jpg`, `turn_frames.jpg`, `turn_test_5s.mp4`. Waiting for the go-ahead.
+- Still to do after approval: the real angle storyboard (turn to the cards at each scene start), a LivePortrait head
+  for the 3/4 hold (blink and expression; now the face is still while he is turned), head frames at 30 per second,
+  slower eased arm moves, full render, QA.
