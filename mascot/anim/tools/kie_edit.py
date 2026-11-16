@@ -46,7 +46,8 @@ def edit(out, instruction, images, timeout=600):
     urls = [upload(p) for p in images]
     prompt = ("Image EDIT task. The FIRST image is the base image" + (", the other images are references" if len(urls) > 1 else "")
               + ". " + instruction + " Keep EVERYTHING else exactly as in the base image: the same man, face, head position, "
-              "torso, legs, shoes, scale and position in the frame, lighting and the pure white background. Natural "
+              "torso, legs, shoes, scale and position in the frame, lighting and the pure white background. The figure "
+              "must stay the same size at the same place in the picture: do not zoom, crop, re-frame or move him. Natural "
               "anatomy, five fingers per hand. No text.")
     tid = _json(f"{API}/jobs/createTask", {"model": MODEL, "input": {"prompt": prompt, "input_urls": urls, "aspect_ratio": "2:3"}})["taskId"]
     t0 = time.time()
