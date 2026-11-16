@@ -404,16 +404,20 @@ What changed in this folder:
 - `phonemes.json` (real word and sound times from the audio), `build_timeline.py` uses them: captions and scene cues
   now sit on the spoken words (the old estimate was up to 0.36 s early).
 - `staging.json`: where he stands per scene. `acting.json`: the whole performance, written by the director.
-- `main.js`: the hand-written arm storyboard is gone; arms, body turns and the new body controls (lean, shrug, one
-  shoulder) are read from `acting.json`. `angles.json` now only gives the turn length and yaw.
+- `main.js`: the hand-written arm storyboard is gone; the arms are read from `acting.json`. The body is drawn as in
+  v019 (the lean / shrug / shoulder warps and the body turns of the first v020 render were removed, see below).
 - `assets/anim/`: new arm frames (L, R), `anim.json`, the head frames of the talking face.
 - Test clips: `qa/v020_tests/` (three lip-sync tests, the first 8 s of the reel).
 
 What the director chose for this script (the log is printed by `director.py`): open hands on the question, wave on
 "Assalam", presenting on "Zarkhaiz", "2018", "Lahore"; three fingers on "teen"; counting 1-2-3 on the three leaks
 and 1 to 5 on the five services; one finger on "ek system"; chop on "sirf"; pointing at the camera on "aap" and
-"abhi"; thumbs-up on "Free"; head shakes on "nahi", tilts on "lekin" and on the question, nods on stressed words;
-two slight body turns toward the cards while the arms rest.
+"abhi"; thumbs-up on "Free"; small nods, a look up on the question, chin forward on direct address.
+
+Second render (same file name), after the user's review of the first: "shoulders and face break in many places, not
+symmetric, cuts are visible, make it smooth". Fixed: every cutout edge is cleaned again (a build regression left a
+dotted white fringe), the shoulder / lean warps are removed (they notched the outline), no body turns, no head tilt
+or roll, head moves within 3.5 degrees, no one-brow accents. Details: `mascot/anim/README.md`, "Quality fix".
 
 Rebuild: the steps in `mascot/anim/README.md` (v020), then as before:
 ```
@@ -423,6 +427,7 @@ ffmpeg -i out/video_v020.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA
 ```
 
 Open:
+- The second render waits for the user's verdict on smoothness and symmetry.
 - Nobody has watched v020 in playback yet (checked on frames, sequences and measurements only): smoothness, the
   lip-sync against the sound and the music mix need the user's eyes and ears.
 - Tests with other kinds of dialogue (excited, serious warning) were not made: a new voiceover needs the Gemini TTS

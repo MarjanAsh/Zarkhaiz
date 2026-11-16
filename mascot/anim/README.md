@@ -13,7 +13,7 @@ written by `tools/manifest.py`):
 | Arms and hands | `gen_keys.py`, `kie_edit.py`, `build_anim.py` | 17 new arm clips. The viewer's left arm: point_camera, point_side, count1..count5, thumbs_up, fist_pump, shrug (+ present, explain, wave). The right arm: point_side, thumbs_up, chop, ok, stop, count3, shrug (+ present, explain). Keys were made with Kie (GPT Image 2 edits of the master, 31 images, 186 credits). |
 | The director | `director.py` | Script + real word times -> `video/outputdm-reel/acting.json`: expression keys, accents, head events, gaze, blinks, arm clips with start and length, body events, body turns, and a log of why each choice was made. |
 | Head build | `build_face.py` | The head frames now follow `acting.json` and the speech mouth (30 frames a second while he speaks, blinks or acts; 15 otherwise). |
-| Page | `video/outputdm-reel/main.js` | Reads `acting.json` for the arms, turns and the new body controls: lean_fwd, lean_back, shrug, shoulder_l, shoulder_r. |
+| Page | `video/outputdm-reel/main.js` | Reads `acting.json` for the arms. The body is drawn exactly as in v019 (see "Quality fix" below). |
 
 The first lip-sync try (`visemes.py`: a mouth shape per letter) was rejected by the user as not good at all; it is
 kept only as a record. Do not use it.
@@ -51,12 +51,24 @@ New keys with Kie: `KEYS_BACKEND=kie KEYS_PARALLEL=4 python3 tools/gen_keys.py` 
 kie-ai skill (never write the key into the repo). The user allowed Kie for IMAGES only, never video (Nov 16).
 After generating, check every key against the master (a shifted or zoomed figure must be regenerated).
 
+### Quality fix after the user's review of the first v020 render (Nov 16)
+The user: "shoulders and face break in many places, it is not symmetric, cuts are visible; make it smooth". Causes and fixes:
+- Dotted white fringe on the outline: `build_anim.py` re-saved `key_rest` and other keys without `edges.clean()`
+  (the edge log skipped them). Now `save()` cleans every image at every save. Never save a cutout without it.
+- Notches at the shoulders: the page's strip-based lean / shrug / one-shoulder warps (fractional source rows) broke
+  the outline. They are REMOVED from `drawHero`; the row loop is the v019 one. Do not bring them back: shoulder
+  motion has to come from arm clips (image keys), not from a warp of the cutout.
+- Asymmetric face and ghosting: head roll and tilt are 0, yaw and pitch are held within 3.5 degrees, the head shake is
+  slow and small, one-brow accents and body turns are off (`direct(..., turns=False)`), gestures use symmetric faces.
+- Still there: the hand is soft or doubled for 2-3 frames in the fastest part of an arm move (FILM in-betweens, as
+  in v019). The fix would be extra middle keys for those moves (paid images).
+
 ### Limits (v020)
-- Front view only for gestures; the slight body turn happens only while both arms rest.
+- Front view only; no body turns in the reel (the turn frames of v019 are still in `out/turn/`).
 - Each arm stays on its own side: no crossed arms, hand on chin, hands together or hand on chest.
 - Legs are planted: no steps or walking clips.
 - Brow and frown changes are small (LivePortrait limits on this face): curious, worried and skeptical read as subtle.
-- Head rotation is limited to about 7 degrees; larger turns need new angle artwork.
+- Head rotation is held within 3.5 degrees and never tilts (the user wants a calm, symmetric face).
 - The lip-sync model was trained mostly on Chinese and English speech; on this Urdu voice the user judged the test
   "kaafi behtar" (much better). It has no guarantee for other voices.
 - Only pairs listed in `PAIRS` have a direct clip; other gesture-to-gesture moves pass through the rest pose.

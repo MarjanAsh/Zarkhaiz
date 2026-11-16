@@ -2,13 +2,9 @@
  "character": "OutputDM founder mascot, front view, one master image (raw/master.png)",
  "rig": {
   "root": "stage position (glide)",
-  "hips": "weight shift, body turn",
-  "torso": "lean, breathing",
-  "shoulders": [
-   "shrug",
-   "shoulder_l",
-   "shoulder_r"
-  ],
+  "hips": "weight shift",
+  "torso": "breathing",
+  "shoulders": "move only with the arm clips (the separate shoulder warps were removed: they broke the outline)",
   "arms": {
    "L (viewer's left = his right arm)": [
     "count1",
@@ -76,9 +72,9 @@
   "pout": "lips pushed forward",
   "lip": "emotional mouth opening (only while he is not speaking)",
   "speech mouth": "21 expression keypoints generated from the voice (lips, jaw, cheeks), 25 per second",
-  "pitch": "head down (+) / up (-), +-6 degrees",
-  "yaw": "head turn, +-7 degrees plus the body-turn yaw",
-  "roll": "head tilt, +-4 degrees"
+  "pitch": "head down (+) / up (-), +-3.5 degrees",
+  "yaw": "head turn, +-3.5 degrees",
+  "roll": "head tilt: in the system, held at 0 in the reel (the user wants a symmetric face)"
  },
  "expression_presets": {
   "neutral": {
@@ -373,21 +369,15 @@
  },
  "head_events": {
   "nod": "pitch down and back",
-  "shake": "two quick yaw swings: no",
-  "tilt": "roll to one side and back",
+  "shake": "slow small yaw swing: no (not chosen by the director now)",
+  "tilt": "ignored by the head build (symmetry)",
   "forward": "chin a little down, toward the viewer",
   "look_up": "pitch up and back",
   "look_down": "pitch down and back"
  },
  "body_controls": {
-  "lean_fwd": "upper body toward the camera (grows up to 2.8 %, drops up to 9 px), hips and feet stay",
-  "lean_back": "the opposite: a small recoil",
-  "shrug": "both shoulders up to 9 px, the neck shortens",
-  "shoulder_l": "the shoulder on the viewer's left alone",
-  "shoulder_r": "the shoulder on the viewer's right alone",
   "weight shift": "automatic: hips drift from one leg to the other, feet planted",
   "breathing": "automatic: the chest widens slightly with each breath",
-  "turn tl / tr": "slight whole-body turn toward the cards (5 in-between frames), only while both arms rest",
   "glide": "he moves across the stage between scenes (1 s, eased)"
  },
  "hand_shapes": [
@@ -921,8 +911,8 @@
     0.8
    ],
    "head": [
-    "tilt",
-    0.8
+    "look_up",
+    0.5
    ],
    "body": [
     "shrug",
@@ -1213,10 +1203,7 @@
     "worried",
     0.7
    ],
-   "head": [
-    "tilt",
-    0.5
-   ],
+   "head": null,
    "body": [
     "lean_back",
     0.4
@@ -1236,17 +1223,14 @@
    "purpose": "but, however: the thought turns",
    "arm candidates": [],
    "face": [
-    "skeptical",
-    0.5
+    "serious",
+    0.4
    ],
    "head": [
-    "tilt",
-    0.7
+    "nod",
+    0.4
    ],
-   "body": [
-    "shoulder_l",
-    0.6
-   ],
+   "body": null,
    "hold s": [
     0,
     0
@@ -1607,7 +1591,7 @@
    "face controls used": 13,
    "mouth shapes": "continuous (generated from the voice)",
    "head events": 6,
-   "body controls": 9,
+   "body controls": 3,
    "semantic gestures": 20,
    "director rules (concepts)": 15,
    "word times": "measured from the audio (forced alignment)"

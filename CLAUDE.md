@@ -21,7 +21,7 @@ and `mascot/README.md` (the character images).
 - Branch: `claude/vibrant-shannon-i2w0rk` (v020, Nov 16; it continues `ccr-e371ce1b-168zzm`). Continue on the newest of the two unless the user names another branch. The v020 session could not push (no write access for its GitHub login): the user was given the work as a local file and updates the repo.
 - Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz): the acting
   system (read `mascot/anim/README.md`, section v020, and `mascot/anim/manifest.json`): lip-sync generated from the
-  voice, 29 expression presets, 22 arm poses, head and body acting, all chosen by `mascot/anim/tools/director.py` from
+  voice, 29 expression presets, 22 arm poses, calm head acting, all chosen by `mascot/anim/tools/director.py` from
   the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v020/qa.md`. v019 to v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
@@ -37,8 +37,8 @@ and `mascot/README.md` (the character images).
   for a series of videos, so it must be right before more reels are made.
 - Proportions and angles (v019, the user's choices): head at 93 % (`HEAD_S` in `main.js`); the body turns only
   SLIGHTLY toward the content cards (frame 2 of 5 of the front -> 3/4 move, never the full 3/4); the body stays as
-  drawn in the library (no narrowing). From v020 the director writes the turn times into `acting.json` (only while
-  both arms rest); `video/outputdm-reel/angles.json` keeps the turn length and yaw.
+  drawn in the library (no narrowing). In v020 body turns are OFF (`director.py`, `turns=False`): the user
+  found the first v020 render broken and not symmetric.
 - Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose. Face (v017, the user
   asked for a new face by any means): the whole head is animated from the ONE master image with LivePortrait; never
   paste mouth or face patches again (they read as stickers). v018 had no talking mouth; from v020 (the user's request,
@@ -55,6 +55,9 @@ and `mascot/README.md` (the character images).
 - Ultra smooth (v013): one character for the whole reel, poses held >= 1.5 s with 0.4 s dissolves, no sound on
   character movements (the swish annoyed the user), render at 60 fps.
 
+- Symmetric and whole (the user's review of v020, Nov 16: "shoulders and face break, not symmetric, cuts"): no warp
+  of the body cutout for shoulders or leaning, no head tilt or roll, head within 3.5 degrees, no one-brow accents, and
+  every saved cutout goes through `edges.clean()`. Zoom into stills at shoulders, outline and neck before sending.
 - Acting (v020): do not hand-write arm storyboards in `main.js`. Change the script, `staging.json` or the director's
   rules, run `director.py`, and read its log. A pose that would leave the frame is never used.
 - Paid tools (Nov 16): no paid video generation at all. Kie (the user's kie-ai skill) and Higgsfield may be used for

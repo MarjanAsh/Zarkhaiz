@@ -27,18 +27,16 @@ face_controls = {
     "smile": "mouth corners: -0.6 frown .. 1.3 broad smile", "pout": "lips pushed forward",
     "lip": "emotional mouth opening (only while he is not speaking)",
     "speech mouth": "21 expression keypoints generated from the voice (lips, jaw, cheeks), 25 per second",
-    "pitch": "head down (+) / up (-), +-6 degrees", "yaw": "head turn, +-7 degrees plus the body-turn yaw",
-    "roll": "head tilt, +-4 degrees",
+    "pitch": "head down (+) / up (-), +-3.5 degrees", "yaw": "head turn, +-3.5 degrees",
+    "roll": "head tilt: in the system, held at 0 in the reel (the user wants a symmetric face)",
 }
-head_events = {"nod": "pitch down and back", "shake": "two quick yaw swings: no", "tilt": "roll to one side and back",
+head_events = {"nod": "pitch down and back", "shake": "slow small yaw swing: no (not chosen by the director now)", "tilt": "ignored by the head build (symmetry)",
                "forward": "chin a little down, toward the viewer", "look_up": "pitch up and back", "look_down": "pitch down and back"}
+# v020 fix (the user: shoulders and face break, not symmetric): the strip-based lean / shrug / one-shoulder warps and
+# the body turns were removed from the reel; only these remain
 body_controls = {
-    "lean_fwd": "upper body toward the camera (grows up to 2.8 %, drops up to 9 px), hips and feet stay",
-    "lean_back": "the opposite: a small recoil", "shrug": "both shoulders up to 9 px, the neck shortens",
-    "shoulder_l": "the shoulder on the viewer's left alone", "shoulder_r": "the shoulder on the viewer's right alone",
     "weight shift": "automatic: hips drift from one leg to the other, feet planted",
     "breathing": "automatic: the chest widens slightly with each breath",
-    "turn tl / tr": "slight whole-body turn toward the cards (5 in-between frames), only while both arms rest",
     "glide": "he moves across the stage between scenes (1 s, eased)",
 }
 # v019, counted from the v019 files: anim.json states; build_face.py track (smile, brow, lids for blinks, pitch, yaw,
@@ -57,8 +55,8 @@ after = {"arm states L": len(arm_states["L"]), "arm states R": len(arm_states["R
 
 m = {
     "character": "OutputDM founder mascot, front view, one master image (raw/master.png)",
-    "rig": {"root": "stage position (glide)", "hips": "weight shift, body turn", "torso": "lean, breathing",
-            "shoulders": ["shrug", "shoulder_l", "shoulder_r"],
+    "rig": {"root": "stage position (glide)", "hips": "weight shift", "torso": "breathing",
+            "shoulders": "move only with the arm clips (the separate shoulder warps were removed: they broke the outline)",
             "arms": {"L (viewer's left = his right arm)": arm_states["L"], "R (viewer's right = his left arm)": arm_states["R"]},
             "neck/head": list(head_events) + ["pitch", "yaw", "roll"],
             "face": list(face_controls), "legs": "planted (no clips yet)"},
