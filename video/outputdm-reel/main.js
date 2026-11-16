@@ -494,32 +494,16 @@ function drawHero(a, t) {
   // feet planted, the shoulders go a little the other way, the chest widens with each breath
   const breathe = Math.sin(t * 1.6), shift = 7 * (Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1));
   const lean = Math.max(-14, Math.min(14, vel / 55));
-  // v020 body controls from acting.json: lean_fwd / lean_back (the upper body comes toward the camera or goes back),
-  // shrug (both shoulders rise, the neck shortens), shoulder_l / shoulder_r (one shoulder; l = the viewer's left)
-  let fwd = 0, shr = 0, shL = 0, shR = 0;
-  for (const e of a._bodyEv || []) {
-    const u = (t - e.t) / e.d; if (u <= 0 || u >= 1) continue;
-    const w = e.amp * Math.sin(Math.PI * u) ** 2;
-    if (e.kind === 'lean_fwd') fwd += w; else if (e.kind === 'lean_back') fwd -= w; else if (e.kind === 'shrug') shr += w;
-    else if (e.kind === 'shoulder_l') shL += w; else if (e.kind === 'shoulder_r') shR += w;
-  }
+  // v020 note: lean, shrug and single-shoulder warps of the pose canvas were tried and REMOVED: drawing the rows in
+  // strips left notches along the shoulders and fractional source rows left a dotted edge (the user: "shoulders
+  // break, cuts"). The body events stay in acting.json but the page does not draw them. Do not bring them back as
+  // 2D warps; a shrug needs its own arm keys.
   const o = a._out; o.clearRect(0, 0, PW + 2 * PAD, PH);
-  // rows are drawn in vertical strips, so the two shoulders can rise by different amounts without a seam
-  const NS = 10, sw = PW / NS, moving = Math.abs(shr) + Math.abs(shL) + Math.abs(shR) > .01;
   for (let y = 0; y < PH; y++) {
     const n = Math.max(0, 1 - y / PFEET);
-    const up = smooth(Math.max(0, Math.min(1, (n - .43) / .5)));           // 0 at the hips .. 1 at the head
     const dx = shift * bend(n) + lean * n * n;
-    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c) + .028 * fwd * up;
-    const ySrc = y - 9 * fwd * up;                                           // leaning in: bigger and a little lower
-    // shoulders: 0 above the collar, full at the shoulder line, fading out toward the waist
-    const S = smooth(Math.max(0, Math.min(1, (y - 428) / 44))) * (1 - smooth(Math.max(0, Math.min(1, (y - 560) / 210))));
-    if (!moving || S < .001) { o.drawImage(a._pose.canvas, 0, ySrc, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1); continue; }
-    for (let i = 0; i < NS; i++) {
-      const wl = 1 - smooth(Math.max(0, Math.min(1, ((i + .5) * sw - 250) / 320)));   // 1 on the viewer's left side
-      const off = S * (9 * shr + 9 * shL * wl + 9 * shR * (1 - wl));
-      o.drawImage(a._pose.canvas, i * sw, ySrc + off, sw + .5, 1, PAD + dx - (sx - 1) * PW / 2 + i * sw * sx, y, (sw + .5) * sx, 1);
-    }
+    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c);
+    o.drawImage(a._pose.canvas, 0, y, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1);
   }
   a._mv.style.transform = `translateX(${x.toFixed(2)}px)`;
   a._body.style.transform = `translateY(${(-1.6 * breathe - 2 * sp).toFixed(2)}px)`;

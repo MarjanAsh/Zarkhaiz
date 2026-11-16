@@ -24,6 +24,8 @@ How it decides (five levels):
   3 emotion   a base expression and energy per line from the intent; cues add accents
   4 timing    every gesture's stroke lands on its word (real time from the audio); a clip starts early enough to
               arrive; faster when the energy is high, slower when the line is serious
+     symmetry   only symmetric faces and head moves are chosen (no one-brow presets, no head tilt): the user found
+              the one-sided ones "not symmetrical"
   5 continuity one arm does one thing at a time; gestures keep a minimum spacing; the same gesture is not repeated
               when another one with the same meaning exists; arms return to rest in pauses; stillness is allowed
 Priority when cues collide: speech sync > meaning > emotion > emphasis > continuity > variety.
@@ -67,7 +69,7 @@ GESTURES = {
     "point_content":  G(purpose="look at this: a card, a name, a place on screen", arm=[("@content", "point_side"), ("@content", "present")], face=("explaining", .5), head=None, body=None, hold=(.7, 1.6), dur=(.5, .9), emotions="any", repeat=2, gaze="content"),
     "present_item":   G(purpose="a list item or a fact appears", arm=[("@content", "present"), ("@free", "present")], face=("explaining", .5), head=("nod", .3), body=None, hold=(.6, 1.4), dur=(.5, .9), emotions="any", repeat=2, gaze="content"),
     "explain_open":   G(purpose="explaining, describing, 'we do this'", arm=[("both", "explain")], face=("explaining", .6), head=None, body=None, hold=(.8, 2.0), dur=(.6, 1.0), emotions="any", repeat=1),
-    "question_shrug": G(purpose="a question, uncertainty", arm=[("both", "shrug"), ("both", "explain")], face=("questioning", .8), head=("tilt", .8), body=("shrug", .8), hold=(.6, 1.1), dur=(.5, .9), emotions="any", repeat=0),
+    "question_shrug": G(purpose="a question, uncertainty", arm=[("both", "shrug"), ("both", "explain")], face=("questioning", .8), head=("look_up", .5), body=("shrug", .8), hold=(.6, 1.1), dur=(.5, .9), emotions="any", repeat=0),
     "emphasis_chop":  G(purpose="an important word: only, really, must", arm=[("R", "chop"), ("L", "fist_pump"), ("both", "explain")], face=("serious", .5), head=("nod", .9), body=("lean_fwd", .5), hold=(.4, .8), dur=(.4, .7), emotions="any", repeat=1),
     "stop_no":        G(purpose="no, never, stop", arm=[("R", "stop"), ("L", "count5")], face=("disagreeing", .6), head=("shake", .9), body=("lean_back", .4), hold=(.5, .9), dur=(.4, .7), emotions="cool", repeat=0),
     "head_no":        G(purpose="a soft 'not': face and head only, the arms stay", arm=[], face=("worried", .5), head=("shake", .6), body=None, hold=(0, 0), dur=(0, 0), emotions="cool", repeat=9),
@@ -76,8 +78,8 @@ GESTURES = {
     "celebrate":      G(purpose="a win, the payoff", arm=[("L", "fist_pump"), ("L", "thumbs_up"), ("L", "wave")], face=("celebrating", .8), head=("look_up", .5), body=("lean_back", .3), hold=(.5, 1.0), dur=(.5, .9), emotions="warm", repeat=0),
     "brand_present":  G(purpose="his own name, the company", arm=[("@free", "present"), ("@content", "present")], face=("proud", .7), head=("nod", .5), body=None, hold=(.7, 1.4), dur=(.5, .9), emotions="warm", repeat=1),
     "bring_together": G(purpose="joining things into one", arm=[("both", "explain")], face=("confident", .6), head=("nod", .5), body=("lean_fwd", .4), hold=(.7, 1.4), dur=(.6, 1.0), emotions="any", repeat=1),
-    "problem_face":   G(purpose="a loss or a problem: face and body only", arm=[], face=("worried", .7), head=("tilt", .5), body=("lean_back", .4), hold=(0, 0), dur=(0, 0), emotions="cool", repeat=9),
-    "contrast_turn":  G(purpose="but, however: the thought turns", arm=[], face=("skeptical", .5), head=("tilt", .7), body=("shoulder_l", .6), hold=(0, 0), dur=(0, 0), emotions="any", repeat=9),
+    "problem_face":   G(purpose="a loss or a problem: face and body only", arm=[], face=("worried", .7), head=None, body=("lean_back", .4), hold=(0, 0), dur=(0, 0), emotions="cool", repeat=9),
+    "contrast_turn":  G(purpose="but, however: the thought turns", arm=[], face=("serious", .4), head=("nod", .4), body=None, hold=(0, 0), dur=(0, 0), emotions="any", repeat=9),
     "self_nod":       G(purpose="I, we: a small nod, the arms stay", arm=[], face=("confident", .5), head=("nod", .5), body=None, hold=(0, 0), dur=(0, 0), emotions="warm", repeat=9),
     "call_to_action": G(purpose="do it now: message, call, follow", arm=[("L", "point_camera"), ("R", "point_camera"), ("@content", "present"), ("both", "explain")], face=("excited", .6), head=("forward", .8), body=("lean_fwd", .8), hold=(.6, 1.2), dur=(.45, .8), emotions="warm", repeat=1),
     "return_neutral": G(purpose="back to the resting stance", arm=[("L", "rest"), ("R", "rest")], face=("slight_smile", .6), head=None, body=None, hold=(0, 0), dur=(.5, 1.0), emotions="any", repeat=9),
@@ -119,7 +121,10 @@ def line_intent(text, concepts):
     return "explain"
 
 
-def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahore", "pakistan", "uae", "2018")):
+def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahore", "pakistan", "uae", "2018"), turns=False):
+    """turns=False (v020, after the user's feedback "not symmetrical, shoulders and face break"): no body turns, he
+    faces the camera for the whole reel. The 3/4 turn frames make the shoulders uneven and the talking head does not
+    sit right on them. Set turns=True only with new turn artwork that carries its own talking head."""
     brands, places = tuple(brands), tuple(places)
     reel = Path(reel)
     lines = json.loads((reel / "lines.json").read_text())
@@ -297,7 +302,7 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
                 out["accents"].append({"t": round(stroke - .18, 3), "d": round(.6 + .5 * (1 - energy), 2), "expr": fx, "k": round(fk * (.7 + .5 * energy), 2)})
             if g["head"] and stroke - last["head"] > (1.0 if strong else 1.8):
                 kind = g["head"][0]
-                out["head"].append({"t": round(stroke - .12, 3), "d": {"shake": .8, "nod": .5, "tilt": .9, "forward": .7, "look_up": .8}.get(kind, .6), "kind": kind, "amp": round(g["head"][1] * (.7 + .5 * energy), 2)})
+                out["head"].append({"t": round(stroke - .12, 3), "d": {"shake": 1.1, "nod": .6, "tilt": .9, "forward": .8, "look_up": .9}.get(kind, .6), "kind": kind, "amp": round(g["head"][1] * (.7 + .5 * energy), 2)})
                 last["head"] = stroke
             if g["body"] and stroke - last["body"] > 1.6:
                 out["body"].append({"t": round(stroke - .2, 3), "d": 1.0 if g["body"][0] != "shrug" else .9, "kind": g["body"][0], "amp": round(g["body"][1] * (.7 + .5 * energy), 2)})
@@ -346,7 +351,7 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
     for a, b in gaps:
         a, b = max(a, 0.1) + .2, b - .2
         side = stage.get(scene_of(a + .5), "right")
-        if b - a >= 2 * TD + .5 and side in ("left", "right"):
+        if turns and b - a >= 2 * TD + .5 and side in ("left", "right"):
             hold = min(b - a - 2 * TD, 2.2)
             out["turns"] += [[round(a, 2), "tl" if side == "right" else "tr"], [round(a + TD + hold, 2), "front"]]
 

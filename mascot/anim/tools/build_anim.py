@@ -22,6 +22,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
+import edges  # noqa: E402
 import faces  # noqa: E402
 import film  # noqa: E402
 
@@ -93,6 +94,7 @@ def main():
     lib_master = np.array(Image.open(LIB / "bodies/front/neutral.png").convert("RGBA"))
     a_m = lib_master[:, :, 3].astype(np.float32) / 255
     master = canvas(RAW / "master.png").astype(np.float32)
+    cleaned = set(json.loads((OUT / ".edges.json").read_text())) if (OUT / ".edges.json").exists() else set()
     meta = {"canvas": [W, H], "half": {"L": [0, MID + OVER], "R": [MID - OVER, W]}, "frames": {}, "trans": {}, "faces": {}}
 
     def save(side, name, rgb, box):
@@ -110,7 +112,10 @@ def main():
         out = np.dstack([rgbf, a * 255]).astype(np.uint8)
         hx0, hx1 = meta["half"][side]
         (OUT / side).mkdir(exist_ok=True)
-        Image.fromarray(out[:, hx0:hx1]).save(OUT / side / f"{name}.webp", "WEBP", quality=90, method=6)
+        # the cutout edge is cleaned here, at every save (v020 fix: a key that was saved again by a later build kept
+        # its raw jagged edge, because edges.py had it in its "done" list; the rest pose showed a dotted white fringe)
+        Image.fromarray(edges.clean(out[:, hx0:hx1])).save(OUT / side / f"{name}.webp", "WEBP", quality=90, method=6)
+        cleaned.add(f"{side}/{name}.webp")
         return f"{side}/{name}.webp"
 
     for side, gests in GEST.items():
@@ -138,6 +143,10 @@ def main():
                 keys[nm] = master * (1 - f) + k * f
             print(side, g, "box", box, flush=True)
         keys["rest"] = master
+        save(side, "key_rest", master, [0, 0, 1, 1])     # every key is saved again with a clean edge (cheap, no FILM)
+        for g in gests:
+            for nm in CHAIN[g]:
+                save(side, f"key_{kn(g, nm)}", keys[kn(g, nm)], boxes[g])
 
         def seg(a, b, box):
             """Frame files for a -> b (both keys), ends included; FILM runs only inside the box."""
@@ -203,8 +212,8 @@ def main():
         meta["faces"][e] = {"src": f"face/{e}.webp", "kind": "mouth" if faces.KIND[e] is faces.MOUTH else "face", "cc": cc}
     meta["face_box"] = [x0, y0, w, h]
     (OUT / "anim.json").write_text(json.dumps(meta, indent=1))
-    import edges
-    print(edges.run(), "frames edge-cleaned")
+    (OUT / ".edges.json").write_text(json.dumps(sorted(cleaned)))
+    print(edges.run(), "older frames edge-cleaned")
     n = sum(1 for _ in OUT.rglob("*.webp")); mb = sum(p.stat().st_size for p in OUT.rglob("*.webp")) / 1e6
     print(f"{n} files, {mb:.1f} MB, {len(meta['trans'])} transitions")
 

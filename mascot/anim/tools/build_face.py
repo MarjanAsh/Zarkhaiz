@@ -62,7 +62,7 @@ def track():
     AN = json.loads((REEL / "angles.json").read_text())
     dur = TL["dur"]
     n = int(round(dur * 60)) + 1
-    sp = Speech(np.load(OUT / "speech" / "master_exp.npy"))
+    sp = Speech(np.load(OUT / "speech" / "master_exp.npy"), head=.3)     # a third of the generated head motion
     keys = A["face"]
     sm5 = lambda u: (lambda u: u * u * u * (u * (u * 6 - 15) + 10))(min(1.0, max(0.0, u)))
 
@@ -86,8 +86,10 @@ def track():
             if w > 0:
                 cur = E.blend(cur, E.mix(ac["expr"], ac["k"]), .75 * w)
         c = dict(cur)
-        c["pitch"] += .5 * math.sin(.7 * t + 2); c["yaw"] += 1.2 * math.sin(.5 * t) + .4 * math.sin(1.3 * t + 1)
-        c["roll"] += .5 * math.sin(.43 * t)
+        # v020 after the user's feedback (the face "breaks", not symmetrical): calm, symmetric head. No idle roll,
+        # no tilt events, smaller and slower nods and shakes, tight limits; the expression's own roll is dropped.
+        c["roll"] = 0.0
+        c["pitch"] += .4 * math.sin(.7 * t + 2); c["yaw"] += .8 * math.sin(.5 * t) + .3 * math.sin(1.3 * t + 1)
         act = 0.0
         for h in A["head"]:
             u = (t - h["t"]) / h["d"]
@@ -96,17 +98,17 @@ def track():
             w, a_ = math.sin(math.pi * u) ** 2, h["amp"]
             act = max(act, w)
             if h["kind"] == "nod":
-                c["pitch"] += 4.2 * a_ * w
+                c["pitch"] += 2.6 * a_ * w
             elif h["kind"] == "forward":
-                c["pitch"] += 2.4 * a_ * w
+                c["pitch"] += 1.6 * a_ * w
             elif h["kind"] == "look_up":
-                c["pitch"] -= 3.8 * a_ * w
+                c["pitch"] -= 2.2 * a_ * w
             elif h["kind"] == "look_down":
-                c["pitch"] += 3.8 * a_ * w
+                c["pitch"] += 2.2 * a_ * w
             elif h["kind"] == "tilt":
-                c["roll"] += 3.4 * a_ * w * (1 if int(h["t"] * 10) % 2 else -1)
+                pass                                   # tilt events are ignored (kept in old acting files)
             elif h["kind"] == "shake":
-                c["yaw"] += 4.0 * a_ * math.sin(2 * math.pi * 2 * u) * math.sin(math.pi * u)
+                c["yaw"] += 2.4 * a_ * math.sin(2 * math.pi * 1.5 * u) * math.sin(math.pi * u)
         for g_ in A["gaze"]:
             w = bump(t, g_["t"], g_["d"])
             c["gx"] += g_["gx"] * w; c["gy"] += g_["gy"] * w
@@ -115,8 +117,8 @@ def track():
             blink = max(blink, bump(t, bt, .23))
         if blink > .05:
             c["eye"] = E.EYE_OPEN * (1 - blink)
-        c["yaw"] = max(-7, min(7, c["yaw"])) + turn_yaw(t)
-        c["pitch"] = max(-6, min(6, c["pitch"])); c["roll"] = max(-4, min(4, c["roll"]))
+        c["yaw"] = max(-3.5, min(3.5, c["yaw"])) + turn_yaw(t)
+        c["pitch"] = max(-3.5, min(3.5, c["pitch"])); c["roll"] = 0.0
         return c, act, blink
 
     ts, out = [], []
@@ -124,6 +126,7 @@ def track():
         t = x / 60
         c, act, blink = controls(t)
         s = sp.at(t)
+        s["roll"] = 0.0                              # symmetric head: no roll from the generated motion either
         fast = s["speaking"] > .02 or act > .02 or blink > .02 or any(abs(t - tt - AN["d"] / 2) < AN["d"] for tt, _ in A["turns"])
         if not fast and x % 4:
             continue
