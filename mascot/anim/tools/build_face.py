@@ -12,6 +12,7 @@ Usage: python3 build_face.py [--part K N] [--every M] [--sheet out.jpg]
   --part K N   render only frames with index % N == K (run N processes side by side; set LP_THREADS for each)
   --every M    render only every M-th frame (quick preview; the frames are kept, a later full run skips them)
   --sheet F    contact sheet of the rendered frames
+  --upto S     only the frames of the first S seconds (a cheap test; also with --finish, which then keeps other frames)
 Then: python3 build_face.py --finish     (writes face.json once all frames exist, removes frames no longer used)
 """
 import hashlib, json, math, sys
@@ -26,7 +27,7 @@ RAW, OUT = ROOT / "raw", ROOT / "out"
 REEL = ROOT.parents[1] / "video" / "outputdm-reel"
 W, H = 820, 1240
 FPS = 30
-BOX = (300, 170, 510, 448)         # x0, y0, x1, y1 of the head patch in the body canvas
+BOX = (292, 164, 518, 448)         # x0, y0, x1, y1 of the head patch in the body canvas (wider from v020: bigger head moves)
 
 
 def canvas(rgb):
@@ -46,72 +47,108 @@ def bump(t, t0, d):
 
 # ---------- parameter track ----------
 def track():
+    """v020: the head follows acting.json (tools/director.py) and the audio-driven mouth (tools/speech_face.py).
+
+    Every frame = expression (base per line, glides .45 s) + accents on stressed words + head events (nod, shake,
+    tilt...) + gaze + blinks + the body-turn yaw + the speech mouth and its small head motion. 30 frames a second
+    while he speaks or blinks or the head acts, 15 otherwise (the page blends neighbours).
+    Returns (times, params, speech): params are plain numbers; the mouth offsets are looked up again at render time.
+    """
+    sys.path.insert(0, str(Path(__file__).parent))
+    import expressions as E
+    from speech_face import Speech
     TL = json.loads((REEL / "timeline.json").read_text())
-    L = {l["id"]: l for l in TL["lines"]}
-    dur = TL["dur"]
-    n = int(round(dur * FPS)) + 1
-    words = TL["words"]
-
-    def word(line, w):
-        return next(x for x in words if x["line"] == line and x["w"].lower().strip(".,!?") == w)
-
-    # expression keys: (time, smile, brow); values glide to the next key over .9 s. Small expressions only (v018:
-    # the user wants no talking mouth): the mouth stays closed, the smile and brows change a little per line.
-    keys = [(-9, .45, 0), (L["l01"]["t0"] - .2, .35, 4), (word("l01", "lekin")["t0"] - .15, .0, -9),
-            (L["l01"]["t1"] + .15, .85, 5), (L["l03"]["t0"] - .2, .55, 2),
-            (L["l04"]["t0"] - .2, .15, -7), (L["l05"]["t0"] - .1, .05, -10),
-            (L["l05"]["t1"] + .1, .65, 5), (L["l07"]["t0"] - .2, .5, 1), (L["l08"]["t0"] - .2, .75, 6),
-            (L["l09"]["t1"] + .35, 1.0, 4)]
-    blinks = []
-    t = 1.9
-    while t < dur:
-        blinks.append(t)
-        t += 2.9 + 1.7 * ((math.sin(t * 12.9898) * 43758.5453) % 1)
-
-    # body turns (video/outputdm-reel/angles.json, the same file the page reads): the head turns with the body,
-    # toward the cards ("tl" = the viewer's left = negative yaw)
+    A = json.loads((REEL / "acting.json").read_text())
     AN = json.loads((REEL / "angles.json").read_text())
+    dur = TL["dur"]
+    n = int(round(dur * 60)) + 1
+    sp = Speech(np.load(OUT / "speech" / "master_exp.npy"))
+    keys = A["face"]
+    sm5 = lambda u: (lambda u: u * u * u * (u * (u * 6 - 15) + 10))(min(1.0, max(0.0, u)))
 
     def turn_yaw(t):
-        y, cur, t0 = 0.0, "front", -9
-        ev = AN["turns"]
+        y, ev = 0.0, A["turns"]
         for i, (tt, to) in enumerate(ev):
             if to == "front":
                 continue
             t1 = ev[i + 1][0] if i + 1 < len(ev) else 1e9
             u = (t - tt) / AN["d"] if t < t1 else 1 - (t - t1) / AN["d"]
-            u = min(1.0, max(0.0, u))
-            y += (-1 if to == "tl" else 1) * AN["yaw"] * u * u * u * (u * (u * 6 - 15) + 10)
+            y += (-1 if to == "tl" else 1) * AN["yaw"] * sm5(u)
         return y
 
-    def at(t):
-        k = max(j for j in range(len(keys)) if keys[j][0] <= t)
-        a, b = keys[max(0, k - 1)], keys[k]
-        u = sm((t - b[0]) / .9)
-        smile, brow = a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u
-        nod = 0.0
-        for l in TL["lines"]:
-            nod += bump(t, l["t0"] - .1, .8)
-            brow += 4 * bump(t, l["t0"], .9)
-        p = dict(smile=smile, brow=brow)
-        p["pitch"] = 1.0 * math.sin(.7 * t + 2) + 1.8 * nod
-        p["yaw"] = 2.4 * math.sin(.5 * t) + .8 * math.sin(1.3 * t + 1) + turn_yaw(t)
-        p["roll"] = .9 * math.sin(.43 * t) + .5 * math.sin(.9 * t + 2)
-        e = None
-        for bt in blinks:
-            v = bump(t, bt, .23)
-            if v > 0:
-                e = .30 * (1 - v)
-        if e is not None and e < .27:
-            p["eye"] = e
-        return {k2: round(v, 2 if k2 in ("smile", "eye") else 1) for k2, v in p.items()}
+    def controls(t):
+        k = max(j for j in range(len(keys)) if keys[j]["t"] <= t)
+        cur = E.mix(keys[k]["expr"], keys[k]["k"])
+        if k > 0:
+            cur = E.blend(E.mix(keys[k - 1]["expr"], keys[k - 1]["k"]), cur, sm5((t - keys[k]["t"]) / .45))
+        for ac in A["accents"]:                       # a stressed word pulls the face toward its expression for a moment
+            w = bump(t, ac["t"], ac["d"])
+            if w > 0:
+                cur = E.blend(cur, E.mix(ac["expr"], ac["k"]), .75 * w)
+        c = dict(cur)
+        c["pitch"] += .5 * math.sin(.7 * t + 2); c["yaw"] += 1.2 * math.sin(.5 * t) + .4 * math.sin(1.3 * t + 1)
+        c["roll"] += .5 * math.sin(.43 * t)
+        act = 0.0
+        for h in A["head"]:
+            u = (t - h["t"]) / h["d"]
+            if not 0 < u < 1:
+                continue
+            w, a_ = math.sin(math.pi * u) ** 2, h["amp"]
+            act = max(act, w)
+            if h["kind"] == "nod":
+                c["pitch"] += 4.2 * a_ * w
+            elif h["kind"] == "forward":
+                c["pitch"] += 2.4 * a_ * w
+            elif h["kind"] == "look_up":
+                c["pitch"] -= 3.8 * a_ * w
+            elif h["kind"] == "look_down":
+                c["pitch"] += 3.8 * a_ * w
+            elif h["kind"] == "tilt":
+                c["roll"] += 3.4 * a_ * w * (1 if int(h["t"] * 10) % 2 else -1)
+            elif h["kind"] == "shake":
+                c["yaw"] += 4.0 * a_ * math.sin(2 * math.pi * 2 * u) * math.sin(math.pi * u)
+        for g_ in A["gaze"]:
+            w = bump(t, g_["t"], g_["d"])
+            c["gx"] += g_["gx"] * w; c["gy"] += g_["gy"] * w
+        blink = 0.0
+        for bt in A["blinks"]:
+            blink = max(blink, bump(t, bt, .23))
+        if blink > .05:
+            c["eye"] = E.EYE_OPEN * (1 - blink)
+        c["yaw"] = max(-7, min(7, c["yaw"])) + turn_yaw(t)
+        c["pitch"] = max(-6, min(6, c["pitch"])); c["roll"] = max(-4, min(4, c["roll"]))
+        return c, act, blink
 
-    # sample times: 15 per second (the page blends neighbours, the motion is slow), 30 per second through blinks
-    ts = set(range(0, 2 * n, 4))
-    for bt in blinks:
-        ts |= set(range(int(bt * 60) // 2 * 2 - 2, int((bt + .23) * 60) + 4, 2))
-    ts = sorted(x for x in ts if 0 <= x < 2 * n)
-    return [x / 60 for x in ts], [at(x / 60) for x in ts]
+    ts, out = [], []
+    for x in range(0, n, 2):                           # 30 per second candidates
+        t = x / 60
+        c, act, blink = controls(t)
+        s = sp.at(t)
+        fast = s["speaking"] > .02 or act > .02 or blink > .02 or any(abs(t - tt - AN["d"] / 2) < AN["d"] for tt, _ in A["turns"])
+        if not fast and x % 4:
+            continue
+        p = E.apply(c, s)
+        p.pop("exp_delta", None)
+        p = {k2: round(float(v), 3 if k2 in ("smile", "eye", "lip") else 1) for k2, v in p.items()}
+        p["st"] = round(t, 4) if s["speaking"] > .001 else -1       # the mouth is looked up from this time
+        ts.append(t); out.append(p)
+    return ts, out
+
+
+_SP = None
+
+
+def render_params(p):
+    """Parameters for Face.render: the stored numbers plus the mouth offsets for the frame's time."""
+    global _SP
+    q = dict(p)
+    st = q.pop("st")
+    if st >= 0:
+        if _SP is None:
+            from speech_face import Speech
+            _SP = Speech(np.load(OUT / "speech" / "master_exp.npy"))
+        q["exp_delta"] = _SP.at(st)["exp_delta"]
+    return q
 
 
 # ---------- masks ----------
@@ -123,9 +160,9 @@ def masks(master_c):
     sil = (ff != 2)
     r = np.zeros((H, W), np.uint8)
     r[208:404, 318:492] = sil[208:404, 318:492]
-    r[:208, 300:510] = sil[:208, 300:510]
+    r[:208, 292:518] = sil[:208, 292:518]
     r[380:440, 360:450] = 1
-    r = cv2.dilate(r, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (27, 27)))
+    r = cv2.dilate(r, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (35, 35)))
     m = cv2.GaussianBlur(r.astype(np.float32), (0, 0), 3)
     fade = np.clip((438 - np.arange(H)) / 22, 0, 1)[:, None]
     return m * fade
@@ -162,7 +199,15 @@ def main():
     args = sys.argv[1:]
     hd = OUT / "head"
     hd.mkdir(parents=True, exist_ok=True)
+    mexp = OUT / "speech" / "master_exp.npy"       # the master's own expression keypoints (the mouth offsets start from them)
+    if not mexp.exists():
+        sys.path.insert(0, str(Path(__file__).parent))
+        from lp_face import Face
+        np.save(mexp, Face(str(RAW / "master.png")).info['exp'][0].numpy())
     times, tr = track()
+    if "--upto" in args:                               # a test: only the first seconds of the reel
+        lim = float(args[args.index("--upto") + 1])
+        times, tr = [t for t in times if t <= lim], [p for t, p in zip(times, tr) if t <= lim]
     files = [name(p) for p in tr]
     if "--finish" in args:
         miss = sorted({f for f in files if not (hd / f).exists()})
@@ -174,7 +219,7 @@ def main():
                                                    "frames": [f"head/{f}" for f in files]}))
         keep = set(files) | {"erase.png"}
         for f in hd.iterdir():
-            if f.name not in keep:
+            if f.name not in keep and "--upto" not in args and "--keep" not in args:
                 f.unlink()
         print(len(set(files)), "distinct frames,", sum((hd / f).stat().st_size for f in set(files)) // 1024, "KB")
         return
@@ -195,7 +240,7 @@ def main():
         for n_, i in enumerate(todo):
             if (hd / files[i]).exists():
                 continue
-            im = patch(canvas(face.render(**tr[i])), mh)
+            im = patch(canvas(face.render(**render_params(tr[i]))), mh)
             Image.fromarray(im).save(hd / files[i], "WEBP", quality=88, method=4)
             if n_ % 20 == 0:
                 print(n_, "/", len(todo), flush=True)

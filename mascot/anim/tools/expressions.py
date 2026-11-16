@@ -16,7 +16,8 @@ master face (lp_face.Face.render), so they combine freely with each other and wi
 
 Values were tuned on raw/master.png; see out/expressions.jpg (all presets at 1.0) and out/expression_levels.jpg.
 Safe ranges on this face: smile -0.6..1.3, brow -25..25, eye 0...42 (the lids are not linear: .30 is open, .27 a
-squint, .24 already reads as closed, so squints stay at .26 or above), gx +-12, gy +-10, yaw/pitch +-6, roll +-4.
+squint, .24 already reads as closed, so a squint from this control closes the eye unevenly, so presets never go below .30: the smile itself narrows
+the eyes; only blinks close them), gx +-12, gy +-10, yaw/pitch +-6, roll +-4.
 """
 EYE_OPEN = 0.30
 CONTROLS = ("smile", "brow", "brow_l", "brow_r", "eye", "gx", "gy", "pout", "lip", "pitch", "yaw", "roll")
@@ -27,34 +28,34 @@ NEUTRAL = dict(smile=0.0, brow=0.0, brow_l=0.0, brow_r=0.0, eye=EYE_OPEN, gx=0.0
 PRESETS = {
     "neutral":       ({}, "listening, between lines"),
     "slight_smile":  (dict(smile=.45), "default friendly face"),
-    "happy":         (dict(smile=.9, brow=4, eye=.28), "good news, greeting"),
-    "very_happy":    (dict(smile=1.3, brow=7, eye=.275, lip=.10), "payoff, big result"),
+    "happy":         (dict(smile=.9, brow=4, eye=.30), "good news, greeting"),
+    "very_happy":    (dict(smile=1.3, brow=7, eye=.30, lip=.10), "payoff, big result"),
     "excited":       (dict(smile=1.0, brow=16, eye=.38, lip=.12, pitch=-2), "energy, announcement"),
-    "confident":     (dict(smile=.55, brow=-3, eye=.29, pitch=-1.5), "claims, credentials"),
-    "serious":       (dict(smile=-.45, brow=-16, eye=.29), "important statement"),
-    "angry":         (dict(smile=-.5, brow=-22, eye=.275, pitch=2), "NOT for this character's reels (user rule); kept for completeness"),
-    "frustrated":    (dict(smile=-.6, brow=-20, brow_l=-4, eye=.275, roll=2.5), "pain point"),
+    "confident":     (dict(smile=.55, brow=-3, eye=.30, pitch=-1.5), "claims, credentials"),
+    "serious":       (dict(smile=-.45, brow=-16, eye=.30), "important statement"),
+    "angry":         (dict(smile=-.5, brow=-22, eye=.30, pitch=2), "NOT for this character's reels (user rule); kept for completeness"),
+    "frustrated":    (dict(smile=-.6, brow=-20, brow_l=-4, eye=.30, roll=2.5), "pain point"),
     "shocked":       (dict(smile=-.1, brow=24, eye=.42, lip=.22, pitch=-2.5), "big surprise"),
     "surprised":     (dict(brow=24, eye=.40, lip=.12, pitch=-1.5), "unexpected fact"),
-    "confused":      (dict(smile=-.3, brow_l=24, brow_r=-16, eye=.29, roll=3.5, gx=3), "question he cannot answer"),
+    "confused":      (dict(smile=-.3, brow_l=24, brow_r=-16, eye=.30, roll=3.5, gx=3), "question he cannot answer"),
     "curious":       (dict(smile=.2, brow_l=24, brow_r=8, eye=.34, roll=-3, pitch=-1.5), "question, lean in"),
-    "thinking":      (dict(smile=.05, brow_r=18, brow_l=-8, eye=.285, gx=9, gy=7, roll=2.5), "considering, looking up and away"),
+    "thinking":      (dict(smile=.05, brow_r=18, brow_l=-8, eye=.30, gx=9, gy=7, roll=2.5), "considering, looking up and away"),
     "worried":       (dict(smile=-.6, brow=20, brow_l=4, eye=.33, pitch=1.5), "risk, problem for the viewer"),
-    "sad":           (dict(smile=-.6, brow=14, eye=.27, gy=-6, pitch=3.5), "loss"),
-    "disappointed":  (dict(smile=-.55, brow=-8, eye=.27, gy=-5, pitch=2.5, roll=-2), "result that failed"),
-    "skeptical":     (dict(smile=-.25, brow_l=25, brow_r=-16, eye=.275, yaw=-2.5, roll=2), "doubt about a claim"),
-    "sarcastic":     (dict(smile=.5, brow_r=24, brow_l=-10, eye=.275, roll=-2.5), "ironic aside"),
-    "proud":         (dict(smile=.8, brow=3, eye=.28, pitch=-3), "achievement"),
+    "sad":           (dict(smile=-.6, brow=14, eye=.30, gy=-3, pitch=3.5), "loss"),
+    "disappointed":  (dict(smile=-.55, brow=-8, eye=.30, gy=-3, pitch=2.5, roll=-2), "result that failed"),
+    "skeptical":     (dict(smile=-.25, brow_l=25, brow_r=-16, eye=.30, yaw=-2.5, roll=2), "doubt about a claim"),
+    "sarcastic":     (dict(smile=.5, brow_r=24, brow_l=-10, eye=.30, roll=-2.5), "ironic aside"),
+    "proud":         (dict(smile=.8, brow=3, eye=.30, pitch=-3), "achievement"),
     "nervous":       (dict(smile=.3, brow=16, eye=.34, gx=-7), "awkward admission"),
-    "embarrassed":   (dict(smile=.6, brow=6, eye=.27, gy=-6, pitch=3, roll=2), "self-deprecating"),
+    "embarrassed":   (dict(smile=.6, brow=6, eye=.30, gy=-3, pitch=3, roll=2), "self-deprecating"),
     "impressed":     (dict(smile=.4, brow=20, eye=.37, pitch=-1.5, lip=.06), "praise of something"),
     "explaining":    (dict(smile=.3, brow=6, eye=.31), "teaching, the default while speaking"),
     "questioning":   (dict(smile=.1, brow=20, eye=.34, roll=3, pitch=-1.5), "asking the viewer"),
-    "disagreeing":   (dict(smile=-.5, brow=-14, eye=.285, yaw=3), "no, not this (with a head shake)"),
-    "agreeing":      (dict(smile=.6, brow=5, eye=.29, pitch=2), "yes (with a nod)"),
+    "disagreeing":   (dict(smile=-.5, brow=-14, eye=.30, yaw=3), "no, not this (with a head shake)"),
+    "agreeing":      (dict(smile=.6, brow=5, eye=.30, pitch=2), "yes (with a nod)"),
     "celebrating":   (dict(smile=1.3, brow=14, eye=.30, lip=.16, pitch=-3), "win"),
-    "suspicious":    (dict(smile=-.35, brow=-18, eye=.262, gx=-8, yaw=2.5), "something is off"),
-    "reassuring":    (dict(smile=.65, brow=4, eye=.285, pitch=1, roll=-1.5), "calm promise, CTA"),
+    "suspicious":    (dict(smile=-.35, brow=-18, eye=.30, gx=-8, yaw=2.5), "something is off"),
+    "reassuring":    (dict(smile=.65, brow=4, eye=.30, pitch=1, roll=-1.5), "calm promise, CTA"),
 }
 LEVELS = {"subtle": .25, "moderate": .5, "strong": .75, "exaggerated": 1.0}
 # acting families, used by the selection engine to avoid jumping between opposite faces without passing neutral

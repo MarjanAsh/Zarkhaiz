@@ -2,15 +2,17 @@
 
 usage: python3 build_timeline.py   (reads lines.json + vo/dur.json, writes timeline.json)
 
-Word times are estimated inside each line from word length (Gemini TTS gives no
-word timestamps); captions show 1-3 words at a time with the spoken word highlighted.
+Word times: from phonemes.json when it exists (real times from the audio, mascot/anim/tools/align.py, from v020);
+otherwise estimated inside each line from word length (Gemini TTS gives no word timestamps). Captions show 1-3
+words at a time with the spoken word highlighted.
 """
-import json, re
+import json, os, re
 
 LEAD, GAP, SCENE_GAP, TAIL = 0.5, 0.22, 0.45, 2.8
 
 lines = json.load(open("lines.json"))
 dur = json.load(open("vo/dur.json"))
+PH = json.load(open("phonemes.json"))["lines"] if os.path.exists("phonemes.json") else {}
 
 t = LEAD
 out_lines, words, chunks, scenes = [], [], [], []
@@ -40,6 +42,11 @@ for ln in lines:
         acc += wt
         b = t0 + span * acc / tot
         wl.append({"w": w, "t0": round(a, 3), "t1": round(b, 3), "line": ln["id"]})
+    real = PH.get(ln["id"], {}).get("words", [])
+    if len(real) == len(wl):                 # real word times; a word lasts until the next one starts (no caption gaps)
+        for i, (w, r) in enumerate(zip(wl, real)):
+            w["t0"] = round(r["t0"], 3)
+            w["t1"] = round(real[i + 1]["t0"] if i + 1 < len(real) else r["t1"], 3)
     words += wl
     # caption chunks: up to 3 words / 20 chars, break after punctuation
     cur = []

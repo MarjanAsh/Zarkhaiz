@@ -102,7 +102,10 @@ for (const f of new Set([FACE.erase, ...FACE.frames])) { const im = new Image();
 // or right (tr); each frame brings its own head patch, so the head can be drawn at HEAD_S like the front head
 const TURN = await (await fetch('assets/anim/turn.json')).json();
 for (const fr of Object.values(TURN)) for (const q of fr) for (const f of [q.f, q.head, q.erase]) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
-const ANGLES = await (await fetch('angles.json')).json();   // the same file drives the head's turn in build_face.py
+const ANGLES = await (await fetch('angles.json')).json();   // d and yaw of a body turn (also read by build_face.py)
+// v020: what the arms, the body and the turns do comes from acting.json, written by mascot/anim/tools/director.py from
+// the script and the real word times (the head frames are built from the same file)
+const ACT = await (await fetch('acting.json')).json();
 const TURN_D = ANGLES.d, TURN_PRE = .05;
 const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090, PAD = 40;
 const HEAD_S = .93, HEAD_PX = 405, HEAD_PY = 434;
@@ -141,11 +144,11 @@ function buildHero(ARMS, TURNS = []) {
     const [x0, x1] = ANIM.half[s];
     const clips = [], files = new Set([ANIM.states[s].rest]);
     let cur = 'rest', free = -9;
-    for (const [t, state] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
+    for (const [t, state, dd] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
       if (state === cur) continue;
       const fr = ANIM.trans[`${s}:${cur}>${state}`];
       if (!fr) throw new Error(`no arm clip ${s}:${cur}>${state}`);
-      const d = Math.min(1.3, .45 + .016 * fr.length); let t0 = Math.max(t, free + .12);   // longer clips take longer; never cut a move short
+      const d = dd || Math.min(1.3, .45 + .016 * fr.length); let t0 = Math.max(t, free + (dd ? .02 : .12));   // the director gives the length; otherwise longer clips take longer
       const tq = busy(t0) || busy(t0 + d);
       if (tq) { if (cur !== 'rest') throw new Error(`arm ${s} is not at rest for the turn at ${tq.t0.toFixed(2)} s`); t0 = tq.t1 + TURN_D + TURN_PRE + .02; }
       clips.push({ t0, d, fr }); fr.forEach(f => files.add(f)); cur = state; free = t0 + d;
@@ -341,18 +344,10 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   hero('cta', 1040, [[0, 'idea', 840], [W('l08', 'growth') - .05, 'side_point', 830], [W('l08', 'whatsapp') - .15, 'point_screen', 820, true], [W('l08', 'karein') - .05, 'point_camera', 830], [W('l09', 'outputdm') - .15, 'presenting', 830], [W('l09', 'com') - .05, 'peace', 835], [L('l09').t1 + .5, 'laugh', 840], [L('l09').t1 + 1.6, 'victory', 840]], t0 + .1, t1 + 1, 'walkR');
 }
 
-// the character's storyboard: what each arm does on which word ("L" = the arm on the viewer's left)
-const HERO = buildHero({
-  L: [[2.8, 'explain'], [sc.intro.t0 - .3, 'wave'], [W('l02', 'main') - .05, 'rest'],
-      [W('l03', 'lahore') - .2, 'present'], [9.65, 'rest'],
-      [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'present'], [W('l05', 'follow-up') + .1, 'rest'],
-      [25.9, 'explain'], [sc.only.t0 - .35, 'rest'], [28.2, 'present'], [W('l07', 'business') - .1, 'explain'], [30.2, 'rest'],
-      [34.0, 'explain'], [L('l09').t1 + .4, 'wave']],
-  R: [[2.8, 'explain'], [sc.intro.t0 - .3, 'rest'], [W('l02', 'zarkhaiz') + .3, 'present'], [sc.since.t0 - .4, 'rest'],
-      [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'rest'],
-      [25.0, 'present'], [25.9, 'explain'], [sc.only.t0 - .35, 'rest'], [W('l07', 'business') - .1, 'explain'], [30.2, 'rest'],
-      [34.0, 'explain'], [L('l09').t1 + .4, 'rest']],
-}, ANGLES.turns);
+// the character's storyboard comes from acting.json (director.py): arm clips [start, state, length] per side and the
+// slight body turns. To change the acting, change the script or the director's rules and rebuild, not this file.
+const HERO = buildHero(ACT.arms, ACT.turns);
+HERO._bodyEv = ACT.body;
 
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
@@ -499,12 +494,32 @@ function drawHero(a, t) {
   // feet planted, the shoulders go a little the other way, the chest widens with each breath
   const breathe = Math.sin(t * 1.6), shift = 7 * (Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1));
   const lean = Math.max(-14, Math.min(14, vel / 55));
+  // v020 body controls from acting.json: lean_fwd / lean_back (the upper body comes toward the camera or goes back),
+  // shrug (both shoulders rise, the neck shortens), shoulder_l / shoulder_r (one shoulder; l = the viewer's left)
+  let fwd = 0, shr = 0, shL = 0, shR = 0;
+  for (const e of a._bodyEv || []) {
+    const u = (t - e.t) / e.d; if (u <= 0 || u >= 1) continue;
+    const w = e.amp * Math.sin(Math.PI * u) ** 2;
+    if (e.kind === 'lean_fwd') fwd += w; else if (e.kind === 'lean_back') fwd -= w; else if (e.kind === 'shrug') shr += w;
+    else if (e.kind === 'shoulder_l') shL += w; else if (e.kind === 'shoulder_r') shR += w;
+  }
   const o = a._out; o.clearRect(0, 0, PW + 2 * PAD, PH);
+  // rows are drawn in vertical strips, so the two shoulders can rise by different amounts without a seam
+  const NS = 10, sw = PW / NS, moving = Math.abs(shr) + Math.abs(shL) + Math.abs(shR) > .01;
   for (let y = 0; y < PH; y++) {
     const n = Math.max(0, 1 - y / PFEET);
+    const up = smooth(Math.max(0, Math.min(1, (n - .43) / .5)));           // 0 at the hips .. 1 at the head
     const dx = shift * bend(n) + lean * n * n;
-    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c);
-    o.drawImage(a._pose.canvas, 0, y, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1);
+    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c) + .028 * fwd * up;
+    const ySrc = y - 9 * fwd * up;                                           // leaning in: bigger and a little lower
+    // shoulders: 0 above the collar, full at the shoulder line, fading out toward the waist
+    const S = smooth(Math.max(0, Math.min(1, (y - 428) / 44))) * (1 - smooth(Math.max(0, Math.min(1, (y - 560) / 210))));
+    if (!moving || S < .001) { o.drawImage(a._pose.canvas, 0, ySrc, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1); continue; }
+    for (let i = 0; i < NS; i++) {
+      const wl = 1 - smooth(Math.max(0, Math.min(1, ((i + .5) * sw - 250) / 320)));   // 1 on the viewer's left side
+      const off = S * (9 * shr + 9 * shL * wl + 9 * shR * (1 - wl));
+      o.drawImage(a._pose.canvas, i * sw, ySrc + off, sw + .5, 1, PAD + dx - (sx - 1) * PW / 2 + i * sw * sx, y, (sw + .5) * sx, 1);
+    }
   }
   a._mv.style.transform = `translateX(${x.toFixed(2)}px)`;
   a._body.style.transform = `translateY(${(-1.6 * breathe - 2 * sp).toFixed(2)}px)`;
