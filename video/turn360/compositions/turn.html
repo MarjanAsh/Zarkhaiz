@@ -1,0 +1,109 @@
+<template>
+  <style>
+    @font-face { font-family: "Playfair Display"; font-weight: 900; src: url("assets/fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }
+    @font-face { font-family: Jost; font-weight: 700; src: url("assets/fonts/jost-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: Jost; font-weight: 600; src: url("assets/fonts/jost-latin-600-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; overflow: hidden; background: var(--color-ground, #120e0b); }
+    #turn-bg { position: absolute; inset: 0; background: radial-gradient(90% 60% at 50% 38%, #2a1f15 0%, #17110c 55%, #0d0a08 100%); }
+    #turn-halo { position: absolute; left: 90px; top: 420px; width: 900px; height: 1150px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(246,181,58,.30), rgba(246,181,58,.08) 55%, rgba(246,181,58,0)); }
+    #turn-floor { position: absolute; left: 0; top: 1470px; width: 1080px; height: 450px;
+      background: radial-gradient(70% 60% at 50% 38%, rgba(246,181,58,.16), rgba(246,181,58,0) 70%); }
+    #turn-horizon { position: absolute; left: 0; top: 1468px; width: 1080px; height: 6px;
+      background: radial-gradient(50% 50% at 50% 50%, rgba(246,181,58,.45), rgba(246,181,58,0)); }
+    #turn-ring { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    #turn-arcs { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    #turn-char { position: absolute; left: 81px; top: 309px; width: 918px; height: 1388px; }
+    #turn-deg { position: absolute; left: 0; top: 345px; width: 1080px; text-align: center;
+      font-family: "Playfair Display", serif; font-weight: 900; font-size: 190px; line-height: 1;
+      color: var(--color-accent, #f6b53a); font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+      text-shadow: 0 10px 40px rgba(0,0,0,.55); }
+    #turn-kick { position: absolute; left: 0; top: 300px; width: 1080px; text-align: center;
+      font-family: Jost, sans-serif; font-weight: 600; font-size: 30px; letter-spacing: .32em; color: rgba(247,239,229,.72); }
+    #turn-deg-t, #turn-kick-t { display: inline-block; }
+    #turn-shadow { position: absolute; left: 330px; top: 1642px; width: 420px; height: 64px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(0,0,0,.78), rgba(0,0,0,0)); }
+  </style>
+  <div id="root" data-composition-id="turn" data-width="1080" data-height="1920">
+    <div id="turn-bg"></div>
+    <div id="turn-floor"></div>
+    <div id="turn-horizon"></div>
+    <div id="turn-halo"></div>
+    <svg id="turn-ring" viewBox="0 0 1080 1920" data-layout-ignore>
+      <ellipse id="turn-ring-a" cx="540" cy="1672" rx="360" ry="78" fill="none" stroke="#f6b53a" stroke-opacity=".55" stroke-width="4" />
+      <ellipse cx="540" cy="1672" rx="300" ry="64" fill="rgba(246,181,58,.07)" stroke="#f6b53a" stroke-opacity=".22" stroke-width="2" />
+      <g id="turn-ticks"></g>
+    </svg>
+    <div id="turn-shadow"></div>
+    <svg id="turn-arcs" viewBox="0 0 1080 1920" data-layout-ignore>
+      <defs>
+        <linearGradient id="turn-arcg" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#f6b53a" stop-opacity="0" />
+          <stop offset=".7" stop-color="#f6b53a" stop-opacity=".9" />
+          <stop offset="1" stop-color="#fff2cf" stop-opacity="1" />
+        </linearGradient>
+      </defs>
+      <g id="turn-arcset" opacity="0">
+        <ellipse id="turn-arc1" cx="540" cy="980" rx="440" ry="96" fill="none" stroke="#f6b53a" stroke-opacity=".85" stroke-width="9" stroke-linecap="round" pathLength="100" stroke-dasharray="22 28" />
+        <ellipse id="turn-arc2" cx="540" cy="1330" rx="400" ry="84" fill="none" stroke="#fff2cf" stroke-opacity=".6" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="14 36" />
+      </g>
+    </svg>
+    <video id="turn-char" class="clip" src="assets/char.webm" muted playsinline data-start="0" data-duration="5.3" data-track-index="1"></video>
+    <div id="turn-kick" class="clip" data-start="0" data-duration="2.0" data-track-index="2"><span id="turn-kick-t">ZARKHAIZ · FULL TURN</span></div>
+    <div id="turn-deg" class="clip" data-start="0" data-duration="2.1" data-track-index="3"><span id="turn-deg-t">0°</span></div>
+  </div>
+  <script>
+    // The same angle curve as mascot/turn/tools/compose_char.py (keep them in step).
+    const io3 = (x) => { x = Math.min(Math.max(x, 0), 1); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+    function angle(t) {
+      if (t < .20) return 0;
+      if (t < .42) return -12 * (1 - Math.cos(Math.PI * (t - .20) / .22)) / 2;
+      if (t < 1.62) return -12 + 380 * io3((t - .42) / 1.20);
+      if (t < 1.85) { const p = (t - 1.62) / .23; return 360 + 8 * Math.sin(Math.PI * Math.min(p * 1.15, 1)) * Math.sqrt(1 - p); }
+      return 360;
+    }
+    const NT = 36, CX = 540, CY = 1672, RX = 360, RY = 78;
+    const ticks = document.getElementById("turn-ticks");
+    const tk = [];
+    for (let i = 0; i < NT; i++) {
+      const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      l.setAttribute("stroke", "#f6b53a"); l.setAttribute("stroke-linecap", "round");
+      ticks.appendChild(l); tk.push(l);
+    }
+    const degEl = document.getElementById("turn-deg-t");
+    function draw(t) {
+      const th = angle(t);
+      // the turntable turns with him (the ticks travel the way his front travels)
+      for (let i = 0; i < NT; i++) {
+        const a = (i * 360 / NT - th) * Math.PI / 180;
+        const sx = Math.sin(a), cz = Math.cos(a);
+        const x = CX + RX * sx, y = CY + RY * cz;
+        const big = i % 9 === 0;
+        const len = big ? 22 : 11;
+        tk[i].setAttribute("x1", x.toFixed(1)); tk[i].setAttribute("x2", x.toFixed(1));
+        tk[i].setAttribute("y1", (y - len / 2).toFixed(1)); tk[i].setAttribute("y2", (y + len / 2).toFixed(1));
+        tk[i].setAttribute("stroke-width", big ? 6 : 3);
+        tk[i].setAttribute("stroke-opacity", (0.18 + 0.72 * (cz + 1) / 2).toFixed(2));
+      }
+      const shown = Math.max(0, Math.min(360, Math.round(th)));
+      degEl.textContent = shown + "°";
+    }
+    const tl = gsap.timeline({ paused: true });
+    const clock = { t: 0 };
+    tl.fromTo(clock, { t: 0 }, { t: 5.3, duration: 5.3, ease: "none", onUpdate: () => draw(clock.t) }, 0);
+    // halo swells while he turns
+    tl.fromTo("#turn-halo", { opacity: .55, scale: .94 }, { opacity: 1, scale: 1.04, duration: .9, ease: "power2.inOut" }, .3);
+    tl.to("#turn-halo", { opacity: .7, scale: 1, duration: .6, ease: "power2.inOut" }, 1.5);
+    // speed arcs wrap around him during the fast part of the turn
+    tl.fromTo("#turn-arcset", { opacity: 0 }, { opacity: 1, duration: .2, ease: "power2.out" }, .55);
+    tl.fromTo("#turn-arc1", { strokeDashoffset: 0 }, { strokeDashoffset: -100, duration: 1.0, ease: "power2.inOut" }, .5);
+    tl.fromTo("#turn-arc2", { strokeDashoffset: -10 }, { strokeDashoffset: -110, duration: 1.0, ease: "power2.inOut" }, .56);
+    tl.to("#turn-arcset", { opacity: 0, duration: .22, ease: "power2.in" }, 1.36);
+    // the counter lands on 360 with a punch, then leaves for the captions
+    tl.fromTo("#turn-deg-t", { scale: 1 }, { scale: 1.12, duration: .1, ease: "power3.out" }, 1.55);
+    tl.to("#turn-deg-t", { scale: 1, duration: .3, ease: "expo.out" }, 1.65);
+    tl.to("#turn-deg-t", { opacity: 0, filter: "blur(10px)", y: -30, duration: .2, ease: "power3.in" }, 1.86);
+    tl.to("#turn-kick-t", { opacity: 0, filter: "blur(8px)", duration: .18, ease: "power3.in" }, 1.8);
+    window.__timelines["turn"] = tl;
+  </script>
+</template>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+  {"id":"color-ground","type":"color","label":"Background","default":"#120e0b"},
+  {"id":"color-ink","type":"color","label":"Text","default":"#f7efe5"},
+  {"id":"color-accent","type":"color","label":"Accent","default":"#f6b53a"}
+]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0d0a08; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <!-- Zarkhaiz mascot: a full 360 turn, then "Assalam o Alaikum! Main Zarkhaiz, OutputDM ka founder."
+         Character frames: mascot/turn (library angles + FILM) and mascot/anim (arms + mouth patches). -->
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="5.3"
+      data-fps="60"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div
+        id="turn"
+        data-composition-id="turn"
+        data-composition-src="compositions/turn.html"
+        data-start="0"
+        data-duration="5.3"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <div
+        id="captions"
+        data-composition-id="captions"
+        data-composition-src="compositions/captions.html"
+        data-start="0"
+        data-duration="5.3"
+        data-track-index="2"
+        data-track-kind="captions"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio id="vo" class="clip" src="assets/vo_l02.wav" data-start="1.8" data-duration="3.11" data-track-index="3" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

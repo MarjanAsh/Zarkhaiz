@@ -18,6 +18,10 @@ Read this first, then `video/README.md` (the reel, its version history and how t
 and `mascot/README.md` (the character images).
 
 ## Where the work is
+- 360 + lip-sync test clip (2026-11-19): `video/turn360/` (HyperFrames project, 5.3 s, 1080x1920, 60 fps), character
+  from `mascot/turn/` (read its README: library angles + FILM turnaround, voice-driven mouth shapes, limits). The user's
+  reference reels were Seedance 2.5 (Dreamina / ArtCraft) and Gemini (Veo) videos, not Claude; a ready Dreamina prompt is
+  `video/turn360/seedance_prompt.json`. Next step for a slow clean 360: 16 body angles through the bridge.
 - Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
 - Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, 48 kHz): the animated
   character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens, mouth patches), QA in

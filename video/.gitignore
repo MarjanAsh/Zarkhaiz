@@ -10,3 +10,6 @@ outputdm-reel/out/*.lock
 outputdm-reel/mix.wav
 # old LeapTalk test clips and OpenRouter docs from an abandoned attempt, kept local only
 motion/
+
+# HyperFrames local artifacts
+turn360/.hyperframes/

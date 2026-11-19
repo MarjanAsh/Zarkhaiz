@@ -147,3 +147,7 @@ the library, the second ChatGPT account on the bridge (rotation, `GPT_INSTRUCTIO
 `mascot/anim/`: one master body, gesture keyframes as ChatGPT-bridge edits of that master, FILM in-between frames,
 mouth patches from the library heads. Read `mascot/anim/README.md`. The library (`mascot/library/`) stays the source
 of the master body and of the face patches.
+
+## 360 turn + lip sync (2026-11-19)
+`mascot/turn/`: a full 360 of the library body (six angles + FILM in-betweens, black/white difference matting) and
+mouth shapes read from the voice. Used by `video/turn360/`. Read `mascot/turn/README.md` (method, rebuild, limits).

@@ -4,6 +4,8 @@ A 38-second vertical reel (1080x1920, 30 fps) that introduces Zarkhaiz as the fo
 OutputDM (Output Digital Marketing Pvt Ltd), using five full-body office mascot cutouts, the OutputDM logo
 and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
+360 + lip-sync test clip (2026-11-19): `turn360/out/zarkhaiz_turn360_v002.mp4`, see `turn360/README.md`.
+
 Final files: `outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v016/qa.md`). v015 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)

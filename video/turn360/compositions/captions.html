@@ -1,0 +1,49 @@
+<template>
+  <style>
+    @font-face { font-family: Jost; font-weight: 700; src: url("assets/fonts/jost-latin-700-normal.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .cap-g { position: absolute; left: 0; top: 300px; width: 1080px; text-align: center; overflow: visible; }
+    .cap-g .w { display: inline-block; font-family: Jost, sans-serif; font-weight: 700; font-size: 88px; line-height: 1.04;
+      padding: 6px 22px 12px; margin: 0 2px; border-radius: 22px; color: #f7efe5; text-shadow: 0 6px 24px rgba(0,0,0,.6); }
+    .cap-g .hl { position: absolute; inset: 0; border-radius: 22px; background: #f6b53a; opacity: 0; z-index: 0; }
+    .cap-g .w { position: relative; isolation: isolate; }
+    .cap-g .tx { position: relative; z-index: 1; }
+    #cap-rule { position: absolute; left: 240px; top: 530px; width: 600px; height: 8px; border-radius: 4px; background: #f6b53a; transform-origin: 0 50%; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
+    <div id="cap-g1" class="cap-g clip" data-start="1.86" data-duration="1.0" data-track-index="1"><span class="w" id="cap-w1"><span class="hl"></span><span class="tx">Assalam</span></span><span class="w" id="cap-w2"><span class="hl"></span><span class="tx">o</span></span><br><span class="w" id="cap-w3"><span class="hl"></span><span class="tx">Alaikum!</span></span></div>
+    <div id="cap-g2" class="cap-g clip" data-start="2.88" data-duration="0.88" data-track-index="1"><span class="w" id="cap-w4"><span class="hl"></span><span class="tx">Main</span></span><br><span class="w" id="cap-w5"><span class="hl"></span><span class="tx">Zarkhaiz,</span></span></div>
+    <div id="cap-g3" class="cap-g clip" data-start="3.76" data-duration="1.54" data-track-index="1"><span class="w" id="cap-w6"><span class="hl"></span><span class="tx">OutputDM</span></span><br><span class="w" id="cap-w7"><span class="hl"></span><span class="tx">ka</span></span><span class="w" id="cap-w8"><span class="hl"></span><span class="tx">founder.</span></span></div>
+    <div id="cap-rule" class="clip" data-start="4.55" data-duration="0.75" data-track-index="2" data-layout-ignore></div>
+  </div>
+  <script>
+    // word times: Whisper on vo_l02.wav + its loudness, voice placed at 1.80 s (index.html)
+    const VO = 1.80;
+    const words = [
+      ["#cap-w1", .10, .36], ["#cap-w2", .36, .50], ["#cap-w3", .50, .70],
+      ["#cap-w4", 1.15, 1.32], ["#cap-w5", 1.32, 1.92],
+      ["#cap-w6", 1.95, 2.62], ["#cap-w7", 2.64, 2.78], ["#cap-w8", 2.78, 3.08],
+    ];
+    const groups = [["#cap-g1", 1.86, 2.86], ["#cap-g2", 2.88, 3.76], ["#cap-g3", 3.76, 5.30]];
+    const tl = gsap.timeline({ paused: true });
+    for (const [g, a, b] of groups) {
+      tl.fromTo(`${g} .w`, { opacity: 0, filter: "blur(8px)", y: 18 },
+        { opacity: 1, filter: "blur(0px)", y: 0, duration: .16, ease: "power4.out", stagger: .05 }, a);
+      if (b < 5.3) {
+        tl.to(`${g} .w`, { opacity: 0, filter: "blur(6px)", duration: .1, ease: "power2.in" }, b - .1);
+        tl.set(g, { opacity: 0 }, b);
+      }
+    }
+    for (const [w, a, b] of words) {
+      tl.fromTo(`${w} .hl`, { opacity: 0, scale: .86 }, { opacity: 1, scale: 1, duration: .08, ease: "power3.out" }, VO + a - .03);
+      tl.fromTo(`${w} .tx`, { color: "#f7efe5", textShadow: "0 6px 24px rgba(0,0,0,.6)" },
+        { color: "#1a120b", textShadow: "0 0 0 rgba(0,0,0,0)", duration: .08, ease: "power3.out" }, VO + a - .03);
+      if (w !== "#cap-w8") {
+        tl.to(`${w} .hl`, { opacity: 0, duration: .08, ease: "power2.in" }, VO + b - .02);
+        tl.to(`${w} .tx`, { color: "#f7efe5", textShadow: "0 6px 24px rgba(0,0,0,.6)", duration: .08, ease: "power2.in" }, VO + b - .02);
+      }
+    }
+    tl.fromTo("#cap-rule", { scaleX: 0 }, { scaleX: 1, duration: .45, ease: "expo.out" }, 4.56);
+    window.__timelines["captions"] = tl;
+  </script>
+</template>
