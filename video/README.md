@@ -459,7 +459,8 @@ Done so far (free, no new images):
   core gestures; they are used automatically once the 10 keys in `gen_keys.V021` exist.
 
 Open: the 10 keys. The bridge answered 404 on `/health` and `/jobs` on Nov 24, also from the "AI Tools" environment
-that holds its token (session "v021 arm keys through the ChatGPT bridge" is waiting). Once the keys exist:
+that holds its token (session "v021 arm keys through the ChatGPT bridge" is waiting). User decision (Nov 24): the user
+fixes the bridge on the VPS (checklist: `mascot/library/bridge/FIX_404.md`); no paid images. Once the keys exist:
 `python3 mascot/anim/tools/build_anim.py`, copy `mascot/anim/out` to `video/outputdm-reel/assets/anim` as in Rebuild,
 run `director.py`, render, QA. From the links: haikei-style SVG backgrounds and a realtimecolors check of the palette
 are possible later; godly.website redirects to a host that does not resolve; replit adds nothing to this pipeline.
