@@ -30,3 +30,20 @@ regions; hold poses on one sharp key.
 
 **Principle:** Separately generated images of one character never line up; motion needs frames that share every
 pixel except the part that moves.
+
+**Further instance (2026-11-15, reel v017):** the "patch only the mouth" half of this recipe failed on review: a mouth
+cut from a different expression image read as a sticker on a frozen face. What worked was re-posing the one master
+face with a portrait-animation model (LivePortrait retargeting parameters, no driving video): mouth from voice
+loudness, expression keys per line, blinks, nods; the master's head is erased from the body by a soft mask and the
+head patch added back additively. The skill should prefer whole-face re-posing over mouth patches.
+
+**Further instance (2026-11-15, reel v018):** the user rejected the voice-driven talking mouth as well ("just small
+expression, not talking mouth") and called the figure a "sticker". Two additions for the skill: (1) ask early whether
+a still-based character should talk at all; small expressions with a closed mouth are often what is wanted;
+(2) a cutout reads as a sticker when it is lit for a white studio and moved rigidly: light it for the scene (rim
+light, falloff, reflection) and bend it row by row with planted feet instead of rotating the whole image.
+
+**Further instance (2026-11-16, reel v019):** what ended the guessing was showing numbered frames and asking the
+user to pick one (head size A-D, turn frame 1-5) before any long render. For the skill: offer numbered visual options
+for every proportion or motion-range decision; a body turn from two separately drawn views works with FILM when the
+views share height and feet line, and the live head can ride on each frame's collar point.

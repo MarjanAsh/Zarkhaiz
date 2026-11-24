@@ -91,17 +91,30 @@ function heading(h1, sub, tH, tSub, tout, top = 262) {
 // Built by mascot/anim (see its README): ONE master body. Head, torso and legs are the same pixels in every frame.
 // Each arm is its own half of the body canvas and plays clips made of GPT keyframes (rest -> mid -> end, edits of
 // the master through the ChatGPT bridge) with FILM in-between frames, so the arm really travels; nothing dissolves
-// between poses. The mouth is a small patch over the master head (talk_a / talk_o / talk_e), so the head outline
-// and hair never change. The face is never warped (the user's rule): the mouth changes by switching patches.
+// between poses. The head (v017) is a 30 fps sequence made by mascot/anim/tools/build_face.py: the master's own face
+// re-posed by LivePortrait (mouth follows the voice loudness, expression per line, blinks, small nods). In each frame
+// the master's head is removed from the body (erase mask) and the head patch is added in its place.
 const ANIM = await (await fetch('assets/anim/anim.json')).json();
-const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090;
+const FACE = await (await fetch('assets/anim/face.json')).json();
+const FACE_IMGS = {};
+for (const f of new Set([FACE.erase, ...FACE.frames])) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
+// body turns (v019, mascot/anim/tools/build_turn.py): whole-body frames front -> 3/4 toward the viewer's left (tl)
+// or right (tr); each frame brings its own head patch, so the head can be drawn at HEAD_S like the front head
+const TURN = await (await fetch('assets/anim/turn.json')).json();
+for (const fr of Object.values(TURN)) for (const q of fr) for (const f of [q.f, q.head, q.erase]) { const im = new Image(); im.src = `assets/anim/${f}`; FACE_IMGS[f] = im; }
+const ANGLES = await (await fetch('angles.json')).json();   // d and yaw of a body turn (also read by build_face.py)
+// v020: what the arms, the body and the turns do comes from acting.json, written by mascot/anim/tools/director.py from
+// the script and the real word times (the head frames are built from the same file)
+const ACT = await (await fetch('acting.json')).json();
+const TURN_D = ANGLES.d, TURN_PRE = .05;
+const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090, PAD = 40;
+const HEAD_S = .93, HEAD_PX = 405, HEAD_PY = 434;
 const smooth = x => x * x * (3 - 2 * x);
 const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
-function mouthOf(w) { const v = (w.w.toLowerCase().match(/[aeiou]/) || ['a'])[0]; return v === 'o' || v === 'u' ? 'talk_o' : (v === 'i' || v === 'e') ? 'talk_e' : 'talk_a'; }
 const ANIM_IMGS = [];
 const TRACKS = [];   // the scenes only say where he stands: [time, (unused pose), centre-x]
 function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
-function buildHero(ARMS, FACES) {
+function buildHero(ARMS, TURNS = []) {
   const h = HERO_H, w = Math.round(h * PW / PH), k = w / PW;
   const a = el(`<div class="abs hero" style="left:0;width:${w}px;height:${h}px"></div>`, { top: px(BASE - h * PFEET / PH) });
   const mv = el('<div class="hmv"></div>', {}, a);
@@ -114,40 +127,45 @@ function buildHero(ARMS, FACES) {
   TRACKS.forEach(({ track, tin }, si) => track.map(([t, , x]) => ({ t: Math.max(t, tin), cx: x })).sort((p, q) => p.t - q.t)
     .forEach((key, i) => { const last = marks[marks.length - 1]; if (i === 0) marks.push({ t: si > 0 ? tin - .45 : key.t, cx: key.cx }); else if (Math.abs(key.cx - last.cx) > 120) marks.push(key); }));
   a._marks = marks.map(m => ({ t: m.t, x: m.cx - w / 2 }));
+  // body angle: [time, 'tl' | 'tr' | 'front']. A turn is a whole-body clip, so both arms must be at rest when it
+  // starts, and arm moves asked for while he is turned wait until he faces the front again
+  const turns = []; let ang = 'front';
+  for (const [t, to] of TURNS.slice().sort((p, q) => p[0] - q[0])) {
+    if (to === ang) continue;
+    if (to !== 'front' && ang !== 'front') throw new Error('turn back to the front before turning the other way');
+    if (to !== 'front') turns.push({ dir: to, t0: t, t1: Infinity }); else turns[turns.length - 1].t1 = t;
+    ang = to;
+  }
+  a._turns = turns;
+  const busy = t => { for (const q of turns) if (t > q.t0 - TURN_PRE - .1 && t < q.t1 + TURN_D + TURN_PRE) return q; return null; };
   // arms: per side a list of clips [start, duration, frames]
   a._side = {};
   for (const s of ['L', 'R']) {
     const [x0, x1] = ANIM.half[s];
-    const box = el(`<div style="position:absolute;left:${(x0 * k).toFixed(2)}px;top:0;width:${((x1 - x0) * k).toFixed(2)}px;height:${h}px;isolation:isolate"></div>`, {}, body);
     const clips = [], files = new Set([ANIM.states[s].rest]);
     let cur = 'rest', free = -9;
-    for (const [t, state] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
+    for (const [t, state, dd] of ARMS[s].slice().sort((p, q) => p[0] - q[0])) {
       if (state === cur) continue;
       const fr = ANIM.trans[`${s}:${cur}>${state}`];
       if (!fr) throw new Error(`no arm clip ${s}:${cur}>${state}`);
-      const d = Math.min(1.05, .36 + .0125 * fr.length), t0 = Math.max(t, free + .12);   // longer clips take longer; never cut a move short
+      const d = dd || Math.min(1.3, .45 + .016 * fr.length); let t0 = Math.max(t, free + (dd ? .02 : .12));   // the director gives the length; otherwise longer clips take longer
+      const tq = busy(t0) || busy(t0 + d);
+      if (tq) { if (cur !== 'rest') throw new Error(`arm ${s} is not at rest for the turn at ${tq.t0.toFixed(2)} s`); t0 = tq.t1 + TURN_D + TURN_PRE + .02; }
       clips.push({ t0, d, fr }); fr.forEach(f => files.add(f)); cur = state; free = t0 + d;
     }
     // the two neighbouring frames are mixed on a canvas ('lighter' adds the two weighted layers: a true cross-fade)
-    const cv = el(`<canvas width="${x1 - x0}" height="${PH}" style="position:absolute;left:0;top:0;width:100%;height:100%"></canvas>`, {}, box);
+    const cv = document.createElement('canvas'); cv.width = x1 - x0; cv.height = PH;
     const imgs = {};
     for (const f of files) { const im = new Image(); im.src = `assets/anim/${f}`; imgs[f] = im; ANIM_IMGS.push(im); }
-    a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1 };
+    a._side[s] = { clips, imgs, ctx: cv.getContext('2d'), ph: s === 'L' ? 0 : 2.1, x0 };
   }
-  // face: patches over the master head
-  const [fx, fy, fw, fh] = ANIM.face_box;
-  const fbox = el(`<div style="position:absolute;left:${(fx * k).toFixed(2)}px;top:${(fy * k).toFixed(2)}px;width:${(fw * k).toFixed(2)}px;height:${(fh * k).toFixed(2)}px"></div>`, {}, body);
-  a._face = {};
-  for (const [e, f] of Object.entries(ANIM.faces)) a._face[e] = el(`<img src="assets/anim/${f.src}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;z-index:${f.kind === 'mouth' ? 2 : 1}">`, {}, fbox);
-  // mouth schedule: one open shape per word, closed (no patch) between words when the gap is 0.15 s or more
-  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0), sched = [{ t: -9, e: null }];
-  words.forEach((wd, i) => {
-    const nx = words[i + 1];
-    sched.push({ t: wd.t0, e: mouthOf(wd) });
-    const end = Math.max(wd.t0 + .12, wd.t0 + .75 * (wd.t1 - wd.t0));
-    if (!nx || nx.t0 - end >= .15) sched.push({ t: end, e: null });
-  });
-  a._sched = sched; a._expr = FACES;
+  // v018: the two halves and the head are joined on one pose canvas, lit for the stage, then drawn row by row to
+  // the visible canvas with a soft bend (weight shift, breathing): the figure moves like a body, not like a card
+  const mk = (cw, ch) => { const c = document.createElement('canvas'); c.width = cw; c.height = ch; return c.getContext('2d'); };
+  a._pose = mk(PW, PH); a._tmp = mk(PW, PH); a._rim = mk(PW, PH); a._c1 = mk(PW, PH); a._c2 = mk(PW, PH);
+  const out = el(`<canvas width="${PW + 2 * PAD}" height="${PH}" style="position:absolute;left:${(-PAD * k).toFixed(2)}px;top:0;width:${((PW + 2 * PAD) * k).toFixed(2)}px;height:${h}px;-webkit-box-reflect:below ${(-2 * (PH - PFEET) * k + 4).toFixed(1)}px linear-gradient(transparent 82%, rgba(0,0,0,.20))"></canvas>`, {}, body);
+  a._out = out.getContext('2d');
+  const words = TL.words.slice().sort((p, q) => p.t0 - q.t0);
   a._mv = mv; a._turn = turn; a._body = body; a._w = w; a._speech = words;
   add(a, -.95, TL.dur, 'slide', { d: .9 });
   return a;
@@ -326,25 +344,10 @@ const sc = Object.fromEntries(SCN.map(n => [n, S(n)]));
   hero('cta', 1040, [[0, 'idea', 840], [W('l08', 'growth') - .05, 'side_point', 830], [W('l08', 'whatsapp') - .15, 'point_screen', 820, true], [W('l08', 'karein') - .05, 'point_camera', 830], [W('l09', 'outputdm') - .15, 'presenting', 830], [W('l09', 'com') - .05, 'peace', 835], [L('l09').t1 + .5, 'laugh', 840], [L('l09').t1 + 1.6, 'victory', 840]], t0 + .1, t1 + 1, 'walkR');
 }
 
-// the character's storyboard: what each arm does on which word ("L" = the arm on the viewer's left)
-const HERO = buildHero({
-  L: [[W('l01', 'paisa') - .15, 'present'], [W('l01', 'lekin') - .15, 'explain'],
-      [sc.intro.t0 - .3, 'wave'], [W('l02', 'main') - .05, 'rest'],
-      [W('l03', 'lahore') - .2, 'present'], [W('l03', 'businesses') - .15, 'explain'],
-      [sc.leaks.t0 - .15, 'rest'], [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'present'], [W('l05', 'follow-up') + .2, 'explain'],
-      [sc.system.t0 - .45, 'rest'], [W('l06', 'system') - .2, 'explain'],
-      [sc.only.t0 - .3, 'rest'], [W('l07', 'sirf') - .15, 'present'], [W('l07', 'business') - .1, 'explain'],
-      [W('l08', 'whatsapp') - .2, 'present'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'wave']],
-  R: [[W('l01', 'lekin') - .15, 'explain'], [sc.intro.t0 - .3, 'rest'],
-      [W('l02', 'zarkhaiz') + .3, 'present'], [sc.since.t0 - .4, 'rest'], [W('l03', 'businesses') - .15, 'explain'],
-      [sc.leaks.t0 - .15, 'rest'], [W('l04', 'teen') - .15, 'explain'], [L('l05').t0 - .2, 'rest'], [W('l05', 'follow-up') + .2, 'explain'],
-      [sc.system.t0 - .45, 'rest'], [W('l06', 'content') - .25, 'present'], [W('l06', 'system') - .2, 'explain'],
-      [sc.only.t0 - .3, 'rest'], [W('l07', 'business') - .1, 'explain'],
-      [W('l08', 'whatsapp') - .2, 'rest'], [L('l09').t0 - .1, 'explain'], [L('l09').t1 + .4, 'rest']],
-}, [
-  // mouth-only patches only: the eyes-to-chin patches (concerned, laugh) read as a face inside the face (v016)
-  { e: 'smile', t0: L('l09').t1 + .55, t1: TL.dur + 1 },
-]);
+// the character's storyboard comes from acting.json (director.py): arm clips [start, state, length] per side and the
+// slight body turns. To change the acting, change the script or the director's rules and rebuild, not this file.
+const HERO = buildHero(ACT.arms, ACT.turns);
+HERO._bodyEv = ACT.body;
 
 // ---------- captions + watermark ----------
 const cap = el('<div id="cap"></div>');
@@ -374,7 +377,6 @@ function fxStyle(it, t) {
   return { o, tf, fl, pin };
 }
 
-const HFADE = .07, EFADE = .25;
 function speechEnv(a, t) {
   let v = 0;
   for (const w of a._speech) {
@@ -401,6 +403,84 @@ function drawArm(S, t, sp) {
   if (B === A || f <= 0) g.drawImage(A, 0, 0);
   else { g.globalAlpha = 1 - f; g.drawImage(A, 0, 0); g.globalCompositeOperation = 'lighter'; g.globalAlpha = f; g.drawImage(B, 0, 0); }
 }
+// the body's bend: how far a row follows the hip shift (0 at the feet, 1 at the hips, less at the shoulders, the
+// head a little more again), as a smooth curve of n (0 = feet, 1 = top of the head)
+const BEND = [[0, 0], [.43, 1], [.66, .3], [1, .55]];
+function bend(n) {
+  for (let i = 1; i < BEND.length; i++) if (n <= BEND[i][0]) { const [n0, v0] = BEND[i - 1], [n1, v1] = BEND[i]; return v0 + (v1 - v0) * smooth((n - n0) / (n1 - n0)); }
+  return BEND[BEND.length - 1][1];
+}
+// the front pose: both arm halves joined, the master's head replaced by this moment's LivePortrait head
+function composeFront(a, t, g) {
+  const L = a._side.L, R = a._side.R, mid = PW / 2;
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'none';
+  g.clearRect(0, 0, PW, PH);
+  g.drawImage(L.ctx.canvas, 0, 0, mid, PH, 0, 0, mid, PH);
+  g.drawImage(R.ctx.canvas, mid - R.x0, 0, PW - mid, PH, mid, 0, PW - mid, PH);
+  g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[FACE.erase], FACE.box[0], FACE.box[1]);
+  liveHead(g, t, 0, 0);
+}
+// this moment's LivePortrait head, added to g (two neighbouring head frames mixed by time; additive = an exact blend,
+// so the head moves at the reel's full frame rate). It is drawn a little smaller than in the master (HEAD_S, scaled
+// at the collar: the user found the head too big) and moved by (ox, oy) when the body is turned.
+function liveHead(g, t, ox, oy) {
+  const [bx, by] = FACE.box, T = FACE.t;
+  let i = 0; while (i < T.length - 2 && T[i + 1] <= t) i++;
+  const f = Math.max(0, Math.min(1, (t - T[i]) / (T[i + 1] - T[i])));
+  const hw = FACE.box[2] * HEAD_S, hh = FACE.box[3] * HEAD_S, hx = ox + HEAD_PX + (bx - HEAD_PX) * HEAD_S, hy = oy + HEAD_PY + (by - HEAD_PY) * HEAD_S;
+  g.globalCompositeOperation = 'lighter';
+  g.globalAlpha = 1 - f; g.drawImage(FACE_IMGS[FACE.frames[i]], hx, hy, hw, hh);
+  if (f > 0) { g.globalAlpha = f; g.drawImage(FACE_IMGS[FACE.frames[i + 1]], hx, hy, hw, hh); }
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+}
+// one frame of a body turn: the frame's own head is removed and the live head put on its collar point, so the face
+// keeps blinking and smiling while the body turns
+function composeTurnFrame(q, g, t) {
+  const [bx, by] = q.box, [px, py] = q.pivot;
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'none';
+  g.clearRect(0, 0, PW, PH); g.drawImage(FACE_IMGS[q.f], 0, 0);
+  g.globalCompositeOperation = 'destination-out'; g.drawImage(FACE_IMGS[q.erase], bx, by);
+  liveHead(g, t, px - HEAD_PX, py - HEAD_PY);
+}
+// which turn he is in at t: {dir, pos (0 = front ... last = turned)}
+function turnAt(a, t) {
+  for (const q of a._turns) {
+    if (t <= q.t0 || t >= q.t1 + TURN_D) continue;
+    const p = t < q.t1 ? smoother(seg(t, q.t0, q.t0 + TURN_D)) : 1 - smoother(seg(t, q.t1, q.t1 + TURN_D));
+    return { dir: q.dir, pos: p * (TURN[q.dir].length - 1) };
+  }
+  return null;
+}
+function drawPose(a, t) {
+  const g = a._pose, tn = turnAt(a, t);
+  if (!tn) composeFront(a, t, g);
+  else {
+    const fr = TURN[tn.dir], i = Math.max(0, Math.min(fr.length - 2, Math.floor(tn.pos))), f = Math.max(0, Math.min(1, tn.pos - i));
+    composeTurnFrame(fr[i], a._c1, t);
+    if (f > 0) composeTurnFrame(fr[i + 1], a._c2, t);
+    g.globalCompositeOperation = 'source-over'; g.filter = 'none'; g.clearRect(0, 0, PW, PH);
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = 1 - f; g.drawImage(a._c1.canvas, 0, 0);
+    if (f > 0) { g.globalAlpha = f; g.drawImage(a._c2.canvas, 0, 0); }
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  }
+  // stage light. Rim: the outline band (figure minus the figure pulled in by 4 px) glows warm, like the gold light
+  // behind him; legs fall off into the dark floor; a little warm fill from the upper left
+  const e = a._tmp, r = a._rim;
+  e.globalCompositeOperation = 'copy'; e.drawImage(g.canvas, 0, 0);
+  e.globalCompositeOperation = 'destination-in';
+  for (const [dx, dy] of [[4, 0], [-4, 0], [0, 4], [0, -4]]) e.drawImage(g.canvas, dx, dy);
+  r.globalCompositeOperation = 'copy'; r.drawImage(g.canvas, 0, 0);
+  r.globalCompositeOperation = 'destination-out'; r.drawImage(e.canvas, 0, 0);
+  r.globalCompositeOperation = 'source-in'; r.fillStyle = 'rgb(255,188,96)'; r.fillRect(0, 0, PW, PH);
+  g.globalCompositeOperation = 'source-atop';
+  let gr = g.createLinearGradient(0, 560, 0, PH); gr.addColorStop(0, 'rgba(10,5,2,0)'); gr.addColorStop(1, 'rgba(10,5,2,.42)');
+  g.fillStyle = gr; g.fillRect(0, 0, PW, PH);
+  gr = g.createRadialGradient(240, 260, 0, 240, 260, 820); gr.addColorStop(0, 'rgba(255,186,92,.10)'); gr.addColorStop(1, 'rgba(255,186,92,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, PW, PH);
+  g.filter = 'blur(2.5px)'; g.globalAlpha = .42; g.drawImage(r.canvas, 0, 0); g.filter = 'none'; g.globalAlpha = 1;
+  g.globalCompositeOperation = 'source-over';
+}
 function drawHero(a, t) {
   // where he stands: a 1.0 s glide between marks
   const M = a._marks; let i = 0;
@@ -409,23 +489,24 @@ function drawHero(a, t) {
   const x = pv.x + (k.x - pv.x) * smooth(u), vel = (k.x - pv.x) * 6 * u * (1 - u);
   const sp = speechEnv(a, t);
   drawArm(a._side.L, t, sp); drawArm(a._side.R, t, sp);
-  // mouth: the current patch fades in over the previous one
-  const S = a._sched; let si = 0;
-  for (let j = 0; j < S.length; j++) if (t >= S[j].t) si = j;
-  const hc = S[si].e, hp = (S[si - 1] || S[si]).e, hm = smooth(seg(t, S[si].t, S[si].t + HFADE));
-  const op = {};
-  if (hc) op[hc] = hc === hp ? 1 : hm;
-  if (hp && hp !== hc) op[hp] = 1 - hm;
-  for (const q of a._expr) { const v = smooth(seg(t, q.t0, q.t0 + EFADE)) * (1 - smooth(seg(t, q.t1, q.t1 + EFADE))); if (v > 0) op[q.e] = Math.max(op[q.e] || 0, v); }
-  for (const [e, im] of Object.entries(a._face)) im.style.opacity = (op[e] || 0).toFixed(3);
-  // whole body: slow breathing, a gentle sway, a small lift while he speaks
-  const breathe = Math.sin(t * 1.6);
-  const ty = -2.5 * breathe - 5 * sp;
-  // weight shift: he leans slowly from one leg to the other, a little more while he speaks
-  const rot = 1.0 * Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1) + .5 * sp * Math.sin(t * 2.2) + Math.max(-2, Math.min(2, vel / 400));
-  a._mv.style.transform = `translateX(${(x + 9 * Math.sin(t * .62 - .4)).toFixed(2)}px)`;
-  a._turn.style.transform = `perspective(1800px) rotateY(${(2.5 * Math.sin(t * .4) + Math.max(-6, Math.min(6, vel / 120))).toFixed(2)}deg)`;
-  a._body.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${(1 + .004 * breathe).toFixed(4)}, ${(1 + .006 * breathe).toFixed(4)})`;
+  drawPose(a, t);
+  // body motion (v018): no rigid tilt and no card-like turn. The hips shift slowly from one leg to the other with the
+  // feet planted, the shoulders go a little the other way, the chest widens with each breath
+  const breathe = Math.sin(t * 1.6), shift = 7 * (Math.sin(t * .62) + .35 * Math.sin(t * 1.31 + 1));
+  const lean = Math.max(-14, Math.min(14, vel / 55));
+  // v020 note: lean, shrug and single-shoulder warps of the pose canvas were tried and REMOVED: drawing the rows in
+  // strips left notches along the shoulders and fractional source rows left a dotted edge (the user: "shoulders
+  // break, cuts"). The body events stay in acting.json but the page does not draw them. Do not bring them back as
+  // 2D warps; a shrug needs its own arm keys.
+  const o = a._out; o.clearRect(0, 0, PW + 2 * PAD, PH);
+  for (let y = 0; y < PH; y++) {
+    const n = Math.max(0, 1 - y / PFEET);
+    const dx = shift * bend(n) + lean * n * n;
+    const c = (n - .6) / .16, sx = 1 + .009 * breathe * Math.exp(-c * c);
+    o.drawImage(a._pose.canvas, 0, y, PW, 1, PAD + dx - (sx - 1) * PW / 2, y, PW * sx, 1);
+  }
+  a._mv.style.transform = `translateX(${x.toFixed(2)}px)`;
+  a._body.style.transform = `translateY(${(-1.6 * breathe - 2 * sp).toFixed(2)}px)`;
 }
 
 window.render = async t => {
@@ -502,14 +583,14 @@ window.render = async t => {
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 };
 
-window.DUR = TL.dur;
+window.DUR = +new URLSearchParams(location.search).get('dur') || TL.dur;
 window.EV = EV.sort((a, b) => a.t - b.t);
 
 // ---------- ready once fonts and every image are loaded ----------
 await document.fonts.load('800 92px Playfair'); await document.fonts.load('italic 700 52px Playfair');
 await document.fonts.load('700 42px Jost'); await document.fonts.load('500 29px Jost'); await document.fonts.load('600 24px Jost');
 await document.fonts.load('900 64px Playfair'); await document.fonts.load('800 54px Jost');
-await Promise.all([...document.images, ...ANIM_IMGS].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
+await Promise.all([...document.images, ...ANIM_IMGS, ...Object.values(FACE_IMGS)].map(i => i.complete ? 0 : new Promise(r => { i.onload = r; i.onerror = r; })));
 await Promise.all(ANIM_IMGS.map(i => i.decode().catch(() => {})));
 await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
 await document.fonts.ready;

@@ -18,14 +18,15 @@ Read this first, then `video/README.md` (the reel, its version history and how t
 and `mascot/README.md` (the character images).
 
 ## Where the work is
+- Branch: `ccr-e371ce1b-168zzm`. On 2026-11-24 the v020 branch `claude/vibrant-shannon-i2w0rk` was merged into it, so all work (v020 and the 360 turn) is here. Continue on it unless the user names another branch.
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz): the acting
+  system (read `mascot/anim/README.md`, section v020, and `mascot/anim/manifest.json`): lip-sync generated from the
+  voice, 29 expression presets, 22 arm poses, calm head acting, all chosen by `mascot/anim/tools/director.py` from
+  the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v020/qa.md`. v019 to v012 kept.
 - 360 + lip-sync test clip (2026-11-19): `video/turn360/` (HyperFrames project, 5.3 s, 1080x1920, 60 fps), character
   from `mascot/turn/` (read its README: library angles + FILM turnaround, voice-driven mouth shapes, limits). The user's
   reference reels were Seedance 2.5 (Dreamina / ArtCraft) and Gemini (Veo) videos, not Claude; a ready Dreamina prompt is
   `video/turn360/seedance_prompt.json`. Next step for a slow clean 360: 16 body angles through the bridge.
-- Branch: `ccr-e371ce1b-168zzm`. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, 48 kHz): the animated
-  character from `mascot/anim` (GPT keyframes through the bridge + FILM in-betweens, mouth patches), QA in
-  `video/outputdm-reel/qa/v016/qa.md`. v015 to v012 kept.
 - Skill observations (task-observer): `skill-observations/` at the repo root; run its session-start scan with that path. v010 (puppet rig), v009 (pose images, also 4K) and the v011 library showcase kept.
   `outputdm_founder_reel_v009_4k.mp4` (2160x3840), 39 s, Roman Urdu captions, Urdu voiceover.
 - Character: from v015 `mascot/anim/` (read its README: one master body, bridge edits as keys, FILM in-betweens,
@@ -35,25 +36,49 @@ and `mascot/README.md` (the character images).
   `mascot/library/` (117 assets, `library.json`, contact sheets in `sheets/`), read `mascot/library/README.md`.
 
 ## The user's standing rules for the reel
-- Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose, never a
-  face or mouth warp; the mouth moves only by switching images (open-mouth pose or swapped talking head).
+- Plan first (the user's request, Nov 15): before building or rendering anything, tell the user in chat what you
+  will do and wait for the go-ahead. Show cheap test stills before any long render. The character is being finalised
+  for a series of videos, so it must be right before more reels are made.
+- Proportions and angles (v019, the user's choices): head at 93 % (`HEAD_S` in `main.js`); the body turns only
+  SLIGHTLY toward the content cards (frame 2 of 5 of the front -> 3/4 move, never the full 3/4); the body stays as
+  drawn in the library (no narrowing). In v020 body turns are OFF (`director.py`, `turns=False`): the user
+  found the first v020 render broken and not symmetric.
+- Character: the mascot library from v012 (rig in v010, 17 poses before). Never the angry pose. Face (v017, the user
+  asked for a new face by any means): the whole head is animated from the ONE master image with LivePortrait; never
+  paste mouth or face patches again (they read as stickers). v018 had no talking mouth; from v020 (the user's request,
+  Nov 16) he talks: the mouth is generated from the voice (`audio_motion.py`). The per-letter mouth shapes of
+  `visemes.py` were rejected ("not good at all"): never use them.
+- Not a sticker (v018): the character must sit in the scene: lit for the stage (rim light, dark legs, reflection),
+  no rigid tilt or card-like turn of the whole cutout; body motion is a soft bend with planted feet.
 - The character moves with the spoken words (pose and position changes on words), not just fading in.
 - Motion graphics are big and bold.
 - Line 3 must say "kaam kar rahe hain".
 - No blinking: check every frame's brightness for single-frame dips before delivering a render.
 - Smooth character (v015): never swap whole body or head images. Poses are edits of ONE master, arms move through
-  in-between frames, only the mouth patch changes on words. No eyes-to-chin face patches (they read as a face inside
-  the face); every frame's cutout edge is cleaned by `mascot/anim/tools/edges.py`.
+  in-between frames. No mouth or eyes-to-chin face patches (they read as a face inside the face); every frame's cutout edge is cleaned by `mascot/anim/tools/edges.py`.
 - Ultra smooth (v013): one character for the whole reel, poses held >= 1.5 s with 0.4 s dissolves, no sound on
   character movements (the swish annoyed the user), render at 60 fps.
+
+- Symmetric and whole (the user's review of v020, Nov 16: "shoulders and face break, not symmetric, cuts"): no warp
+  of the body cutout for shoulders or leaning, no head tilt or roll, head within 3.5 degrees, no one-brow accents, and
+  every saved cutout goes through `edges.clean()`. Zoom into stills at shoulders, outline and neck before sending.
+- Acting (v020): do not hand-write arm storyboards in `main.js`. Change the script, `staging.json` or the director's
+  rules, run `director.py`, and read its log. A pose that would leave the frame is never used.
+- Paid tools (Nov 16): no paid video generation at all. Kie (the user's kie-ai skill) and Higgsfield may be used for
+  IMAGES only; state the cost and get a yes before a batch; never write the Kie key into the repo.
 
 ## Tools (not in the repo, install in a new session)
 - Render toolkit lemo-opuscar: clone https://github.com/lemomo-ai/lemo-opuscar to
   `/home/user/lemomo-ai/lemo-opuscar`, `npm install`, a `.venv` from `requirements.txt`.
   For 4K, its `core/render/page.mjs` needs `deviceScaleFactor: +process.env.LEMO_DSF || 1`
   (see `video/README.md`, Rebuild).
-- Character animation build: `pip install torch --index-url https://download.pytorch.org/whl/cpu`, `opencv-python-headless`,
-  and the FILM model in `/home/user/models/` (commands in `mascot/anim/README.md`).
+- Character animation build: `pip install torch torchvision` (PyPI), `opencv-python-headless`, and the FILM model in
+  `/home/user/models/` (from `https://huggingface.co/jkawamoto/frame-interpolation-pytorch/resolve/main/film_net_fp32.pt`;
+  commands in `mascot/anim/README.md`).
+- Head animation: LivePortrait in `/home/user/LivePortrait` + weights (commands in `mascot/anim/README.md`, Head).
+  The `AI Video Editor` environment allows the Hugging Face hosts; it does not reach the ChatGPT bridge (that is on `zarkhaiz`).
+- Lip-sync and word times (v020): JoyVASA in `/home/user/JoyVASA` + weights, `torchaudio`, `transformers`, `einops`
+  (commands in `mascot/anim/README.md`, "Install (v020 additions)"). Free, CPU.
 - Gemini TTS: the Google AI Studio key is a network secret on the `zarkhaiz` and `AI Tools` environments (header
   `x-goog-api-key`); pass any dummy file as `GEMINI_KEY_FILE`, the proxy adds the real key. Image generation
   needs billing on that key (free tier limit is 0). Never commit keys.

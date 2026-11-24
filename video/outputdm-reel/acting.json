@@ -1,0 +1,965 @@
+{
+ "face": [
+  {
+   "t": -9,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 0.562,
+   "expr": "questioning",
+   "k": 0.6
+  },
+  {
+   "t": 3.99,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 4.09,
+   "expr": "happy",
+   "k": 0.75
+  },
+  {
+   "t": 7.63,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 7.891,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 13.87,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 14.071,
+   "expr": "worried",
+   "k": 0.55
+  },
+  {
+   "t": 17.201,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 17.21,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 21.71,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 21.87,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 27.55,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 27.752,
+   "expr": "explaining",
+   "k": 0.55
+  },
+  {
+   "t": 31.24,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 31.361,
+   "expr": "excited",
+   "k": 0.55
+  },
+  {
+   "t": 34.354,
+   "expr": "proud",
+   "k": 0.6
+  },
+  {
+   "t": 34.38,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 36.139,
+   "expr": "slight_smile",
+   "k": 0.6
+  }
+ ],
+ "accents": [
+  {
+   "t": 3.232,
+   "d": 0.82,
+   "expr": "worried",
+   "k": 0.49
+  },
+  {
+   "t": 3.442,
+   "d": 0.82,
+   "expr": "questioning",
+   "k": 0.78
+  },
+  {
+   "t": 4.301,
+   "d": 0.75,
+   "expr": "happy",
+   "k": 0.84
+  },
+  {
+   "t": 4.602,
+   "d": 0.75,
+   "expr": "happy",
+   "k": 0.84
+  },
+  {
+   "t": 5.635,
+   "d": 0.75,
+   "expr": "proud",
+   "k": 0.73
+  },
+  {
+   "t": 8.131,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.5
+  },
+  {
+   "t": 9.753,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.5
+  },
+  {
+   "t": 15.412,
+   "d": 0.88,
+   "expr": "explaining",
+   "k": 0.55
+  },
+  {
+   "t": 17.638,
+   "d": 0.8,
+   "expr": "reassuring",
+   "k": 0.6
+  },
+  {
+   "t": 18.234,
+   "d": 0.8,
+   "expr": "worried",
+   "k": 0.5
+  },
+  {
+   "t": 18.491,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 19.883,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 20.676,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 20.932,
+   "d": 0.8,
+   "expr": "serious",
+   "k": 0.5
+  },
+  {
+   "t": 21.054,
+   "d": 0.8,
+   "expr": "worried",
+   "k": 0.5
+  },
+  {
+   "t": 22.331,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 23.132,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 23.773,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 24.555,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 25.236,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 26.04,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 28.143,
+   "d": 0.85,
+   "expr": "serious",
+   "k": 0.47
+  },
+  {
+   "t": 28.438,
+   "d": 0.85,
+   "expr": "confident",
+   "k": 0.57
+  },
+  {
+   "t": 29.295,
+   "d": 0.85,
+   "expr": "reassuring",
+   "k": 0.57
+  },
+  {
+   "t": 30.225,
+   "d": 0.85,
+   "expr": "serious",
+   "k": 0.47
+  },
+  {
+   "t": 31.53,
+   "d": 0.7,
+   "expr": "happy",
+   "k": 0.88
+  },
+  {
+   "t": 33.183,
+   "d": 0.7,
+   "expr": "excited",
+   "k": 0.66
+  },
+  {
+   "t": 33.487,
+   "d": 0.7,
+   "expr": "reassuring",
+   "k": 0.66
+  },
+  {
+   "t": 33.832,
+   "d": 0.7,
+   "expr": "excited",
+   "k": 0.66
+  },
+  {
+   "t": 34.594,
+   "d": 0.8,
+   "expr": "proud",
+   "k": 0.7
+  }
+ ],
+ "head": [
+  {
+   "t": 2.471,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.39
+  },
+  {
+   "t": 3.502,
+   "d": 0.9,
+   "kind": "look_up",
+   "amp": 0.49
+  },
+  {
+   "t": 4.662,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.73
+  },
+  {
+   "t": 5.695,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.52
+  },
+  {
+   "t": 8.191,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.3
+  },
+  {
+   "t": 9.813,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.3
+  },
+  {
+   "t": 15.472,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.37
+  },
+  {
+   "t": 17.698,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.6
+  },
+  {
+   "t": 19.943,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.4
+  },
+  {
+   "t": 20.992,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.9
+  },
+  {
+   "t": 22.391,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.4
+  },
+  {
+   "t": 23.833,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.4
+  },
+  {
+   "t": 25.296,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.4
+  },
+  {
+   "t": 28.203,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.85
+  },
+  {
+   "t": 29.355,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.57
+  },
+  {
+   "t": 31.59,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.66
+  },
+  {
+   "t": 33.243,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.88
+  },
+  {
+   "t": 34.654,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.5
+  }
+ ],
+ "gaze": [
+  {
+   "t": 3.322,
+   "d": 0.6,
+   "gx": 5,
+   "gy": 5
+  },
+  {
+   "t": 8.061,
+   "d": 0.7,
+   "gx": -9,
+   "gy": -1
+  },
+  {
+   "t": 9.683,
+   "d": 0.7,
+   "gx": -9,
+   "gy": -1
+  }
+ ],
+ "blinks": [
+  1.4,
+  5.084,
+  9.332,
+  13.995,
+  19.03,
+  21.815,
+  26.592,
+  29.933,
+  33.823,
+  37.24
+ ],
+ "arms": {
+  "L": [
+   [
+    2.944,
+    "explain",
+    0.753
+   ],
+   [
+    3.797,
+    "wave",
+    0.984
+   ],
+   [
+    5.591,
+    "rest",
+    1.1
+   ],
+   [
+    7.646,
+    "present",
+    0.739
+   ],
+   [
+    11.263,
+    "rest",
+    0.786
+   ],
+   [
+    14.89,
+    "count3",
+    0.78
+   ],
+   [
+    18.006,
+    "count1",
+    0.739
+   ],
+   [
+    19.534,
+    "count2",
+    0.588
+   ],
+   [
+    20.326,
+    "count3",
+    0.588
+   ],
+   [
+    21.846,
+    "count1",
+    0.739
+   ],
+   [
+    22.782,
+    "count2",
+    0.588
+   ],
+   [
+    23.471,
+    "count3",
+    0.588
+   ],
+   [
+    24.205,
+    "count4",
+    0.588
+   ],
+   [
+    24.894,
+    "count5",
+    0.588
+   ],
+   [
+    25.582,
+    "count1",
+    0.8
+   ],
+   [
+    28.173,
+    "rest",
+    0.786
+   ],
+   [
+    29.059,
+    "point_camera",
+    0.716
+   ],
+   [
+    30.99,
+    "thumbs_up",
+    0.8
+   ],
+   [
+    32.643,
+    "point_camera",
+    0.8
+   ],
+   [
+    33.974,
+    "present",
+    0.889
+   ],
+   [
+    36.089,
+    "rest",
+    0.786
+   ]
+  ],
+  "R": [
+   [
+    2.944,
+    "explain",
+    0.753
+   ],
+   [
+    4.331,
+    "rest",
+    0.786
+   ],
+   [
+    5.217,
+    "present",
+    0.711
+   ],
+   [
+    8.161,
+    "rest",
+    0.786
+   ],
+   [
+    27.693,
+    "chop",
+    0.7
+   ],
+   [
+    29.193,
+    "rest",
+    0.786
+   ]
+  ]
+ },
+ "body": [
+  {
+   "t": 3.422,
+   "d": 0.9,
+   "kind": "shrug",
+   "amp": 0.78
+  },
+  {
+   "t": 16.34,
+   "d": 1.0,
+   "kind": "lean_back",
+   "amp": 0.37
+  },
+  {
+   "t": 19.53,
+   "d": 1.0,
+   "kind": "lean_back",
+   "amp": 0.4
+  },
+  {
+   "t": 26.837,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.4
+  },
+  {
+   "t": 29.275,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.57
+  },
+  {
+   "t": 33.163,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.88
+  }
+ ],
+ "turns": [],
+ "log": [
+  {
+   "line": "l01",
+   "word": "lekin",
+   "t": 2.59,
+   "concept": "contrast",
+   "gesture": "contrast_turn",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l01",
+   "word": "nahi",
+   "t": 3.41,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l01",
+   "word": "aa",
+   "t": 3.62,
+   "concept": "question",
+   "gesture": "question_shrug",
+   "arms": "L+R:explain",
+   "why": "shrug would leave the frame here; used the next choice"
+  },
+  {
+   "line": "l02",
+   "word": "Assalam",
+   "t": 4.48,
+   "concept": "greet",
+   "gesture": "wave_hello",
+   "arms": "L:wave",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "Alaikum!",
+   "t": 4.78,
+   "concept": "greet",
+   "gesture": "wave_hello",
+   "arms": "-",
+   "why": "arms left to 'Assalam' (greet)"
+  },
+  {
+   "line": "l02",
+   "word": "Main",
+   "t": 5.52,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "Zarkhaiz,",
+   "t": 5.82,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "R:present",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "OutputDM",
+   "t": 6.44,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "-",
+   "why": "arms left to 'Zarkhaiz,' (brand)"
+  },
+  {
+   "line": "l03",
+   "word": "2018",
+   "t": 8.31,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "L:present",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "Lahore",
+   "t": 9.93,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "L:present",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "Pakistan",
+   "t": 10.73,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Lahore' (place)"
+  },
+  {
+   "line": "l03",
+   "word": "UAE",
+   "t": 11.63,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Pakistan' (place)"
+  },
+  {
+   "line": "l04",
+   "word": "teen",
+   "t": 15.59,
+   "concept": "number",
+   "gesture": "count",
+   "arms": "L:count3",
+   "why": ""
+  },
+  {
+   "line": "l04",
+   "word": "kho",
+   "t": 16.54,
+   "concept": "problem",
+   "gesture": "problem_face",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "aap",
+   "t": 17.82,
+   "concept": "you",
+   "gesture": "point_you",
+   "arms": "-",
+   "why": "arms left to 'paate,' (list)"
+  },
+  {
+   "line": "l05",
+   "word": "nahi",
+   "t": 18.41,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "paate,",
+   "t": 18.67,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count1",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "rukte",
+   "t": 19.73,
+   "concept": "problem",
+   "gesture": "problem_face",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "nahi,",
+   "t": 20.06,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count2",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "follow-up",
+   "t": 20.86,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count3",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "hi",
+   "t": 21.11,
+   "concept": "emphasis",
+   "gesture": "emphasis_chop",
+   "arms": "-",
+   "why": "arms left to 'follow-up' (list)"
+  },
+  {
+   "line": "l05",
+   "word": "nahi",
+   "t": 21.23,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "Hum",
+   "t": 22.21,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "content,",
+   "t": 22.51,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count1",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "ads,",
+   "t": 23.31,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count2",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "website,",
+   "t": 23.95,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count3",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "SEO",
+   "t": 24.73,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count4",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "automation",
+   "t": 25.42,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count5",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "ek",
+   "t": 26.22,
+   "concept": "number",
+   "gesture": "count",
+   "arms": "L:count1",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "jodte",
+   "t": 27.04,
+   "concept": "connect",
+   "gesture": "bring_together",
+   "arms": "-",
+   "why": "arms left to 'ek' (number)"
+  },
+  {
+   "line": "l07",
+   "word": "sirf",
+   "t": 28.32,
+   "concept": "emphasis",
+   "gesture": "emphasis_chop",
+   "arms": "R:chop",
+   "why": ""
+  },
+  {
+   "line": "l07",
+   "word": "wohi",
+   "t": 28.62,
+   "concept": "emphasis",
+   "gesture": "ok_precise",
+   "arms": "-",
+   "why": "arms left to 'sirf' (emphasis)"
+  },
+  {
+   "line": "l07",
+   "word": "aap",
+   "t": 29.48,
+   "concept": "you",
+   "gesture": "point_you",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l07",
+   "word": "waqai",
+   "t": 30.41,
+   "concept": "emphasis",
+   "gesture": "emphasis_chop",
+   "arms": "-",
+   "why": "arms left to 'aap' (you)"
+  },
+  {
+   "line": "l08",
+   "word": "Free",
+   "t": 31.71,
+   "concept": "positive",
+   "gesture": "thumbs_good",
+   "arms": "L:thumbs_up",
+   "why": ""
+  },
+  {
+   "line": "l08",
+   "word": "Growth",
+   "t": 32.41,
+   "concept": "positive",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Free' (positive)"
+  },
+  {
+   "line": "l08",
+   "word": "abhi",
+   "t": 33.36,
+   "concept": "cta",
+   "gesture": "call_to_action",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l08",
+   "word": "WhatsApp",
+   "t": 33.67,
+   "concept": "cta",
+   "gesture": "point_you",
+   "arms": "-",
+   "why": "arms left to 'abhi' (cta)"
+  },
+  {
+   "line": "l08",
+   "word": "karein.",
+   "t": 34.01,
+   "concept": "cta",
+   "gesture": "call_to_action",
+   "arms": "-",
+   "why": "arms left to 'abhi' (cta)"
+  },
+  {
+   "line": "l09",
+   "word": "OutputDM",
+   "t": 34.77,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "L:present",
+   "why": "present would leave the frame here"
+  }
+ ]
+}

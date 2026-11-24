@@ -6,7 +6,7 @@ and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
 360 + lip-sync test clip (2026-11-19): `turn360/out/zarkhaiz_turn360_v002.mp4`, see `turn360/README.md`.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v016.mp4` (1080x1920, 60 fps, animated character from `mascot/anim`, QA: `outputdm-reel/qa/v016/qa.md`). v015 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz: the acting system from `mascot/anim`: lip-sync generated from the voice, 29 expressions, 17 new arm gestures, head and body acting, all chosen by `mascot/anim/tools/director.py` from the script and the real word times; QA: `outputdm-reel/qa/v020/qa.md`). v019 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -275,3 +275,164 @@ and the stance is one stiff pose. Character only; background untouched.
   A cloud session cannot change or monitor its own model and quota, the container is temporary, and such a router
   sends the user's work to third-party free endpoints.
 - Open: real posture changes (hip shift, head turn, 3/4 stance) need new bridge keys of the whole body; blink.
+
+## v017: a new face (the master's own face animated by LivePortrait)
+
+User (Nov 14-15): everything else is fine, but the face is still very bad: its movement and its expression are both
+wrong. Make the face again by any means (Blender, a GitHub repo, anything); if he does not speak word by word, a
+correct expression is enough; do a critical analysis; research well-rated repos and install what is needed.
+
+Critical analysis of the v016 face (frames compared):
+- The mouth was a pasted patch cut from a *laughing* library head: on every word a wide open laugh popped in and out,
+  and the jaw, cheeks and beard around it never moved. It read as a sticker.
+- Eyes and brows were frozen for 39 s: no blink, no expression change, the same smile on "customers nahi aa rahe?".
+- The head never moved on its own (only the whole body swayed).
+
+What changed (only the head; body, arms, graphics, captions, voice and music are untouched):
+- Tool: LivePortrait (github.com/KlingAIResearch/LivePortrait, MIT, about 19k stars), run on CPU. It re-poses ONE
+  source photo, here `mascot/anim/raw/master.png`, so every frame is the same man, hair and glasses.
+- `mascot/anim/tools/build_face.py` writes one head frame per 1/30 s of the reel from a parameter track:
+  the mouth opens with the loudness of the real voiceover (`vo/*.wav`), rounder on o/u words; smile and brows change
+  per line (engaged on line 1, concerned from "lekin" and on the leak lines, warm on the greeting, the system line and
+  the CTA, biggest smile after the last line); blinks every 3-4.5 s; a small nod at each line start; a slow idle turn.
+- In the page (`drawArm` in `main.js`) the master's head is removed from the body with `head/erase.png` and the head
+  patch of that moment is added in its place, so there is no patch edge and no second face.
+- The old mouth patches and the word-by-word mouth schedule are gone from the page.
+- This replaces the old rule "never a face or mouth warp": the user asked for a new face by any means, and this
+  model moves the whole face together (jaw, cheeks, eyes), which the v005 WebGL warp did not.
+
+Research on the user's request (repos with high ratings):
+- Chosen: LivePortrait, the best-rated tool made exactly for this job (expressions and mouth on one still portrait).
+- Not used: Blender (needs a 3D model of the character; a flat cutout cannot give a moving face), ComfyUI and
+  stable-diffusion-webui (100k+ stars, but they are hosts for models and need a GPU), SadTalker / Wav2Lip (older,
+  lower quality mouths, change the identity more).
+- The session ran on the `AI Video Editor` environment; the user approved adding the Hugging Face hosts
+  (`huggingface.co`, `us.aws.cdn.hf.co` and its CDN names) and `download.pytorch.org` to it. The ChatGPT bridge is not
+  reachable from that environment (it is on `zarkhaiz`), so no new GPT images were made.
+- Rebuild: `mascot/anim/README.md` (Head), then `cp -r mascot/anim/out/head mascot/anim/out/face.json
+  video/outputdm-reel/assets/anim/` and the usual events / mix / video (60 fps) / mux steps.
+- Open: the mouth follows loudness, not exact letters (no lip-sync to each sound); the head runs at 30 fps inside the
+  60 fps reel; 4K not rendered.
+
+## v018: small expressions only, and a character that sits in the scene (not a sticker)
+
+User (Nov 15) on v017: the face and body character is still weak; wants a more accurate, ultra smooth cartoon; only
+a small expression, NOT a talking mouth; the character should be a smooth mascot, not cut out like a sticker.
+
+What made v017 read as a sticker (frames checked): the figure was lit flat for a white studio and pasted on a dark
+gold stage with a clean hard edge; the whole cutout rocked rigidly around its feet and turned like a card
+(`rotate` + `rotateY` on one image); the mouth flapped with teeth on every sound; the head updated at 30 fps inside
+a 60 fps reel.
+
+What changed (character only):
+- Mouth: closed for the whole reel. `build_face.py` now gives only small changes of smile and brows per line, blinks,
+  a small nod at each line start and a slow head turn. The voice-driven mouth is removed.
+- Smoothness: head frames are sampled 15 times a second (30 through blinks) and `drawPose` in `main.js` blends the two
+  neighbouring frames by time, so the head moves on every one of the 60 frames a second.
+- One figure: both body halves and the head are joined on one pose canvas (`drawPose`), then lit for the stage:
+  a warm rim light along the outline (the gold light behind him), legs falling off into the dark floor, a little
+  warm fill from the upper left, a soft warm glow, and a faint floor reflection under the shoes.
+- Body motion: the rigid tilt and the card-like turn are gone. The pose is drawn row by row with a soft bend
+  (`bend()` and the loop in `drawHero`): feet planted, hips shift slowly from one leg to the other, shoulders go a
+  little the other way, the head follows, and the chest widens with each breath.
+- Open: the legs and torso are still one drawn pose (no steps, no knee bend, no turn to 3/4). A fully fluid mascot
+  needs either a rigged model of the character or a video-generation model driven from the master image; both need
+  a GPU or a paid service, which this session did not have. 4K not rendered.
+
+## Feedback on v018 (Nov 15), v019 not built yet
+User: the face looks bigger than the body; the body should move too, through different angles; the rest of the
+movement is smooth, make it smoother still; tell me what you will do BEFORE building; the character will be used for
+a series, so make it perfect. The plan was given in chat and waits for the user's go-ahead:
+1. head about 8-10 % smaller (scaled at the neck) with a comparison still for approval;
+2. body turns front <-> 3/4 left/right from `mascot/library/bodies/34left|34right/neutral.png` with FILM in-betweens,
+   each angle with its own LivePortrait head; if the turn ghosts, new in-between keys are needed from the ChatGPT
+   bridge (only reachable from the `zarkhaiz` environment);
+3. smoother: slower eased arm moves, head frames at 30 per second;
+4. test stills and a 5 s test clip first, the full render only after the user approves.
+
+### v019 tests so far (Nov 16), full reel NOT rendered yet
+- The user chose head size B = 93 % (`HEAD_S = .93` in `main.js`, scaled at the collar) and wants the body to turn
+  toward the content cards. Reference offered by the user, not received yet.
+- `mascot/anim/tools/build_turn.py`: front -> 3/4 turns ("tl" toward the viewer's left, "tr" right) from the library
+  3/4 bodies (narrowed to 91 % width so the build matches the front master) with 7 FILM in-betweens; each frame has its
+  own head patch, erase mask, box and collar pivot in `out/turn.json`. The FILM model is also on Hugging Face:
+  `https://huggingface.co/jkawamoto/frame-interpolation-pytorch/resolve/main/film_net_fp32.pt`.
+- `main.js`: `buildHero(ARMS, ANGLES)` takes `[time, 'tl' | 'tr' | 'front']`; arm moves wait until he faces the
+  front again; `composeFront` / `composeTurnFrame` / `turnAt` / `drawPose`. The storyboard there is still the TEST one
+  (one turn at 0.15-2.3 s). `?dur=5` (video.mjs `--q 'dur=5'`) renders only the first 5 s.
+- Sent to the user: `qa/v019_tests/head_sizes.jpg`, `turn_frames.jpg`, `turn_test_5s.mp4`. Waiting for the go-ahead.
+- Still to do after approval: the real angle storyboard (turn to the cards at each scene start), a LivePortrait head
+  for the 3/4 hold (blink and expression; now the face is still while he is turned), head frames at 30 per second,
+  slower eased arm moves, full render, QA.
+
+## v019: smaller head, slight body turns toward the cards (Nov 16)
+
+Decisions the user made in chat:
+- Head size B = 93 % (`HEAD_S = .93`).
+- On the full 3/4 test clip: "do not turn him that much, and use the character as in this picture" (the first turn
+  strip). Asked with numbered frames: the turn goes at most to frame 2 of 5 (a slight turn), and the body stays as
+  drawn in the library (no narrowing; `SLIM = 1.0`).
+- He turns toward the content cards. Mouth closed, small expressions (v018 rule stays).
+
+What was built:
+- `build_turn.py`: the slight turn = FILM frame 2 of the 8-step front -> 3/4 move, with 5 in-betweens of its own
+  (7 frames per direction, `out/turn.json`).
+- `angles.json` (in `video/outputdm-reel`): `{d, yaw, turns: [[time, "tl" | "tr" | "front"], ...]}`. The page reads it
+  for the body and `build_face.py` reads it for the head, which turns 6 degrees with the body. Four turns: at the
+  start (0.2-1.7 s), on "businesses" (10.7-12.4 s), in the system scene toward the list on the right (21.85-23.9 s)
+  and before the CTA (31.55-33.0 s).
+- `main.js`: while he is turned, each turn frame's own head is removed and the live LivePortrait head is put on that
+  frame's collar point (`composeTurnFrame`, `liveHead`), so the face keeps blinking and smiling. The arm storyboard
+  was rewritten around the turns (arms are at rest while he is turned; `buildHero` throws if they are not), and arm
+  moves are about 25 % slower.
+- Open: the user offered a reference for the character and has not sent it yet; no gestures while turned (the gesture
+  keys exist only for the front view); legs still one pose; 4K not rendered.
+
+## v020: the acting system (Nov 16)
+
+The user's brief: the character still felt stiff; make it a far more expressive, dialogue-driven presenter (face and
+lip-sync first, then hands and arms, head and torso, a selection engine, tests, documentation). Details of every part
+are in `mascot/anim/README.md` (section v020) and `mascot/anim/manifest.json`.
+
+Decisions the user made in chat (Nov 16):
+- Lip-sync is wanted now (this replaces the v018 rule "no talking mouth"). The first test (a mouth shape per letter)
+  was "not good at all"; the second (mouth generated from the voice, JoyVASA + LivePortrait) is "much better" and is
+  the one used.
+- No paid video generation anywhere. Kie may be used for IMAGES only (the gesture keys were made there: 31 images,
+  186 credits). Higgsfield: images only too, but its connector was not connected in this session.
+- The final work is handed over as a local file; the user updates the repository (this session had no push access).
+
+What changed in this folder:
+- `phonemes.json` (real word and sound times from the audio), `build_timeline.py` uses them: captions and scene cues
+  now sit on the spoken words (the old estimate was up to 0.36 s early).
+- `staging.json`: where he stands per scene. `acting.json`: the whole performance, written by the director.
+- `main.js`: the hand-written arm storyboard is gone; the arms are read from `acting.json`. The body is drawn as in
+  v019 (the lean / shrug / shoulder warps and the body turns of the first v020 render were removed, see below).
+- `assets/anim/`: new arm frames (L, R), `anim.json`, the head frames of the talking face.
+- Test clips: `qa/v020_tests/` (three lip-sync tests, the first 8 s of the reel).
+
+What the director chose for this script (the log is printed by `director.py`): open hands on the question, wave on
+"Assalam", presenting on "Zarkhaiz", "2018", "Lahore"; three fingers on "teen"; counting 1-2-3 on the three leaks
+and 1 to 5 on the five services; one finger on "ek system"; chop on "sirf"; pointing at the camera on "aap" and
+"abhi"; thumbs-up on "Free"; small nods, a look up on the question, chin forward on direct address.
+
+Second render (same file name), after the user's review of the first: "shoulders and face break in many places, not
+symmetric, cuts are visible, make it smooth". Fixed: every cutout edge is cleaned again (a build regression left a
+dotted white fringe), the shoulder / lean warps are removed (they notched the outline), no body turns, no head tilt
+or roll, head moves within 3.5 degrees, no one-brow accents. Details: `mascot/anim/README.md`, "Quality fix".
+
+Rebuild: the steps in `mascot/anim/README.md` (v020), then as before:
+```
+node $LIB/core/render/events.mjs . --size 1080x1920 && $LIB/.venv/bin/python mix.py
+node $LIB/core/render/video.mjs . --fps 60 --workers 3 --size 1080x1920 --out out/video_v020.mp4
+ffmpeg -i out/video_v020.mp4 -i mix.wav -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 256k -ar 48000 -shortest out/outputdm_founder_reel_v020.mp4
+```
+
+Open:
+- The second render waits for the user's verdict on smoothness and symmetry.
+- Nobody has watched v020 in playback yet (checked on frames, sequences and measurements only): smoothness, the
+  lip-sync against the sound and the music mix need the user's eyes and ears.
+- Tests with other kinds of dialogue (excited, serious warning) were not made: a new voiceover needs the Gemini TTS
+  key, which this session did not have.
+- Limits of the character system: `mascot/anim/README.md`, "Limits (v020)".
+- Captions still sit at about 1408-1498 px, below the 168-1330 px safe band (unchanged since v014, user to decide).
