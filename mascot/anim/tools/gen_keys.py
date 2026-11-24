@@ -64,7 +64,55 @@ KEYS = {
     "shrug_end": "Change ONLY his two arms: a questioning shrug: both elbows bent and held a little away from the body, both forearms turned outward to the sides, both hands open at waist height with the palms facing up, fingers relaxed and spread, the hands wide apart (each hand well outside its own hip). Each hand stays on its own side of the body.",
     "shrug_mid": HALF + "change ONLY the two arms, each one halfway between hanging and its final position: elbows bent about 40 degrees, hands at hip height a little out to the sides, palms starting to turn up. Each hand stays on its own side of the body.",
 }
-REFS = {"waveL_q1": ["waveL_mid"], "waveL_q3": ["waveL_mid", "waveL_end"]}
+
+# ---- v021 (Nov 24): the user said the arms still look unnatural. Two causes found in the v020 frames:
+# 1. the rest pose is a stiff mannequin hang (straight arms, spread fingers) and it is on screen most of the time;
+# 2. FILM melts the hand on the first step (hanging -> mid): the hand turns over and comes forward at once.
+# So: a relaxed stance per arm (the new idle pose), and a quarter-way key (q1) before each core gesture's mid.
+Q1 = ("The second attached image shows a LATER frame of a motion that starts from the base image. Make the frame "
+      "EXACTLY HALFWAY between the base image and that second image, as an animator's in-between: ")
+Q3 = ("The second and third attached images are two frames of one motion: the second is earlier, the third is the "
+      "final pose. Make the frame EXACTLY HALFWAY between those two, as an animator's in-between: ")
+KEEP = " Head, face, torso, legs, the other arm, the framing and the scale stay exactly as in the base image."
+KEYS.update({
+    "relaxedL_end": "Change ONLY his right arm (the arm on the viewer's LEFT side) into a relaxed, natural standing pose: "
+        "the upper arm hangs close to the side of the body, the elbow is softly bent about 20 degrees so the forearm angles a "
+        "little forward, and the hand rests loosely in front of the side of the thigh, fingers gently curled together (not "
+        "spread, not a fist), palm toward the leg. It must look calm and natural, not stiff." + KEEP,
+    "relaxedR_end": "Change ONLY his left arm (the arm on the viewer's RIGHT side) into a relaxed, natural standing pose: "
+        "the upper arm hangs close to the side of the body, the elbow is softly bent about 20 degrees so the forearm angles a "
+        "little forward, and the hand rests loosely in front of the side of the thigh, fingers gently curled together (not "
+        "spread, not a fist), palm toward the leg. It must look calm and natural, not stiff." + KEEP,
+    "presentL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 20 degrees, the hand lifts a "
+        "little forward and outward from the thigh to just below the hip, the palm starting to turn up, fingers relaxed and "
+        "together. The hand keeps its full shape: five fingers, no blur." + KEEP,
+    "presentR_q1": Q1 + "change ONLY his left arm (viewer's RIGHT side): the elbow bends about 20 degrees, the hand lifts a "
+        "little forward and outward from the thigh to just below the hip, the palm starting to turn up, fingers relaxed and "
+        "together. The hand keeps its full shape: five fingers, no blur." + KEEP,
+    "explain_q1": Q1 + "change ONLY the two arms, each one a quarter of the way from hanging toward the explaining pose: "
+        "elbows bent about 20 degrees, both hands lifted a little forward to just below the hips, palms starting to turn "
+        "up, fingers relaxed. Each hand stays on its own side of the body. Both hands keep their full shape, no blur." + KEEP,
+    "pointcamL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
+        "closed hand lifts a little forward from the thigh to hip height, knuckles toward the viewer's left, the index "
+        "finger not yet pointing. The hand keeps its full shape, no blur." + KEEP,
+    "thumbsL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
+        "closed hand lifts a little forward from the thigh to hip height, the thumb resting on the fingers. The hand keeps "
+        "its full shape, no blur." + KEEP,
+    "countL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
+        "closed hand lifts a little forward from the thigh to hip height beside the body. The hand keeps its full shape, "
+        "no blur." + KEEP,
+    "countL_q3": Q3 + "change ONLY his right arm (viewer's LEFT side) compared with the base image: the forearm points up "
+        "and a little outward, the hand is at chest height beside the body on the viewer's left, palm turning toward the "
+        "camera, the fingers still loosely closed (no finger raised yet). The hand stays clear of the face." + KEEP,
+    "shrug_q1": Q1 + "change ONLY the two arms, each a quarter of the way from hanging toward the shrug: elbows bent "
+        "about 20 degrees, hands lifted a little out to the sides at upper-thigh height, palms starting to turn up, "
+        "fingers relaxed. Each hand stays on its own side of the body; both hands keep their full shape." + KEEP,
+})
+REFS = {"waveL_q1": ["waveL_mid"], "waveL_q3": ["waveL_mid", "waveL_end"],
+        **{f"{g}_q1": [f"{g}_mid"] for g in ("presentL", "presentR", "explain", "pointcamL", "thumbsL", "shrug")},
+        "countL_q1": ["countL_mid"], "countL_q3": ["countL_mid", "count3L_end"]}
+V021 = ["relaxedL_end", "relaxedR_end", "presentL_q1", "presentR_q1", "explain_q1", "pointcamL_q1", "thumbsL_q1",
+        "countL_q1", "countL_q3", "shrug_q1"]
 
 def one(name):
     out = RAW / f"{name}.png"

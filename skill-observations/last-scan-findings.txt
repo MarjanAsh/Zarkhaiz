@@ -1,1 +1,2 @@
 DUE: starter-set reconciliation — skill-observations/starter-principles-reviewed.txt is absent; offer once, in a review or a session opened for skill work, never in another task's reply (references/starter-principles.md, Reconciliation)
+GAP: the previous session-start scan ran 2026-11-14, 10 days ago. If work happened in between, the skill was not activated in those sessions: check the activation instruction (references/environments.md, "Verify activation in a NEW session")
