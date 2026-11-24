@@ -1,5 +1,17 @@
 # Animated character (from reel v015; the acting system from v020)
 
+## v021 (Nov 24, in progress): natural arms
+Causes found in the v020 frames and arm clips: FILM melts the hand on the first step (hanging -> mid: the hand turns
+over and comes forward at once), a cross-gesture clip (explain_mid -> waveL_q1) makes the hand vanish and reappear,
+the rest pose is a stiff hang, and the director changed pose every 0.6-0.7 s.
+- New keys (`gen_keys.py`, list `V021`): `relaxedL_end`, `relaxedR_end` (the idle stance) and q1 keys for presentL,
+  presentR, explain, pointcamL, thumbsL, shrug, plus `countL_q1` / `countL_q3` for the counts.
+- `build_anim.py` uses them when they exist: CHAIN q1 -> mid -> end, a "relaxed" state per side, and direct clips
+  relaxed -> each core gesture (through the gesture's first key), so the arm never drops to the stiff hang.
+- `director.py`: `calm_arms()` (MIN_HOLD 1.5 s, finger steps 0.6 s, PRIO gestures, CORE / MAP per side) rewrites only
+  `arms`; its log is `arm_log` in acting.json. The face, head, gaze and blinks stay as the main pass made them.
+- `main.js`: `armSpring()` timing and a short neighbour blend in `drawArm()`.
+
 ## v020 (Nov 16): the acting system
 The user asked for a far more expressive presenter: more hands, arms, shoulders and face, lip-sync, and gestures
 chosen from the meaning of the words. What was added (all in `tools/`, the full list of controls is `manifest.json`,

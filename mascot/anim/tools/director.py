@@ -370,7 +370,82 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
             out["blinks"].append(round(bt, 3))
         t = bt + 2.6 + 2.2 * ((math.sin(bt * 12.9898) * 43758.5453) % 1)
     out["face"].sort(key=lambda x: x["t"])
+    out["arms"], out["arm_log"] = calm_arms(out["arms"], have, lambda s_, st, t: fits(s_, st, stage.get(scene_of(t), "right")))
     return out
+
+
+# ---- v021 (Nov 24): calm arms ----
+# The user: "the arms still look unnatural". In v020 the arms changed pose every 0.6-0.7 s, one arm did everything
+# while the other hung stiffly, and several gestures (chop, ok, stop, fist, point side) start with a hand that melts in
+# the first interpolated frames. This pass rewrites ONLY the arm track (face, head, gaze, blinks stay as the main pass
+# made them, so the head frames built from acting.json stay valid):
+#  - the idle pose is the relaxed stance (soft elbows, curled fingers) when it is built, not the mannequin hang;
+#  - only the core gestures with quarter-way keys are used; the others are mapped to the nearest core gesture;
+#  - a gesture is held at least MIN_HOLD seconds (the project rule from v013) before the next move; a stroke that
+#    comes sooner is dropped (the pose is held instead). Counting on fingers (count -> count, same hand position) may
+#    step every 0.6 s, because only the fingers change.
+MIN_HOLD, MIN_IDLE, STEP_FAMILY = 1.5, .5, .6
+PRIO = ("wave", "point_camera", "thumbs_up")         # greeting, "you", the benefit: these win over a gesture just before
+CORE = {"L": ["present", "explain", "wave", "point_camera", "thumbs_up", "shrug"] + [f"count{i}" for i in range(1, 6)],
+        "R": ["present", "explain", "shrug"]}
+MAP = {"point_side": "present", "fist_pump": "thumbs_up", "chop": "explain", "ok": "present", "stop": "present",
+       "count3": "present", "thumbs_up": "present"}       # R count3 / R thumbs_up have no quarter-way keys yet
+
+
+def calm_arms(arms, have, fits):
+    out, log = {}, []
+    for s in ("L", "R"):
+        idle = "relaxed" if "relaxed" in have[s] else "rest"
+        res = [[-1.0, idle, .6]] if idle != "rest" else []      # he stands relaxed from the first frame
+        seq = sorted(arms[s])
+        # a priority gesture that comes too soon after another gesture wins: the earlier one is left out
+        drop = set()
+        for i, (t, st, d) in enumerate(seq):
+            if st in ("rest", "relaxed") or st in PRIO:
+                continue
+            nxt = next(((j, m) for j, m in enumerate(seq[i + 1:], i + 1) if m[1] not in ("rest", "relaxed")), None)
+            if nxt and nxt[1][1] in PRIO and nxt[1][0] < t + d + MIN_HOLD:
+                drop.add(i); log.append(f"{s} {t:.2f} {st}: left out, {nxt[1][1]} follows at {nxt[1][0]:.2f}")
+        seq = [m for i, m in enumerate(seq) if i not in drop]
+        for t, st, d in seq:
+            orig = st
+            if st == "rest":
+                st = idle
+            elif st not in CORE[s]:
+                st = MAP.get(st, idle)
+            if st != idle and (st not in have[s] or not fits(s, st, t)):
+                log.append(f"{s} {t:.2f} {orig}: no usable core gesture, stays"); continue
+            cur, arrive = (res[-1][1], res[-1][0] + res[-1][2]) if res else ("rest", -9.0)
+            if st == cur:
+                continue
+            # a short visit home between two gestures is a flicker: go pose to pose, or skip this stroke
+            if cur == idle and st != idle and len(res) >= 2 and t - arrive < MIN_IDLE:
+                g0 = res[-2]
+                if t - (g0[0] + g0[2]) >= MIN_HOLD:
+                    res.pop(); cur, arrive = g0[1], g0[0] + g0[2]
+                else:
+                    log.append(f"{s} {t:.2f} {orig}: dropped, home for only {t - arrive:.2f} s"); continue
+            fam = cur.startswith("count") and st.startswith("count")      # the hand is already up: fingers only
+            if fam:                                              # fingers only: timed from the last step's start
+                if t - res[-1][0] < STEP_FAMILY:
+                    log.append(f"{s} {t:.2f} {orig}: dropped, finger step too soon"); continue
+                res[-1][2] = round(min(res[-1][2], t - res[-1][0] - .05), 3)
+                arrive = res[-1][0] + res[-1][2]
+            t2 = max(t, arrive + .05)
+            if cur != idle and not fam:
+                need = MIN_HOLD
+                if t2 - arrive < need:
+                    if st == idle:
+                        t2 = arrive + need                       # leave the gesture later
+                    else:
+                        log.append(f"{s} {t:.2f} {orig}: dropped, {cur} held only {t - arrive:.2f} s"); continue
+            if st != idle and t2 - t > .35:
+                log.append(f"{s} {t:.2f} {orig}: dropped, would start {t2 - t:.2f} s late"); continue
+            res.append([round(t2, 3), st, d])
+            if orig != st:
+                log.append(f"{s} {t2:.2f} {orig} -> {st}")
+        out[s] = res
+    return out, log
 
 
 def stats(a):
@@ -387,4 +462,5 @@ if __name__ == "__main__":
     (reel / "acting.json").write_text(json.dumps(a, indent=1, ensure_ascii=False))
     for l in a["log"]:
         print(f"{l['line']} {l['t']:6.2f} {l['word']:<12} {l['concept']:<9} {l['gesture']:<15} {l['arms']:<18} {l['why']}")
+    print("calm arms (v021):"); print("\n".join(a.get("arm_log", [])))
     print(json.dumps(stats(a), indent=1))

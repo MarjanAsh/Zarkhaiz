@@ -33,19 +33,30 @@ W, H, MID = 820, 1240, 410
 OVER = 3                      # the halves overlap by a few identical pixels, so no seam can open when scaled
 N = 9                         # in-betweens per segment
 COUNTS = [f"count{i}L" for i in range(1, 6)]
-GEST = {"L": ["presentL", "explain", "waveL", "pointcamL", "pointsideL", *COUNTS, "thumbsL", "fistL", "shrug"],
-        "R": ["presentR", "explain", "pointsideR", "thumbsR", "chopR", "okR", "stopR", "count3R", "shrug"]}
+GEST = {"L": ["presentL", "explain", "waveL", "pointcamL", "pointsideL", *COUNTS, "thumbsL", "fistL", "shrug", "relaxedL"],
+        "R": ["presentR", "explain", "pointsideR", "thumbsR", "chopR", "okR", "stopR", "count3R", "shrug", "relaxedR"]}
 NAME = {"presentL": "present", "presentR": "present", "explain": "explain", "waveL": "wave",
         # v020 (keys made with Kie): the state names the director uses
         "pointcamL": "point_camera", "pointsideL": "point_side", "pointsideR": "point_side", "thumbsL": "thumbs_up",
         "thumbsR": "thumbs_up", "fistL": "fist_pump", "chopR": "chop", "okR": "ok", "stopR": "stop", "count3R": "count3",
-        "shrug": "shrug", **{g: g[:-1] for g in COUNTS}}
+        "shrug": "shrug", **{g: g[:-1] for g in COUNTS},
+        # v021: the relaxed stance (the idle pose instead of the stiff hang)
+        "relaxedL": "relaxed", "relaxedR": "relaxed"}
 # keys of each gesture in order from rest to the end pose (the wave is a long move and has four). A name with an
 # underscore is a whole key file name: the five counts share one in-between (countL_mid).
 CHAIN = {g: ["mid", "end"] for g in NAME}
 CHAIN["waveL"] = ["q1", "mid", "q3", "end"]
 for g in COUNTS:
     CHAIN[g] = ["countL_mid", "end"]
+# v021: a quarter-way key before the mid key, where it exists: the first interpolated step (hanging -> mid) melted the
+# hand, because the hand turns over and comes forward in one step
+for g in ("presentL", "presentR", "explain", "pointcamL", "thumbsL", "shrug"):
+    if (RAW / f"{g}_q1.png").exists():
+        CHAIN[g] = ["q1", "mid", "end"]
+if (RAW / "countL_q1.png").exists() and (RAW / "countL_q3.png").exists():
+    for g in COUNTS:
+        CHAIN[g] = ["countL_q1", "countL_mid", "countL_q3", "end"]
+CHAIN["relaxedL"] = CHAIN["relaxedR"] = ["end"]
 # gestures that share the arm position (only the fingers differ): one blob and box for all, and neighbours change
 # directly end -> end (1 -> 2 -> 3 without the hand dropping)
 FAMILY = [COUNTS]
@@ -56,6 +67,10 @@ PAIRS = {"L": [("presentL", "explain"), ("presentL", "waveL"), ("explain", "wave
                ("explain", "shrug"), ("presentL", "pointcamL")],
          "R": [("presentR", "explain"), ("explain", "chopR"), ("explain", "shrug"), ("presentR", "pointsideR"),
                ("explain", "okR"), ("explain", "stopR"), ("presentR", "thumbsR")]}
+# v021: from the relaxed stance straight into each core gesture (relaxed -> the gesture's first key), so the arm does
+# not drop to the stiff hang on the way
+PAIRS["L"] += [("relaxedL", g) for g in ("presentL", "explain", "waveL", "pointcamL", "thumbsL", "shrug", "count1L")]
+PAIRS["R"] += [("relaxedR", g) for g in ("presentR", "explain", "shrug")]
 
 
 def kn(g, nm):

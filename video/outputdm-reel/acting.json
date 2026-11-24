@@ -423,19 +423,9 @@
  "arms": {
   "L": [
    [
-    2.944,
-    "explain",
-    0.753
-   ],
-   [
     3.797,
     "wave",
     0.984
-   ],
-   [
-    5.591,
-    "rest",
-    1.1
    ],
    [
     7.646,
@@ -498,24 +488,9 @@
     0.8
    ],
    [
-    28.173,
-    "rest",
-    0.786
-   ],
-   [
     29.059,
     "point_camera",
     0.716
-   ],
-   [
-    30.99,
-    "thumbs_up",
-    0.8
-   ],
-   [
-    32.643,
-    "point_camera",
-    0.8
    ],
    [
     33.974,
@@ -523,7 +498,7 @@
     0.889
    ],
    [
-    36.089,
+    36.363,
     "rest",
     0.786
    ]
@@ -533,11 +508,6 @@
     2.944,
     "explain",
     0.753
-   ],
-   [
-    4.331,
-    "rest",
-    0.786
    ],
    [
     5.217,
@@ -551,11 +521,11 @@
    ],
    [
     27.693,
-    "chop",
+    "explain",
     0.7
    ],
    [
-    29.193,
+    29.893,
     "rest",
     0.786
    ]
@@ -961,5 +931,10 @@
    "arms": "L:present",
    "why": "present would leave the frame here"
   }
+ ],
+ "arm_log": [
+  "L 2.94 explain: left out, wave follows at 3.80",
+  "L 30.99 thumbs_up: dropped, point_camera held only 1.21 s",
+  "R 27.69 chop -> explain"
  ]
 }

@@ -111,6 +111,10 @@ const PW = 820, PH = 1240, PFEET = 1215, BASE = 1392, HERO_H = 1090, PAD = 40;
 const HEAD_S = .93, HEAD_PX = 405, HEAD_PY = 434;
 const smooth = x => x * x * (3 - 2 * x);
 const smoother = x => x * x * x * (x * (x * 6 - 15) + 10);
+// v021 arm timing: a damped spring over the clip (damping ratio .8, about 1.5 % overshoot), normalised to end at 1
+const SPR_Z = .8, SPR_W = 5.5, SPR_D = SPR_W * Math.sqrt(1 - SPR_Z * SPR_Z);
+const sprRaw = p => 1 - Math.exp(-SPR_Z * SPR_W * p) * (Math.cos(SPR_D * p) + SPR_Z * SPR_W / SPR_D * Math.sin(SPR_D * p));
+const armSpring = p => p <= 0 ? 0 : p >= 1 ? 1 : sprRaw(p) / sprRaw(1);
 const ANIM_IMGS = [];
 const TRACKS = [];   // the scenes only say where he stands: [time, (unused pose), centre-x]
 function hero(scene, h, track, tin, tout) { TRACKS.push({ scene, track, tin, tout }); }
@@ -392,11 +396,19 @@ function drawArm(S, t, sp) {
   for (const q of S.clips) if (t >= q.t0) c = q;
   let fr, pos;
   if (!c) { fr = S.clips[0].fr; pos = 0; }
-  else { fr = c.fr; const p = seg(t, c.t0, c.t0 + c.d); pos = smoother(p) * (fr.length - 1); }
+  else {
+    // v021: spring timing (as in motion-primitives' spring transitions): the arm starts at once, slows down into
+    // the pose and settles with a very small overshoot (reflected back), instead of the symmetric slow-in/slow-out
+    fr = c.fr; const p = seg(t, c.t0, c.t0 + c.d), N_ = fr.length - 1;
+    pos = armSpring(p) * N_; if (pos > N_) pos = 2 * N_ - pos;
+  }
   const n = fr.length - 1;
   // a held pose is one sharp key frame: mixing neighbouring frames there would show a doubled hand
   if (!c) pos = 0;
-  const i = Math.max(0, Math.min(n - 1, Math.floor(pos))), f = Math.max(0, Math.min(1, pos - i));
+  const i = Math.max(0, Math.min(n - 1, Math.floor(pos)));
+  // v021: blend two neighbouring frames only for a short moment in the middle of a step: a long 50/50 mix of two
+  // hand positions read as a doubled, ghosted hand in the fast part of a move
+  let f = Math.max(0, Math.min(1, pos - i)); f = Math.max(0, Math.min(1, (f - .3) / .4)); f = f * f * (3 - 2 * f);
   const A = S.imgs[fr[i]], B = S.imgs[fr[i + 1]], g = S.ctx;
   g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
   g.clearRect(0, 0, g.canvas.width, g.canvas.height);

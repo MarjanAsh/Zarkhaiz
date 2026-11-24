@@ -436,3 +436,30 @@ Open:
   key, which this session did not have.
 - Limits of the character system: `mascot/anim/README.md`, "Limits (v020)".
 - Captions still sit at about 1408-1498 px, below the 168-1330 px safe band (unchanged since v014, user to decide).
+
+## v021 (in progress, Nov 24): natural arms
+The user (Nov 24): "baazu abhi bhi unnatural lag rahe hain, theek karo", then shared five design links
+(motion-primitives.com, haikei.app, realtimecolors.com, godly.website, replit.com) to take help from. The user chose the
+free ChatGPT bridge for the new images.
+
+What the v020 frames showed (`mascot/anim/README.md`, v021):
+- the hand melts on the first interpolated step of most gestures (hanging -> mid), and a gesture-to-gesture clip
+  (explain -> wave) makes the hand vanish and reappear;
+- the idle pose is a stiff mannequin hang, on screen most of the time;
+- poses changed every 0.6-0.7 s (the v013 rule says held 1.5 s); one arm did everything.
+
+Done so far (free, no new images):
+- `director.py`: a calm-arms pass that rewrites only the arm track (face, head, gaze and blinks are unchanged, so the
+  v020 head frames stay valid; checked): poses held 1.5 s, finger counting steps every 0.6 s, the greeting / "you" /
+  benefit gestures win over a gesture just before, rarely natural gestures mapped to core ones. Its log is printed
+  as "calm arms (v021)".
+- `main.js`: spring timing for the arm clips (damping 0.8, from motion-primitives' spring transitions: quick start,
+  long settle) and a short blend between neighbouring frames (the long 50/50 mix read as a doubled hand).
+- `build_anim.py` / `gen_keys.py`: a relaxed stance per arm as the new idle pose and quarter-way keys (q1) before the
+  core gestures; they are used automatically once the 10 keys in `gen_keys.V021` exist.
+
+Open: the 10 keys. The bridge answered 404 on `/health` and `/jobs` on Nov 24, also from the "AI Tools" environment
+that holds its token (session "v021 arm keys through the ChatGPT bridge" is waiting). Once the keys exist:
+`python3 mascot/anim/tools/build_anim.py`, copy `mascot/anim/out` to `video/outputdm-reel/assets/anim` as in Rebuild,
+run `director.py`, render, QA. From the links: haikei-style SVG backgrounds and a realtimecolors check of the palette
+are possible later; godly.website redirects to a host that does not resolve; replit adds nothing to this pipeline.
