@@ -73,6 +73,10 @@ Q1 = ("The second attached image shows a LATER frame of a motion that starts fro
       "EXACTLY HALFWAY between the base image and that second image, as an animator's in-between: ")
 Q3 = ("The second and third attached images are two frames of one motion: the second is earlier, the third is the "
       "final pose. Make the frame EXACTLY HALFWAY between those two, as an animator's in-between: ")
+Q1F = ("The second attached image shows a much LATER frame of a motion that starts from the base image; use it only to "
+       "see the direction of the motion. Make a very EARLY frame of that motion, only a QUARTER of the way from the base "
+       "image toward the second image: the arm has barely started to move and must look much closer to the base image "
+       "than to the second image: ")
 KEEP = " Head, face, torso, legs, the other arm, the framing and the scale stay exactly as in the base image."
 KEYS.update({
     "relaxedL_end": "Change ONLY his right arm (the arm on the viewer's LEFT side) into a relaxed, natural standing pose: "
@@ -95,12 +99,18 @@ KEYS.update({
     "pointcamL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
         "closed hand lifts a little forward from the thigh to hip height, knuckles toward the viewer's left, the index "
         "finger not yet pointing. The hand keeps its full shape, no blur." + KEEP,
-    "thumbsL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
-        "closed hand lifts a little forward from the thigh to hip height, the thumb resting on the fingers. The hand keeps "
-        "its full shape, no blur." + KEEP,
-    "countL_q1": Q1 + "change ONLY his right arm (viewer's LEFT side): the elbow bends about 25 degrees, the loosely "
-        "closed hand lifts a little forward from the thigh to hip height beside the body. The hand keeps its full shape, "
-        "no blur." + KEEP,
+    # Nov 25: the first prompts overshot (fist came up to belt height, almost the mid key) in 3 tries each, so these
+    # two say how SMALL the move is, in body landmarks, and that it must stay far from the second image.
+    "thumbsL_q1": Q1F + "change ONLY his right arm (viewer's LEFT side): the upper arm still hangs straight down against "
+        "the side of the body, only the elbow bends slightly (about 20 degrees), so the hand moves just ONE HAND'S WIDTH "
+        "forward and up from where it hangs. The hand stays BELOW the bottom edge of the jacket, beside the upper thigh, "
+        "never at belt height and never in front of the belly. The fingers curl loosely into a soft, half-closed hand, the "
+        "thumb resting on the index finger. The hand keeps its full shape, no blur." + KEEP,
+    "countL_q1": Q1F + "change ONLY his right arm (viewer's LEFT side): the upper arm still hangs straight down against "
+        "the side of the body, only the elbow bends slightly (about 20 degrees), so the hand moves just ONE HAND'S WIDTH "
+        "forward and up from where it hangs. The hand stays BELOW the bottom edge of the jacket, beside the upper thigh, "
+        "never at belt height and never in front of the belly. The fingers curl loosely into a soft, half-closed hand, "
+        "knuckles toward the viewer's left. The hand keeps its full shape, no blur." + KEEP,
     "countL_q3": Q3 + "change ONLY his right arm (viewer's LEFT side) compared with the base image: the forearm points up "
         "and a little outward, the hand is at chest height beside the body on the viewer's left, palm turning toward the "
         "camera, the fingers still loosely closed (no finger raised yet). The hand stays clear of the face." + KEEP,
