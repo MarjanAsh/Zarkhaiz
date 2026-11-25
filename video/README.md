@@ -460,7 +460,13 @@ Done so far (free, no new images):
 
 Open: the 10 keys. The bridge answered 404 on `/health` and `/jobs` on Nov 24, also from the "AI Tools" environment
 that holds its token (session "v021 arm keys through the ChatGPT bridge" is waiting). User decision (Nov 24): the user
-fixes the bridge on the VPS (checklist: `mascot/library/bridge/FIX_404.md`); no paid images. Once the keys exist:
+fixes the bridge on the VPS (checklist: `mascot/library/bridge/FIX_404.md`); no paid images.
+Nov 25: the VPS maintainer added the root routes (`/health`, `/jobs`, `/jobs/*` -> the Codex bridge on 127.0.0.1:8787);
+authenticated `/health` answers 200, unauthenticated 401. Canonical base: `https://zarkhaiz.duckdns.org/muse-bridge/accounts/chatgpt`
+(token injected as X-Muse-Bridge-Token by the "AI Tools" environment only; the "Zarkhaiz" environment gets 401). The
+bridge has no reference upload and image generation through it is not yet proven (only a text-file job was). So
+`bridge_edit.py` now passes the references as raw GitHub URLs of this public repo, asks Codex to report their sha256 and
+rejects any image whose reply does not show the base image's sha256. Once the keys exist:
 `python3 mascot/anim/tools/build_anim.py`, copy `mascot/anim/out` to `video/outputdm-reel/assets/anim` as in Rebuild,
 run `director.py`, render, QA. From the links: haikei-style SVG backgrounds and a realtimecolors check of the palette
 are possible later; godly.website redirects to a host that does not resolve; replit adds nothing to this pipeline.
