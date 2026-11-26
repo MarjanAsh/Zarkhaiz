@@ -483,3 +483,14 @@ are possible later; godly.website redirects to a host that does not resolve; rep
   4-6 frames (about 0.1 s). Next fix proposed to the user: interpolate the hand as a rigid piece (position, angle,
   cross-fade of the two hand shapes) on top of FILM's sleeve, instead of letting FILM morph the fingers.
 - Not rendered yet (plan-first rule): waiting for the user's go-ahead.
+
+### v021 rigid hands (Nov 26, the user said "do what you propose: the character must be complete once, for the series")
+- `mascot/anim/tools/fix_hands.py` (run after `build_anim.py`): finds in-between frames where FILM melted the hand
+  (skin lost or broken into pieces, tuned by eye on the v021 clips) and redraws the hand of both keys as a rigid piece
+  moved by the interpolated position, angle and size, with a short shape switch; FILM's own hand is inpainted away.
+  31 of 85 segments were changed (list in `mascot/anim/out/.hands.json`). The gold pocket square passes the skin test,
+  so everything skin-coloured above the hips in the rest pose is excluded.
+- Result in the test stills: the hand stays whole in every frame (the wave, present, pointing, stop, counting);
+  the middle frame of a fast turn is a little soft. Test clip: three 6.4 s sections (2.6-9.0, 14.4-20.8, 30.4-36.8),
+  no single-frame brightness jumps.
+- Next (after the user's yes): full render at 60 fps, QA (video-export-qa checks, blink check), v021 files.

@@ -1,0 +1,436 @@
+{
+ "L:presentL_mid__presentL_end": {
+  "frames": [
+   "L/presentL_mid__presentL_end_00.webp",
+   "L/presentL_mid__presentL_end_01.webp",
+   "L/presentL_mid__presentL_end_02.webp",
+   "L/presentL_mid__presentL_end_03.webp",
+   "L/presentL_mid__presentL_end_04.webp",
+   "L/presentL_mid__presentL_end_05.webp",
+   "L/presentL_mid__presentL_end_06.webp",
+   "L/presentL_mid__presentL_end_07.webp",
+   "L/presentL_mid__presentL_end_08.webp"
+  ],
+  "why": "1:skin 1502<2053; 2:skin 1534<2082; 3:skin 1536<2112; 4:skin 1552<2141; 5:skin 1934<2171"
+ },
+ "L:waveL_q1__waveL_mid": {
+  "frames": [
+   "L/waveL_q1__waveL_mid_00.webp",
+   "L/waveL_q1__waveL_mid_01.webp",
+   "L/waveL_q1__waveL_mid_02.webp",
+   "L/waveL_q1__waveL_mid_03.webp",
+   "L/waveL_q1__waveL_mid_04.webp",
+   "L/waveL_q1__waveL_mid_05.webp",
+   "L/waveL_q1__waveL_mid_06.webp",
+   "L/waveL_q1__waveL_mid_07.webp",
+   "L/waveL_q1__waveL_mid_08.webp"
+  ],
+  "why": "3:skin 2502<2656; 4:skin 2353<2758,3 pieces; 5:3 pieces"
+ },
+ "L:pointcamL_mid__pointcamL_end": {
+  "frames": [
+   "L/pointcamL_mid__pointcamL_end_00.webp",
+   "L/pointcamL_mid__pointcamL_end_01.webp",
+   "L/pointcamL_mid__pointcamL_end_02.webp",
+   "L/pointcamL_mid__pointcamL_end_03.webp",
+   "L/pointcamL_mid__pointcamL_end_04.webp",
+   "L/pointcamL_mid__pointcamL_end_05.webp",
+   "L/pointcamL_mid__pointcamL_end_06.webp",
+   "L/pointcamL_mid__pointcamL_end_07.webp",
+   "L/pointcamL_mid__pointcamL_end_08.webp"
+  ],
+  "why": "5:skin 1531<2208; 6:skin 2154<2223"
+ },
+ "L:countL_q3__count3L_end": {
+  "frames": [
+   "L/countL_q3__count3L_end_00.webp",
+   "L/countL_q3__count3L_end_01.webp",
+   "L/countL_q3__count3L_end_02.webp",
+   "L/countL_q3__count3L_end_03.webp",
+   "L/countL_q3__count3L_end_04.webp",
+   "L/countL_q3__count3L_end_05.webp",
+   "L/countL_q3__count3L_end_06.webp",
+   "L/countL_q3__count3L_end_07.webp",
+   "L/countL_q3__count3L_end_08.webp"
+  ],
+  "why": "5:skin 2747<3185"
+ },
+ "R:presentR_q1__pointsideR_mid": {
+  "frames": [
+   "R/presentR_q1__pointsideR_mid_00.webp",
+   "R/presentR_q1__pointsideR_mid_01.webp",
+   "R/presentR_q1__pointsideR_mid_02.webp",
+   "R/presentR_q1__pointsideR_mid_03.webp",
+   "R/presentR_q1__pointsideR_mid_04.webp",
+   "R/presentR_q1__pointsideR_mid_05.webp",
+   "R/presentR_q1__pointsideR_mid_06.webp",
+   "R/presentR_q1__pointsideR_mid_07.webp",
+   "R/presentR_q1__pointsideR_mid_08.webp"
+  ],
+  "why": "0:skin 1583<1975; 1:skin 383<1997; 2:skin 292<2020,3 pieces; 3:skin 206<2042; 4:skin 189<2065; 5:skin 989<2087; 6:skin 1757<2110"
+ },
+ "L:explain_mid__explain_end": {
+  "frames": [
+   "L/explain_mid__explain_end_00.webp",
+   "L/explain_mid__explain_end_01.webp",
+   "L/explain_mid__explain_end_02.webp",
+   "L/explain_mid__explain_end_03.webp",
+   "L/explain_mid__explain_end_04.webp",
+   "L/explain_mid__explain_end_05.webp",
+   "L/explain_mid__explain_end_06.webp",
+   "L/explain_mid__explain_end_07.webp",
+   "L/explain_mid__explain_end_08.webp"
+  ],
+  "why": "2:skin 2008<2026; 3:skin 1823<2023; 4:3 pieces; 5:skin 1801<2019"
+ },
+ "L:pointcamL_q1__pointcamL_mid": {
+  "frames": [
+   "L/pointcamL_q1__pointcamL_mid_00.webp",
+   "L/pointcamL_q1__pointcamL_mid_01.webp",
+   "L/pointcamL_q1__pointcamL_mid_02.webp",
+   "L/pointcamL_q1__pointcamL_mid_03.webp",
+   "L/pointcamL_q1__pointcamL_mid_04.webp",
+   "L/pointcamL_q1__pointcamL_mid_05.webp",
+   "L/pointcamL_q1__pointcamL_mid_06.webp",
+   "L/pointcamL_q1__pointcamL_mid_07.webp",
+   "L/pointcamL_q1__pointcamL_mid_08.webp"
+  ],
+  "why": "2:skin 2423<2495; 3:skin 1958<2442; 4:skin 1801<2388,3 pieces; 5:skin 2159<2335"
+ },
+ "L:countL_mid__countL_q3": {
+  "frames": [
+   "L/countL_mid__countL_q3_00.webp",
+   "L/countL_mid__countL_q3_01.webp",
+   "L/countL_mid__countL_q3_02.webp",
+   "L/countL_mid__countL_q3_03.webp",
+   "L/countL_mid__countL_q3_04.webp",
+   "L/countL_mid__countL_q3_05.webp",
+   "L/countL_mid__countL_q3_06.webp",
+   "L/countL_mid__countL_q3_07.webp",
+   "L/countL_mid__countL_q3_08.webp"
+  ],
+  "why": "5:3 pieces"
+ },
+ "L:countL_q3__count4L_end": {
+  "frames": [
+   "L/countL_q3__count4L_end_00.webp",
+   "L/countL_q3__count4L_end_01.webp",
+   "L/countL_q3__count4L_end_02.webp",
+   "L/countL_q3__count4L_end_03.webp",
+   "L/countL_q3__count4L_end_04.webp",
+   "L/countL_q3__count4L_end_05.webp",
+   "L/countL_q3__count4L_end_06.webp",
+   "L/countL_q3__count4L_end_07.webp",
+   "L/countL_q3__count4L_end_08.webp"
+  ],
+  "why": "4:skin 2261<3170; 5:skin 2465<3297"
+ },
+ "L:countL_q3__count5L_end": {
+  "frames": [
+   "L/countL_q3__count5L_end_00.webp",
+   "L/countL_q3__count5L_end_01.webp",
+   "L/countL_q3__count5L_end_02.webp",
+   "L/countL_q3__count5L_end_03.webp",
+   "L/countL_q3__count5L_end_04.webp",
+   "L/countL_q3__count5L_end_05.webp",
+   "L/countL_q3__count5L_end_06.webp",
+   "L/countL_q3__count5L_end_07.webp",
+   "L/countL_q3__count5L_end_08.webp"
+  ],
+  "why": "5:skin 2830<3626"
+ },
+ "L:fistL_mid__fistL_end": {
+  "frames": [
+   "L/fistL_mid__fistL_end_00.webp",
+   "L/fistL_mid__fistL_end_01.webp",
+   "L/fistL_mid__fistL_end_02.webp",
+   "L/fistL_mid__fistL_end_03.webp",
+   "L/fistL_mid__fistL_end_04.webp",
+   "L/fistL_mid__fistL_end_05.webp",
+   "L/fistL_mid__fistL_end_06.webp",
+   "L/fistL_mid__fistL_end_07.webp",
+   "L/fistL_mid__fistL_end_08.webp"
+  ],
+  "why": "3:skin 2105<2316"
+ },
+ "L:shrug_q1__shrug_mid": {
+  "frames": [
+   "L/shrug_q1__shrug_mid_00.webp",
+   "L/shrug_q1__shrug_mid_01.webp",
+   "L/shrug_q1__shrug_mid_02.webp",
+   "L/shrug_q1__shrug_mid_03.webp",
+   "L/shrug_q1__shrug_mid_04.webp",
+   "L/shrug_q1__shrug_mid_05.webp",
+   "L/shrug_q1__shrug_mid_06.webp",
+   "L/shrug_q1__shrug_mid_07.webp",
+   "L/shrug_q1__shrug_mid_08.webp"
+  ],
+  "why": "1:skin 2462<2714; 2:skin 2440<2659; 3:skin 2355<2605; 4:skin 2295<2551; 5:skin 2293<2496"
+ },
+ "L:explain_q1__waveL_q1": {
+  "frames": [
+   "L/explain_q1__waveL_q1_00.webp",
+   "L/explain_q1__waveL_q1_01.webp",
+   "L/explain_q1__waveL_q1_02.webp",
+   "L/explain_q1__waveL_q1_03.webp",
+   "L/explain_q1__waveL_q1_04.webp",
+   "L/explain_q1__waveL_q1_05.webp",
+   "L/explain_q1__waveL_q1_06.webp",
+   "L/explain_q1__waveL_q1_07.webp",
+   "L/explain_q1__waveL_q1_08.webp"
+  ],
+  "why": "4:skin 2017<2114"
+ },
+ "L:presentL_q1__pointsideL_mid": {
+  "frames": [
+   "L/presentL_q1__pointsideL_mid_00.webp",
+   "L/presentL_q1__pointsideL_mid_01.webp",
+   "L/presentL_q1__pointsideL_mid_02.webp",
+   "L/presentL_q1__pointsideL_mid_03.webp",
+   "L/presentL_q1__pointsideL_mid_04.webp",
+   "L/presentL_q1__pointsideL_mid_05.webp",
+   "L/presentL_q1__pointsideL_mid_06.webp",
+   "L/presentL_q1__pointsideL_mid_07.webp",
+   "L/presentL_q1__pointsideL_mid_08.webp"
+  ],
+  "why": "1:skin 1604<2149; 2:skin 1496<2152; 3:skin 1372<2156; 4:skin 1152<2160; 5:skin 1503<2164; 6:skin 1888<2168"
+ },
+ "L:relaxedL_end__presentL_q1": {
+  "frames": [
+   "L/relaxedL_end__presentL_q1_00.webp",
+   "L/relaxedL_end__presentL_q1_01.webp",
+   "L/relaxedL_end__presentL_q1_02.webp",
+   "L/relaxedL_end__presentL_q1_03.webp",
+   "L/relaxedL_end__presentL_q1_04.webp",
+   "L/relaxedL_end__presentL_q1_05.webp",
+   "L/relaxedL_end__presentL_q1_06.webp",
+   "L/relaxedL_end__presentL_q1_07.webp",
+   "L/relaxedL_end__presentL_q1_08.webp"
+  ],
+  "why": "5:3 pieces"
+ },
+ "L:relaxedL_end__waveL_q1": {
+  "frames": [
+   "L/relaxedL_end__waveL_q1_00.webp",
+   "L/relaxedL_end__waveL_q1_01.webp",
+   "L/relaxedL_end__waveL_q1_02.webp",
+   "L/relaxedL_end__waveL_q1_03.webp",
+   "L/relaxedL_end__waveL_q1_04.webp",
+   "L/relaxedL_end__waveL_q1_05.webp",
+   "L/relaxedL_end__waveL_q1_06.webp",
+   "L/relaxedL_end__waveL_q1_07.webp",
+   "L/relaxedL_end__waveL_q1_08.webp"
+  ],
+  "why": "5:skin 2440<2525; 6:skin 2387<2456"
+ },
+ "L:relaxedL_end__shrug_q1": {
+  "frames": [
+   "L/relaxedL_end__shrug_q1_00.webp",
+   "L/relaxedL_end__shrug_q1_01.webp",
+   "L/relaxedL_end__shrug_q1_02.webp",
+   "L/relaxedL_end__shrug_q1_03.webp",
+   "L/relaxedL_end__shrug_q1_04.webp",
+   "L/relaxedL_end__shrug_q1_05.webp",
+   "L/relaxedL_end__shrug_q1_06.webp",
+   "L/relaxedL_end__shrug_q1_07.webp",
+   "L/relaxedL_end__shrug_q1_08.webp"
+  ],
+  "why": "4:3 pieces"
+ },
+ "R:presentR_mid__presentR_end": {
+  "frames": [
+   "R/presentR_mid__presentR_end_00.webp",
+   "R/presentR_mid__presentR_end_01.webp",
+   "R/presentR_mid__presentR_end_02.webp",
+   "R/presentR_mid__presentR_end_03.webp",
+   "R/presentR_mid__presentR_end_04.webp",
+   "R/presentR_mid__presentR_end_05.webp",
+   "R/presentR_mid__presentR_end_06.webp",
+   "R/presentR_mid__presentR_end_07.webp",
+   "R/presentR_mid__presentR_end_08.webp"
+  ],
+  "why": "2:skin 2198<2259; 3:skin 1848<2301; 4:skin 1476<2343; 5:skin 923<2386; 6:skin 1337<2428,3 pieces"
+ },
+ "R:explain_mid__explain_end": {
+  "frames": [
+   "R/explain_mid__explain_end_00.webp",
+   "R/explain_mid__explain_end_01.webp",
+   "R/explain_mid__explain_end_02.webp",
+   "R/explain_mid__explain_end_03.webp",
+   "R/explain_mid__explain_end_04.webp",
+   "R/explain_mid__explain_end_05.webp",
+   "R/explain_mid__explain_end_06.webp",
+   "R/explain_mid__explain_end_07.webp",
+   "R/explain_mid__explain_end_08.webp"
+  ],
+  "why": "3:skin 1877<1902; 4:skin 1835<1898; 5:skin 1388<1894,3 pieces; 6:skin 1801<1890"
+ },
+ "R:rest__pointsideR_mid": {
+  "frames": [
+   "R/rest__pointsideR_mid_00.webp",
+   "R/rest__pointsideR_mid_01.webp",
+   "R/rest__pointsideR_mid_02.webp",
+   "R/rest__pointsideR_mid_03.webp",
+   "R/rest__pointsideR_mid_04.webp",
+   "R/rest__pointsideR_mid_05.webp",
+   "R/rest__pointsideR_mid_06.webp",
+   "R/rest__pointsideR_mid_07.webp",
+   "R/rest__pointsideR_mid_08.webp"
+  ],
+  "why": "4:skin 2393<2464; 5:skin 1868<2407; 6:skin 2133<2349"
+ },
+ "R:rest__thumbsR_mid": {
+  "frames": [
+   "R/rest__thumbsR_mid_00.webp",
+   "R/rest__thumbsR_mid_01.webp",
+   "R/rest__thumbsR_mid_02.webp",
+   "R/rest__thumbsR_mid_03.webp",
+   "R/rest__thumbsR_mid_04.webp",
+   "R/rest__thumbsR_mid_05.webp",
+   "R/rest__thumbsR_mid_06.webp",
+   "R/rest__thumbsR_mid_07.webp",
+   "R/rest__thumbsR_mid_08.webp"
+  ],
+  "why": "5:skin 2519<2664,3 pieces; 6:3 pieces"
+ },
+ "R:thumbsR_mid__thumbsR_end": {
+  "frames": [
+   "R/thumbsR_mid__thumbsR_end_00.webp",
+   "R/thumbsR_mid__thumbsR_end_01.webp",
+   "R/thumbsR_mid__thumbsR_end_02.webp",
+   "R/thumbsR_mid__thumbsR_end_03.webp",
+   "R/thumbsR_mid__thumbsR_end_04.webp",
+   "R/thumbsR_mid__thumbsR_end_05.webp",
+   "R/thumbsR_mid__thumbsR_end_06.webp",
+   "R/thumbsR_mid__thumbsR_end_07.webp",
+   "R/thumbsR_mid__thumbsR_end_08.webp"
+  ],
+  "why": "4:3 pieces; 5:skin 2288<2741"
+ },
+ "R:rest__chopR_mid": {
+  "frames": [
+   "R/rest__chopR_mid_00.webp",
+   "R/rest__chopR_mid_01.webp",
+   "R/rest__chopR_mid_02.webp",
+   "R/rest__chopR_mid_03.webp",
+   "R/rest__chopR_mid_04.webp",
+   "R/rest__chopR_mid_05.webp",
+   "R/rest__chopR_mid_06.webp",
+   "R/rest__chopR_mid_07.webp",
+   "R/rest__chopR_mid_08.webp"
+  ],
+  "why": "5:3 pieces"
+ },
+ "R:okR_mid__okR_end": {
+  "frames": [
+   "R/okR_mid__okR_end_00.webp",
+   "R/okR_mid__okR_end_01.webp",
+   "R/okR_mid__okR_end_02.webp",
+   "R/okR_mid__okR_end_03.webp",
+   "R/okR_mid__okR_end_04.webp",
+   "R/okR_mid__okR_end_05.webp",
+   "R/okR_mid__okR_end_06.webp",
+   "R/okR_mid__okR_end_07.webp",
+   "R/okR_mid__okR_end_08.webp"
+  ],
+  "why": "1:skin 2425<2540; 2:skin 2123<2627; 3:skin 1703<2714; 4:skin 946<2802; 5:skin 1333<2889; 6:skin 2203<2976"
+ },
+ "R:stopR_mid__stopR_end": {
+  "frames": [
+   "R/stopR_mid__stopR_end_00.webp",
+   "R/stopR_mid__stopR_end_01.webp",
+   "R/stopR_mid__stopR_end_02.webp",
+   "R/stopR_mid__stopR_end_03.webp",
+   "R/stopR_mid__stopR_end_04.webp",
+   "R/stopR_mid__stopR_end_05.webp",
+   "R/stopR_mid__stopR_end_06.webp",
+   "R/stopR_mid__stopR_end_07.webp",
+   "R/stopR_mid__stopR_end_08.webp"
+  ],
+  "why": "3:skin 3980<4090"
+ },
+ "R:rest__count3R_mid": {
+  "frames": [
+   "R/rest__count3R_mid_00.webp",
+   "R/rest__count3R_mid_01.webp",
+   "R/rest__count3R_mid_02.webp",
+   "R/rest__count3R_mid_03.webp",
+   "R/rest__count3R_mid_04.webp",
+   "R/rest__count3R_mid_05.webp",
+   "R/rest__count3R_mid_06.webp",
+   "R/rest__count3R_mid_07.webp",
+   "R/rest__count3R_mid_08.webp"
+  ],
+  "why": "5:skin 2567<2698"
+ },
+ "R:count3R_mid__count3R_end": {
+  "frames": [
+   "R/count3R_mid__count3R_end_00.webp",
+   "R/count3R_mid__count3R_end_01.webp",
+   "R/count3R_mid__count3R_end_02.webp",
+   "R/count3R_mid__count3R_end_03.webp",
+   "R/count3R_mid__count3R_end_04.webp",
+   "R/count3R_mid__count3R_end_05.webp",
+   "R/count3R_mid__count3R_end_06.webp",
+   "R/count3R_mid__count3R_end_07.webp",
+   "R/count3R_mid__count3R_end_08.webp"
+  ],
+  "why": "3:3 pieces; 4:skin 2603<2864,4 pieces; 5:skin 2155<2904"
+ },
+ "R:shrug_q1__shrug_mid": {
+  "frames": [
+   "R/shrug_q1__shrug_mid_00.webp",
+   "R/shrug_q1__shrug_mid_01.webp",
+   "R/shrug_q1__shrug_mid_02.webp",
+   "R/shrug_q1__shrug_mid_03.webp",
+   "R/shrug_q1__shrug_mid_04.webp",
+   "R/shrug_q1__shrug_mid_05.webp",
+   "R/shrug_q1__shrug_mid_06.webp",
+   "R/shrug_q1__shrug_mid_07.webp",
+   "R/shrug_q1__shrug_mid_08.webp"
+  ],
+  "why": "1:skin 2606<2716; 2:skin 2541<2669; 3:skin 2361<2622; 4:skin 2230<2576; 5:skin 2406<2529"
+ },
+ "R:explain_q1__chopR_mid": {
+  "frames": [
+   "R/explain_q1__chopR_mid_00.webp",
+   "R/explain_q1__chopR_mid_01.webp",
+   "R/explain_q1__chopR_mid_02.webp",
+   "R/explain_q1__chopR_mid_03.webp",
+   "R/explain_q1__chopR_mid_04.webp",
+   "R/explain_q1__chopR_mid_05.webp",
+   "R/explain_q1__chopR_mid_06.webp",
+   "R/explain_q1__chopR_mid_07.webp",
+   "R/explain_q1__chopR_mid_08.webp"
+  ],
+  "why": "0:skin 1817<1983; 1:skin 1791<2034; 2:skin 1876<2085; 3:skin 1953<2136"
+ },
+ "R:explain_q1__stopR_mid": {
+  "frames": [
+   "R/explain_q1__stopR_mid_00.webp",
+   "R/explain_q1__stopR_mid_01.webp",
+   "R/explain_q1__stopR_mid_02.webp",
+   "R/explain_q1__stopR_mid_03.webp",
+   "R/explain_q1__stopR_mid_04.webp",
+   "R/explain_q1__stopR_mid_05.webp",
+   "R/explain_q1__stopR_mid_06.webp",
+   "R/explain_q1__stopR_mid_07.webp",
+   "R/explain_q1__stopR_mid_08.webp"
+  ],
+  "why": "0:skin 1454<2070; 1:skin 993<2207; 2:skin 843<2345; 3:skin 710<2482; 4:skin 1665<2620,3 pieces; 5:skin 1927<2758,4 pieces; 6:skin 2890<2895"
+ },
+ "R:presentR_q1__thumbsR_mid": {
+  "frames": [
+   "R/presentR_q1__thumbsR_mid_00.webp",
+   "R/presentR_q1__thumbsR_mid_01.webp",
+   "R/presentR_q1__thumbsR_mid_02.webp",
+   "R/presentR_q1__thumbsR_mid_03.webp",
+   "R/presentR_q1__thumbsR_mid_04.webp",
+   "R/presentR_q1__thumbsR_mid_05.webp",
+   "R/presentR_q1__thumbsR_mid_06.webp",
+   "R/presentR_q1__thumbsR_mid_07.webp",
+   "R/presentR_q1__thumbsR_mid_08.webp"
+  ],
+  "why": "4:4 pieces"
+ }
+}

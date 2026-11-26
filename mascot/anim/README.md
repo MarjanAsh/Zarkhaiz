@@ -11,6 +11,8 @@ the rest pose is a stiff hang, and the director changed pose every 0.6-0.7 s.
 - `director.py`: `calm_arms()` (MIN_HOLD 1.5 s, finger steps 0.6 s, PRIO gestures, CORE / MAP per side) rewrites only
   `arms`; its log is `arm_log` in acting.json. The face, head, gaze and blinks stay as the main pass made them.
 - `main.js`: `armSpring()` timing and a short neighbour blend in `drawArm()`.
+- `fix_hands.py` (after `build_anim.py`, before copying `out/` to the reel): rigid hands where FILM melted them
+  (see its docstring); idempotent, log in `out/.hands.json`. Rebuild order: gen_keys -> build_anim -> fix_hands -> copy.
 
 ## v020 (Nov 16): the acting system
 The user asked for a far more expressive presenter: more hands, arms, shoulders and face, lip-sync, and gestures
