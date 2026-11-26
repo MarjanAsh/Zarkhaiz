@@ -1,5 +1,15 @@
 # Animated character (from reel v015; the acting system from v020)
 
+## Other video projects (Nov 26, ad 01)
+`align.py`, `audio_motion.py`, `build_face.py` (and `speech_face.py`) read `REEL_DIR` (the video project folder, default
+`video/outputdm-reel`) and `ANIM_TAG` (keeps that project's speech motion in `out/speech_<tag>/`, its head frames in
+`out/head_<tag>/` and `out/face_<tag>.json`, so the reel's own frames are never touched). `director.py` takes the project
+folder as its argument. Example: `video/outputdm-ad01/make.sh`.
+Install notes found on Nov 26: in the HF repo jdh-algo/JoyVASA the weights are at `motion_generator/...` and
+`motion_template/...` (no `JoyVASA/` prefix; put them under `pretrained_weights/JoyVASA/`); torchvision and torchaudio must
+come from the same CPU index as torch (`pip install --force-reinstall --no-deps torchvision torchaudio --index-url
+https://download.pytorch.org/whl/cpu`), otherwise transformers cannot import HubertModel.
+
 ## v021 (Nov 24, in progress): natural arms
 Causes found in the v020 frames and arm clips: FILM melts the hand on the first step (hanging -> mid: the hand turns
 over and comes forward at once), a cross-gesture clip (explain_mid -> waveL_q1) makes the hand vanish and reappear,

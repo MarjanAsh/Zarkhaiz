@@ -25,6 +25,8 @@ and `mascot/README.md` (the character images).
   system (read `mascot/anim/README.md`, section v020, and `mascot/anim/manifest.json`): lip-sync generated from the
   voice, 29 expression presets, 22 arm poses, calm head acting, all chosen by `mascot/anim/tools/director.py` from
   the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v021/qa.md`. v020 to v012 kept.
+- Ad 01 (2026-11-26, viral ad with the user's nine-beat script, also for paid ads): `video/outputdm-ad01/` (make.sh,
+  AD_COPY.md, `video/README.md` "Ad 01"). Same character pipeline with REEL_DIR / ANIM_TAG=ad01.
 - 360 + lip-sync test clip (2026-11-19): `video/turn360/` (HyperFrames project, 5.3 s, 1080x1920, 60 fps), character
   from `mascot/turn/` (read its README: library angles + FILM turnaround, voice-driven mouth shapes, limits). The user's
   reference reels were Seedance 2.5 (Dreamina / ArtCraft) and Gemini (Veo) videos, not Claude; a ready Dreamina prompt is
