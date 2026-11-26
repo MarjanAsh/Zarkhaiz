@@ -544,3 +544,7 @@ Project: `video/outputdm-ad02/` (same files and `make.sh` as ad 01, `ANIM_TAG=ad
 - Page: hook with a followers counter running to 48,000 while sales stay 0 and a stamp "BUSINESS NAHI CHALTA",
   "missing link" between Post and Sale, the three-step path, founder card, crossed stresses, the objection bubble ->
   free review with three steps, a phone at 6:45 in the evening with order messages, four industries + brand wall, CTA.
+
+### Ad 02 rendered (Nov 26)
+`outputdm-ad02/out/outputdm_ad02_v001.mp4`: 50.3 s, 1080x1920, 60 fps, -13.8 LUFS; QA `outputdm-ad02/qa/qa.md`.
+Copy: `outputdm-ad02/AD_COPY.md`. Open: watching/listening (lip-sync, the voice model change at the CTA).
