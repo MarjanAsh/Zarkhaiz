@@ -529,3 +529,18 @@ Project: `video/outputdm-ad01/` (read its `make.sh`; copy and numbers in `AD_COP
 `outputdm-ad01/out/outputdm_ad01_v001.mp4`: 47.3 s, 1080x1920, 60 fps, -14.4 LUFS; QA in `outputdm-ad01/qa/qa.md`
 (no blinks, no jumps, no black or frozen frames). Ad texts in `outputdm-ad01/AD_COPY.md`. Head frames: 1382, about
 80 min on 4 CPU cores. Open: watching and listening (lip-sync, the line-4 splice); the user publishes the ad.
+
+## Ad 02 (Nov 26, in progress): "followers are not business"
+The user (Nov 26): "agla ad bhi isi tarah bana do": the same nine beats, the same way, without asking.
+Project: `video/outputdm-ad02/` (same files and `make.sh` as ad 01, `ANIM_TAG=ad02`; copy in `AD_COPY.md`).
+- Script: a marketer's confession that followers do not run a business; the missing link between post and sale;
+  post -> WhatsApp -> order; founder; no daily posting stress, content made by us; "my business is too small" ->
+  free review shows where to start; a post in the morning, orders by the evening; restaurants, real estate, health,
+  travel in Pakistan and UAE; the same CTA. Only facts the reel already states.
+- Voice (session "Ad 02 voiceover with Gemini TTS", `vo/raw/NOTES.md`): lines 1-8 by `gemini-3.1-flash-tts-preview`,
+  voice Charon (the ad 01 model was out of daily quota); lines 9-10 are ad 01's takes (a slightly different model:
+  listen at the CTA). The raw ad 01 takes end in a loud noise burst; `fix_vo.py` cuts it (checked: no cleaned take of
+  ad 01 or ad 02 ends near full scale). SPEED=1.08: 50.3 s.
+- Page: hook with a followers counter running to 48,000 while sales stay 0 and a stamp "BUSINESS NAHI CHALTA",
+  "missing link" between Post and Sale, the three-step path, founder card, crossed stresses, the objection bubble ->
+  free review with three steps, a phone at 6:45 in the evening with order messages, four industries + brand wall, CTA.

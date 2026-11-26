@@ -1,0 +1,87 @@
+l01   0.53 Main         self      self_nod        -                  
+l01   2.35 lekin        contrast  contrast_turn   -                  
+l01   5.19 nahi         negation  head_no         -                  
+l02   9.74 hi           emphasis  emphasis_chop   R:chop             
+l02   9.91 nahi.        negation  head_no         -                  
+l03  13.84 WhatsApp     cta       call_to_action  L:point_camera     
+l04  15.75 Main         self      self_nod        -                  
+l04  16.07 Zarkhaiz,    brand     brand_present   L:present          present would leave the frame here
+l04  16.61 OutputDM     brand     brand_present   -                  arms left to 'Zarkhaiz,' (brand)
+l04  17.93 Hum          self      self_nod        -                  
+l04  18.30 2018         place     present_item    -                  present would arrive 0.77 s late; present would leave the frame here; no arm clip for this gesture is built
+l04  19.43 yahi         emphasis  emphasis_chop   R:chop             
+l05  21.94 nahi,        negation  head_no         -                  
+l05  23.52 zaroori      emphasis  emphasis_chop   R:chop             
+l05  23.78 nahi.        negation  head_no         -                  
+l05  24.74 hum          self      self_nod        -                  
+l06  27.81 sab          emphasis  emphasis_chop   R:chop             
+l06  28.79 Free         positive  thumbs_good     -                  arms left to 'sab' (emphasis)
+l06  29.65 hum          self      self_nod        -                  
+l06  30.53 kahan        question  question_shrug  -                  arms left to 'karein.' (cta)
+l06  30.96 shuru        question  question_shrug  -                  arms left to 'kahan' (question)
+l06  31.11 karein.      cta       call_to_action  L:point_camera     
+l07  34.19 WhatsApp     cta       point_you       L:point_camera     
+l07  35.74 Yahi         emphasis  emphasis_chop   R:chop             
+l08  37.52 Restaurants, place     present_item    L:present          
+l08  38.21 real         place     present_item    -                  arms left to 'Restaurants,' (place)
+l08  40.33 Pakistan     place     present_item    L:present          
+l08  41.03 UAE          place     present_item    -                  arms left to 'Pakistan' (place)
+l08  42.19 OutputDM     brand     brand_present   L:present          present would leave the frame here
+l09  43.67 Free         positive  thumbs_good     L:thumbs_up        
+l09  44.38 Growth       positive  present_item    -                  arms left to 'Free' (positive)
+l09  45.32 abhi         cta       call_to_action  L:point_camera     
+l09  45.62 WhatsApp     cta       point_you       -                  arms left to 'abhi' (cta)
+l09  45.97 karein.      cta       call_to_action  -                  arms left to 'abhi' (cta)
+l10  46.43 OutputDM     brand     brand_present   L:present          present would leave the frame here
+calm arms (v021):
+L 15.26 present: dropped, point_camera held only 1.34 s
+L 17.52 rest -> relaxed
+L 35.04 rest -> relaxed
+L 44.60 point_camera: dropped, thumbs_up held only 0.85 s
+L 48.02 rest -> relaxed
+R 9.11 chop -> explain
+R 11.73 rest -> relaxed
+R 18.80 chop -> explain
+R 24.34 rest -> relaxed
+R 27.18 chop -> explain
+R 29.38 rest -> relaxed
+R 35.12 chop -> explain
+R 37.37 rest -> relaxed
+{
+ "arm moves": 18,
+ "arm gestures used": [
+  "explain",
+  "point_camera",
+  "present",
+  "relaxed",
+  "thumbs_up"
+ ],
+ "gesture ids used": [
+  "brand_present",
+  "call_to_action",
+  "contrast_turn",
+  "emphasis_chop",
+  "head_no",
+  "point_you",
+  "present_item",
+  "question_shrug",
+  "self_nod",
+  "thumbs_good"
+ ],
+ "expressions used": [
+  "confident",
+  "excited",
+  "explaining",
+  "happy",
+  "proud",
+  "questioning",
+  "reassuring",
+  "serious",
+  "slight_smile",
+  "worried"
+ ],
+ "head events": 21,
+ "body events": 8,
+ "gaze events": 4,
+ "blinks": 12
+}
