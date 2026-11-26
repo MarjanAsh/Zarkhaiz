@@ -1,0 +1,5 @@
+stills/
+out/video*.mp4
+out/.video*_segs*
+out/*.lock
+mix.wav

@@ -18,13 +18,15 @@ Then: python3 build_face.py --finish     (writes face.json once all frames exist
 import hashlib, json, math, sys
 from pathlib import Path
 
+import os
 import cv2
 import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW, OUT = ROOT / "raw", ROOT / "out"
-REEL = ROOT.parents[1] / "video" / "outputdm-reel"
+REEL = Path(os.environ.get("REEL_DIR") or ROOT.parents[1] / "video" / "outputdm-reel")   # REEL_DIR: another video project
+TAG = os.environ.get("ANIM_TAG", "")      # ANIM_TAG: this project's head frames go to out/head_<tag>, face_<tag>.json
 W, H = 820, 1240
 FPS = 30
 BOX = (292, 164, 518, 448)         # x0, y0, x1, y1 of the head patch in the body canvas (wider from v020: bigger head moves)
@@ -200,7 +202,7 @@ def name(p):
 
 def main():
     args = sys.argv[1:]
-    hd = OUT / "head"
+    hd = OUT / ("head_" + TAG if TAG else "head")
     hd.mkdir(parents=True, exist_ok=True)
     mexp = OUT / "speech" / "master_exp.npy"       # the master's own expression keypoints (the mouth offsets start from them)
     if not mexp.exists():
@@ -217,7 +219,7 @@ def main():
         if miss:
             sys.exit(f"{len(miss)} frames missing")
         x0, y0, x1, y1 = BOX
-        (OUT / "face.json").write_text(json.dumps({"fps": FPS, "box": [x0, y0, x1 - x0, y1 - y0],
+        (OUT / (f"face_{TAG}.json" if TAG else "face.json")).write_text(json.dumps({"fps": FPS, "box": [x0, y0, x1 - x0, y1 - y0],
                                                    "erase": "head/erase.png", "t": [round(x, 4) for x in times],
                                                    "frames": [f"head/{f}" for f in files]}))
         keep = set(files) | {"erase.png"}

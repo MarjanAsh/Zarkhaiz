@@ -13,6 +13,7 @@ What is taken from the generated motion (chosen on test stills, qa/v020_tests):
   - head rotation: about half, smoothed, added to the acting head moves.
 """
 from pathlib import Path
+import os
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +29,8 @@ def _smooth(x, k):
 
 class Speech:
     def __init__(self, master_exp, path=None, head=.5, mouth=1.0):
-        d = np.load(path or ROOT / "out" / "speech" / "motion.npz")
+        tag = os.environ.get("ANIM_TAG", "")
+        d = np.load(path or ROOT / "out" / ("speech_" + tag if tag else "speech") / "motion.npz")
         self.fps = float(d["fps"])
         e, rest = d["exp"].copy(), d["rest"]
         gate = np.clip(_smooth(np.maximum.reduce([np.roll(d["speaking"], s) for s in range(-3, 4)]), 3) / .12, 0, 1)

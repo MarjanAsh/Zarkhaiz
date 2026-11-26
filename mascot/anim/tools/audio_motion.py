@@ -24,7 +24,8 @@ import torch.nn.functional as F
 
 JV = os.environ.get("JOYVASA", "/home/user/JoyVASA")
 ROOT = Path(__file__).resolve().parents[1]
-REEL = ROOT.parents[1] / "video" / "outputdm-reel"
+REEL = Path(os.environ.get("REEL_DIR") or ROOT.parents[1] / "video" / "outputdm-reel")   # REEL_DIR: another video project
+TAG = os.environ.get("ANIM_TAG", "")                       # ANIM_TAG: keep this project's speech motion apart
 
 
 def voice_track(sr=16000):
@@ -98,7 +99,7 @@ def main():
     speaking = np.clip(rms / (np.percentile(rms, 90) + 1e-6), 0, 1)
     quiet = speaking < .03
     rest = np.median(exp[quiet], 0)
-    out = ROOT / "out" / "speech"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "out" / ("speech_" + TAG if TAG else "speech"); out.mkdir(parents=True, exist_ok=True)
     np.savez(out / "motion.npz", exp=(exp - rest).astype(np.float32), rest=rest.astype(np.float32), fps=fps, speaking=speaking.astype(np.float32),
              **{k: (v - np.median(v[quiet])).astype(np.float32) for k, v in rot.items()})
     print("frames", len(exp), "fps", fps, "quiet", int(quiet.sum()))

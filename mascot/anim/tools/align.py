@@ -17,7 +17,8 @@ from pathlib import Path
 import numpy as np
 import torch, torchaudio
 
-REEL = Path(__file__).resolve().parents[3] / "video" / "outputdm-reel"
+import os
+REEL = Path(os.environ.get("REEL_DIR") or Path(__file__).resolve().parents[3] / "video" / "outputdm-reel")   # REEL_DIR: another video project
 SAY = {"2018": "do hazar athara", "uae": "yu e i", "seo": "es i o", "outputdm": "aut put di em", "follow-up": "falo ap",
        "whatsapp": "wats ep", "ads": "eds", "website": "web sait", "businesses": "biznesiz", "business": "biznes",
        "customers": "kastamarz", "marketing": "markiting", "automation": "otomeshan", "review": "rivyu",
