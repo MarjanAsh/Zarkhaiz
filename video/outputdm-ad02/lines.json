@@ -1,0 +1,12 @@
+[
+  {"id": "l01", "scene": "hook", "emotion": "confident", "energy": 0.8, "text": "Main digital marketing karta hoon... lekin sach bataun? Followers se business nahi chalta.", "say": "میں ڈیجیٹل مارکیٹنگ کرتا ہوں... لیکن سچ بتاؤں؟ فالوورز سے بزنس نہیں چلتا۔"},
+  {"id": "l02", "scene": "gap", "text": "Jo cheez sales laati hai, woh zyada tar pages pe hoti hi nahi.", "say": "جو چیز سیلز لاتی ہے، وہ زیادہ تر پیجز پہ ہوتی ہی نہیں۔"},
+  {"id": "l03", "scene": "solution", "list": false, "text": "Har post ke saath ek seedha raasta: post dekhi, WhatsApp kiya, order ho gaya.", "say": "ہر پوسٹ کے ساتھ ایک سیدھا راستہ: پوسٹ دیکھی، واٹس ایپ کیا، آرڈر ہو گیا۔"},
+  {"id": "l04", "scene": "founder", "text": "Main Zarkhaiz, OutputDM ka founder. Hum 2018 se yahi kaam kar rahe hain.", "say": "میں زرخیز، آؤٹ پُٹ ڈی ایم کا فاؤنڈر۔ ہم دو ہزار اٹھارہ سے یہی کام کر رہے ہیں۔"},
+  {"id": "l05", "scene": "fear", "text": "Roz post ki tension nahi, camera ke saamne aana bhi zaroori nahi. Content hum banate hain.", "say": "روز پوسٹ کی ٹینشن نہیں، کیمرے کے سامنے آنا بھی ضروری نہیں۔ کانٹینٹ ہم بناتے ہیں۔"},
+  {"id": "l06", "scene": "objection", "intent": "question", "text": "Sochte hain chhota business hai, itna sab kis liye? Free review mein hum batayenge kahan se shuru karein.", "say": "سوچتے ہیں چھوٹا بزنس ہے، اتنا سب کس لیے؟ فری ریویو میں ہم بتائیں گے کہاں سے شروع کریں۔"},
+  {"id": "l07", "scene": "lifestyle", "list": false, "text": "Socho, subah post lagi aur shaam tak WhatsApp pe orders aa gaye. Yahi normal hona chahiye.", "say": "سوچو، صبح پوسٹ لگی اور شام تک واٹس ایپ پہ آرڈرز آ گئے۔ یہی نارمل ہونا چاہیے۔"},
+  {"id": "l08", "scene": "authority", "list": false, "text": "Restaurants, real estate, health aur travel: Pakistan aur UAE ke businesses OutputDM chunte hain.", "say": "ریسٹورنٹس، ریئل اسٹیٹ، ہیلتھ اور ٹریول: پاکستان اور یو اے ای کے بزنسز آؤٹ پُٹ ڈی ایم چنتے ہیں۔"},
+  {"id": "l09", "scene": "cta", "intent": "cta", "text": "Free Digital Growth Review ke liye abhi WhatsApp karein.", "say": "فری ڈیجیٹل گروتھ ریویو کے لیے ابھی واٹس ایپ کریں۔"},
+  {"id": "l10", "scene": "cta", "intent": "cta", "text": "OutputDM dot com.", "say": "آؤٹ پُٹ ڈی ایم ڈاٹ کام۔"}
+]
