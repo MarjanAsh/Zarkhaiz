@@ -23,7 +23,7 @@ SAY = {"2018": "do hazar athara", "uae": "yu e i", "seo": "es i o", "outputdm": 
        "whatsapp": "wats ep", "ads": "eds", "website": "web sait", "businesses": "biznesiz", "business": "biznes",
        "customers": "kastamarz", "marketing": "markiting", "automation": "otomeshan", "review": "rivyu",
        "digital": "dijital", "growth": "groth", "free": "fri", "system": "sistam", "content": "kantent",
-       "founder": "faundar", "alaikum": "alaikum", "assalam": "asalam", "com": "kam", "dot": "dat"}
+       "founder": "faundar", "agency": "ejansi", "technical": "teknikal", "budget": "bajat", "restaurants": "restorents", "real": "riyal", "estate": "isteit", "luck": "lak", "lead": "lid", "messages": "mesejiz", "alaikum": "alaikum", "assalam": "asalam", "com": "kam", "dot": "dat"}
 
 
 def read_wav(p):

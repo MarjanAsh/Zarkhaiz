@@ -42,14 +42,14 @@ CUES = {
     "greet":    "assalam salam alaikum hello hi khushamdeed welcome".split(),
     "you":      "aap aapke aapka aapki tum tumhara apna apne you your".split(),
     "self":     "main mein hum hamara hamari hamare i we our".split(),
-    "negation": "nahi nahin na mat never kabhi bilkulnahi no not".split(),
+    "negation": "nahi nahin na mat never kabhi bilkulnahi no not band".split(),   # band: "stop it" (ad 01)
     "contrast": "lekin magar but however halanke".split(),
     "question": "kya kyun kyon kaise kab kahan kaun kitna kitne why how what when where".split(),
-    "emphasis": "sirf waqai bilkul zaroor bohat bahut sab sabse hamesha must important zaroori hi wohi".split(),
+    "emphasis": "sirf waqai bilkul zaroor bohat bahut sab sabse hamesha must important zaroori hi wohi asal foran yahi".split(),
     "positive": "free behtareen zabardast kamyab kamyabi best asaan growth faida munafa".split(),
     "problem":  "kho nuqsan mushkil masla masle problem rukte ruk ghalat zaya barbad kam".split(),
     "cta":      "abhi karein kijiye kijiay whatsapp call message follow visit rabta click".split(),
-    "connect":  "jodte jorte milate ikattha".split(),
+    "connect":  "jodte jorte milate ikattha system".split(),
 }
 SELF_AMBIGUOUS = {"mein"}          # "mein" is mostly "in"; only "main" counts as "I"
 WORD2CONCEPT = {w: c for c, ws in CUES.items() for w in ws if w not in SELF_AMBIGUOUS}
@@ -121,7 +121,7 @@ def line_intent(text, concepts):
     return "explain"
 
 
-def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahore", "pakistan", "uae", "2018"), turns=False):
+def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahore", "pakistan", "uae", "2018", "restaurants", "real"), turns=False):
     """turns=False (v020, after the user's feedback "not symmetrical, shoulders and face break"): no body turns, he
     faces the camera for the whole reel. The 3/4 turn frames make the shoulders uneven and the talking head does not
     sit right on them. Set turns=True only with new turn artwork that carries its own talking head."""
