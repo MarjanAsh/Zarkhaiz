@@ -33,3 +33,9 @@ in a table; (4) treat the rest pose as the most-seen pose and make it relaxed (b
 **Principle:** Interpolators fill small gaps; they do not invent motion. Measure the gap before trusting the
 in-between, and enforce timing rules on the generated schedule, where a violation is visible, rather than only in
 the parameters that produce it.
+
+**Follow-up (2026-11-26):** quarter-way keys removed the melt for closed-hand moves (fist, thumbs, counting), but not
+where an open hand turns over (palm down -> palm to camera): the interpolator still melts the fingers for 4-6 frames
+even when the step is small. So step size is not the whole cause: interpolators fail on hands that rotate or change
+shape. The fix to test is to treat the hand as a rigid piece (position, angle, cross-fade of two hand shapes) over
+the interpolated sleeve.
