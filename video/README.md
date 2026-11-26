@@ -6,7 +6,7 @@ and a Google AI Studio (Gemini TTS) voiceover in Urdu.
 
 360 + lip-sync test clip (2026-11-19): `turn360/out/zarkhaiz_turn360_v002.mp4`, see `turn360/README.md`.
 
-Final files: `outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz: the acting system from `mascot/anim`: lip-sync generated from the voice, 29 expressions, 17 new arm gestures, head and body acting, all chosen by `mascot/anim/tools/director.py` from the script and the real word times; QA: `outputdm-reel/qa/v020/qa.md`). v019 to v012 kept.
+Final files: `outputdm-reel/out/outputdm_founder_reel_v021.mp4` (1080x1920, 60 fps, 48 kHz: the v020 acting system with natural arms: relaxed stance, quarter-way keys, calm-arms director, spring timing, rigid hands; QA: `outputdm-reel/qa/v021/qa.md`). v020 to v012 kept.
 
 ## Script (Roman Urdu captions; spoken from Urdu script for natural pronunciation)
 
@@ -494,3 +494,8 @@ are possible later; godly.website redirects to a host that does not resolve; rep
   the middle frame of a fast turn is a little soft. Test clip: three 6.4 s sections (2.6-9.0, 14.4-20.8, 30.4-36.8),
   no single-frame brightness jumps.
 - Next (after the user's yes): full render at 60 fps, QA (video-export-qa checks, blink check), v021 files.
+
+### v021 rendered (Nov 26, the user said "Han" to the test clip)
+`out/outputdm_founder_reel_v021.mp4`: 60 fps, 2325 frames, -14.2 LUFS, -1.4 dBFS true peak; QA in `qa/v021/qa.md`
+(no blinks, no single-frame jumps, no black or frozen frames). Render: events.mjs, mix.py, `video.mjs --fps 60
+--workers 4 --out out/video_v021.mp4` (7 min), mux as for v020. Open: watching it for motion and lip-sync.

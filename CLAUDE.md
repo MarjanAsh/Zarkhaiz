@@ -19,10 +19,12 @@ and `mascot/README.md` (the character images).
 
 ## Where the work is
 - Branch: `ccr-e371ce1b-168zzm`. On 2026-11-24 the v020 branch `claude/vibrant-shannon-i2w0rk` was merged into it, so all work (v020 and the 360 turn) is here. Continue on it unless the user names another branch.
-- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v020.mp4` (1080x1920, 60 fps, 48 kHz): the acting
+- Current reel: `video/outputdm-reel/out/outputdm_founder_reel_v021.mp4` (v021, Nov 26: natural arms: relaxed stance,
+  quarter-way keys, calm-arms pass in director.py, spring timing, rigid hands by `mascot/anim/tools/fix_hands.py`;
+  read `mascot/anim/README.md`, v021; rebuild order gen_keys -> build_anim -> fix_hands -> copy to the reel). Built on v020 (1080x1920, 60 fps, 48 kHz): the acting
   system (read `mascot/anim/README.md`, section v020, and `mascot/anim/manifest.json`): lip-sync generated from the
   voice, 29 expression presets, 22 arm poses, calm head acting, all chosen by `mascot/anim/tools/director.py` from
-  the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v020/qa.md`. v019 to v012 kept.
+  the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v021/qa.md`. v020 to v012 kept.
 - 360 + lip-sync test clip (2026-11-19): `video/turn360/` (HyperFrames project, 5.3 s, 1080x1920, 60 fps), character
   from `mascot/turn/` (read its README: library angles + FILM turnaround, voice-driven mouth shapes, limits). The user's
   reference reels were Seedance 2.5 (Dreamina / ArtCraft) and Gemini (Veo) videos, not Claude; a ready Dreamina prompt is
