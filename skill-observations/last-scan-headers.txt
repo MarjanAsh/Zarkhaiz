@@ -55,3 +55,21 @@ reference: mascot/anim/README.md
 commands_verified: none
 next_actor: review
 ---
+# 0004-interpolation-morphs-distant-arm-keys.md
+id: 4
+title: "Frame interpolation between distant arm keys morphs the hand; the director also broke the project's own minimum-hold rule"
+status: open
+type: open-source
+skill: []
+proposes_skill: [character-animation-from-stills]
+target_file: []
+siblings_checked: "none: no skill family registry; the proposed skill is the same candidate as observation 0003"
+area: "arm motion from image keys + rule-based gesture scheduling"
+date: 2026-11-24
+session_context: "user said the arms in reel v020 still look unnatural; frames of the v020 render and of the arm clips were inspected (mascot/anim, video/outputdm-reel/acting.json)"
+parked_until:
+resolved:
+resolution:
+reference: "mascot/anim/README.md (v020 Limits); video/outputdm-reel/acting.json"
+commands_verified: none
+---
