@@ -524,3 +524,8 @@ Project: `video/outputdm-ad01/` (read its `make.sh`; copy and numbers in `AD_COP
   WhatsApp CTA). A red "AGENCY OWNER KA SACH" label is on screen from frame 0 (thumbnail).
 - Research: the Meta Ad Library search tool was not offered in this session, so the style follows the reference
   reels already studied (top of this file) and common short-form ad structure; no other creator's material is used.
+
+### Ad 01 rendered (Nov 26)
+`outputdm-ad01/out/outputdm_ad01_v001.mp4`: 47.3 s, 1080x1920, 60 fps, -14.4 LUFS; QA in `outputdm-ad01/qa/qa.md`
+(no blinks, no jumps, no black or frozen frames). Ad texts in `outputdm-ad01/AD_COPY.md`. Head frames: 1382, about
+80 min on 4 CPU cores. Open: watching and listening (lip-sync, the line-4 splice); the user publishes the ad.
