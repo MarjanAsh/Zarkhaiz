@@ -470,3 +470,16 @@ rejects any image whose reply does not show the base image's sha256. Once the ke
 `python3 mascot/anim/tools/build_anim.py`, copy `mascot/anim/out` to `video/outputdm-reel/assets/anim` as in Rebuild,
 run `director.py`, render, QA. From the links: haikei-style SVG backgrounds and a realtimecolors check of the palette
 are possible later; godly.website redirects to a host that does not resolve; replit adds nothing to this pipeline.
+
+### v021 status (Nov 26): keys in, clips built, test stills
+- The 10 keys came through the bridge (session "v021 arm keys through the ChatGPT bridge"; notes and numbers in
+  `mascot/anim/raw/v021_keys_note.md`, sheet `v021_keys_sheet.jpg`). The bridge works for image edits once the
+  references are downloaded by Codex (the first probe failed with no DNS in Codex's sandbox; the VPS side fixed it).
+- `build_anim.py` rebuilt the clips (320 transitions, 38 min on CPU); `out/L`, `out/R`, `anim.json` copied to
+  `video/outputdm-reel/assets/anim`. The director now parks both arms in the relaxed stance; face, head, gaze and
+  blinks are still identical to v020, so the v020 head frames are reused.
+- Test stills: the relaxed stance reads natural; moves with a closed hand (count, thumbs-up) are clean now.
+  Still wrong: when the OPEN hand turns over (wave; probably present, explain and shrug too), FILM melts the hand for
+  4-6 frames (about 0.1 s). Next fix proposed to the user: interpolate the hand as a rigid piece (position, angle,
+  cross-fade of the two hand shapes) on top of FILM's sleeve, instead of letting FILM morph the fingers.
+- Not rendered yet (plan-first rule): waiting for the user's go-ahead.

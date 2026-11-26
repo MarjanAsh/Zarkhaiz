@@ -423,24 +423,29 @@
  "arms": {
   "L": [
    [
-    3.797,
-    "wave",
-    0.984
+    -1.0,
+    "relaxed",
+    0.6
    ],
    [
-    7.646,
+    3.812,
+    "wave",
+    0.97
+   ],
+   [
+    7.511,
     "present",
-    0.739
+    0.889
    ],
    [
     11.263,
-    "rest",
-    0.786
+    "relaxed",
+    0.946
    ],
    [
-    14.89,
+    14.872,
     "count3",
-    0.78
+    0.8
    ],
    [
     18.006,
@@ -488,36 +493,46 @@
     0.8
    ],
    [
-    29.059,
-    "point_camera",
-    0.716
+    28.173,
+    "relaxed",
+    1.1
    ],
    [
-    33.974,
+    30.99,
+    "thumbs_up",
+    0.8
+   ],
+   [
+    33.964,
     "present",
-    0.889
+    0.9
    ],
    [
-    36.363,
-    "rest",
-    0.786
+    36.364,
+    "relaxed",
+    0.946
    ]
   ],
   "R": [
    [
-    2.944,
-    "explain",
-    0.753
+    -1.0,
+    "relaxed",
+    0.6
    ],
    [
-    5.217,
+    2.812,
+    "explain",
+    0.9
+   ],
+   [
+    5.377,
     "present",
-    0.711
+    0.738
    ],
    [
     8.161,
-    "rest",
-    0.786
+    "relaxed",
+    0.946
    ],
    [
     27.693,
@@ -525,8 +540,8 @@
     0.7
    ],
    [
-    29.893,
-    "rest",
+    31.56,
+    "relaxed",
     0.786
    ]
   ]
@@ -865,8 +880,8 @@
    "t": 29.48,
    "concept": "you",
    "gesture": "point_you",
-   "arms": "L:point_camera",
-   "why": ""
+   "arms": "-",
+   "why": "point_camera would arrive 0.35 s late; explain would arrive 0.35 s late; no arm clip for this gesture is built"
   },
   {
    "line": "l07",
@@ -933,8 +948,15 @@
   }
  ],
  "arm_log": [
-  "L 2.94 explain: left out, wave follows at 3.80",
-  "L 30.99 thumbs_up: dropped, point_camera held only 1.21 s",
-  "R 27.69 chop -> explain"
+  "L 2.81 explain: left out, wave follows at 3.81",
+  "L 6.28 rest -> relaxed",
+  "L 11.26 rest -> relaxed",
+  "L 28.17 rest -> relaxed",
+  "L 32.64 point_camera: dropped, thumbs_up held only 0.85 s",
+  "L 36.36 rest -> relaxed",
+  "R 5.21 rest -> relaxed",
+  "R 8.16 rest -> relaxed",
+  "R 27.69 chop -> explain",
+  "R 31.56 rest -> relaxed"
  ]
 }
