@@ -13,9 +13,10 @@ const back = (x, s = 1.7) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x -
 const S = n => TL.scenes.find(s => s.name === n);
 const L = id => TL.lines.find(l => l.id === id);
 const norm = w => w.toLowerCase().replace(/[^a-z0-9-]/g, '');
-function W(id, needle, which = 't0') {
-  const w = TL.words.find(x => x.line === id && norm(x.w).startsWith(needle.toLowerCase()));
-  if (!w) throw new Error(`word ${needle} not in ${id}`);
+function W(id, needle, which = 't0', nth = 1) {
+  const ws = TL.words.filter(x => x.line === id && norm(x.w).startsWith(needle.toLowerCase()));
+  const w = ws[nth - 1];
+  if (!w) throw new Error(`word ${needle} (${nth}) not in ${id}`);
   return w[which];
 }
 
@@ -63,7 +64,7 @@ el('<div id="horizon"></div>');
 
 // ---------- header + progress ----------
 const SCN = ['hook', 'gap', 'solution', 'founder', 'fear', 'objection', 'lifestyle', 'authority', 'cta'];
-const SCN_LABEL = { hook: '01 · confession', gap: '02 · the real problem', solution: '03 · the fix', founder: '04 · who I am', fear: '05 · no big budget', objection: '06 · your doubt', lifestyle: '07 · imagine this', authority: '08 · trusted', cta: '09 · free review' };
+const SCN_LABEL = { hook: '01 · confession', gap: '02 · the missing link', solution: '03 · the fix', founder: '04 · who I am', fear: '05 · no stress', objection: '06 · your doubt', lifestyle: '07 · imagine this', authority: '08 · trusted', cta: '09 · free review' };
 const hdr = el('<div id="hdr"><div class="l lbl">OutputDM</div><div class="r"></div><div class="rule"></div></div>');
 const hdrR = hdr.querySelector('.r');
 const dots = el('<div id="dots"></div>');
@@ -195,64 +196,68 @@ const STAND = { right: 830, left: 240, centre: 540 };
 const STAGE = await (await fetch('staging.json')).json();
 const stand = (scene, t0, t1) => hero(scene, 1090, [[0, '', STAND[STAGE[scene] || 'right']]], t0 + .05, t1);
 // a word that de-blurs (the reveal of the curiosity gap)
-const blurs = [];
+const blurs = [], counters = [];
 function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); return n; }
 
-// 1 · hook: an agency owner telling you to stop paying for ads
+// 1 · hook: a marketer saying followers do not run a business
 {
   const { t0, t1 } = sc.hook;
-  heading('Main agency<br>chalata hoon...', 'phir bhi kehta hoon:', -.6, W('l01', 'phir') - .1, t1);   // on screen at frame 0
-  ghost('STOP', 620, t0 + .2, t1, 380, -1);
-  // the first frame is the thumbnail and the scroll-stopper: a confession label is on screen from frame 0
-  const conf = el('<div class="abs chip" style="background:var(--red);border-color:var(--red);color:#fff;font-size:32px;font-weight:800;letter-spacing:.08em">AGENCY OWNER KA SACH</div>', { left: '64px', top: '545px' });
+  heading('Main marketing<br>karta hoon...', 'lekin sach bataun?', -.6, W('l01', 'lekin') - .1, t1);   // on screen at frame 0
+  ghost('SACH', 620, t0 + .2, t1, 380, -1);
+  const conf = el('<div class="abs chip" style="background:var(--red);border-color:var(--red);color:#fff;font-size:32px;font-weight:800;letter-spacing:.08em">MARKETER KA SACH</div>', { left: '64px', top: '545px' });
   add(conf, -.6, t1, 'pop');
-  const big = el('<div class="abs" style="font-family:Playfair;font-weight:900;font-size:150px;line-height:.95;color:var(--cream);text-shadow:0 18px 60px rgba(0,0,0,.6)">ADS PE<br><span style="color:var(--gold)">PAISA</span></div>', { left: '56px', top: '660px' });
-  add(big, W('l01', 'ads') - .15, t1, 'pop', { sfx: 'thump' });
-  const strike = el('<div class="abs" style="height:22px;background:var(--red);border-radius:11px;box-shadow:0 8px 30px rgba(227,52,58,.5)"></div>', { left: '40px', top: '860px', width: '0px' });
-  strike._grow = null; strike._sweep = [W('l01', 'band') - .05, W('l01', 'band') + .3, 520];
-  add(strike, W('l01', 'band') - .1, t1, 'fade');
-  const stamp = el('<div class="abs"><div class="stamp">BAND KAREIN</div></div>', { left: '60px', top: '1030px' });
-  add(stamp, W('l01', 'band'), t1, 'pop', { sfx: 'thump' });
+  // followers count up, sales stay at zero
+  const c = el('<div class="abs card big" style="width:560px;padding:30px 34px"></div>', { left: '40px', top: '650px' });
+  el('<div class="lbl" style="font-size:28px">Followers</div>', {}, c);
+  const fol = el('<div style="font-family:Playfair;font-weight:900;font-size:120px;line-height:1.05;color:var(--gold)">0</div>', {}, c);
+  fol._count = [W('l01', 'followers') - .3, W('l01', 'business') + .2, 0, 48000];
+  counters.push(fol);
+  el('<div class="row" style="justify-content:space-between;margin-top:10px"><div class="lbl" style="font-size:28px;color:var(--red)">Sales</div><div style="font-family:Jost;font-weight:800;font-size:64px;color:var(--red)">0</div></div>', {}, c);
+  add(c, W('l01', 'followers') - .35, t1, 'pop', { sfx: 'pop' });
+  const stamp = el('<div class="abs"><div class="stamp">BUSINESS NAHI CHALTA</div></div>', { left: '30px', top: '1060px' });
+  stamp.firstElementChild.style.fontSize = '46px';
+  add(stamp, W('l01', 'nahi') - .05, t1, 'pop', { sfx: 'thump' });
   stand('hook', t0, t1);
 }
 
-// 2 · curiosity gap: the real problem is hidden (redacted until the solution scene)
+// 2 · curiosity gap: the missing link
 {
   const { t0, t1 } = sc.gap;
-  heading('Asal masla<br>ads nahi...', 'woh hai jo koi nahi batata', t0 + .05, W('l02', 'woh') - .1, t1);
+  heading('Jo sales laata hai...', 'woh pages pe hota hi nahi', t0 + .05, W('l02', 'woh') - .1, t1);
   ghost('???', 600, t0 + .1, t1, 420, 1);
-  const c = el('<div class="abs card big" style="width:560px;padding:34px 34px"></div>', { left: '40px', top: '620px' });
-  el('<div class="row" style="gap:18px;margin-bottom:22px"><div class="lock">&#128274;</div><div class="lbl" style="font-size:30px">Asal masla</div></div>', {}, c);
-  ['86%', '64%', '74%'].forEach(wd => el(`<div class="redact" style="width:${wd}"></div>`, {}, c));
-  add(c, W('l02', 'asal') - .15, t1, 'pop', { sfx: 'pop' });
-  const nb = el('<div class="abs chip bigchip" style="border-color:rgba(227,52,58,.6)">koi agency nahi batati</div>', { left: '60px', top: '1040px' });
-  add(nb, W('l02', 'agency') - .1, t1, 'shake', { sfx: 'thump' });
+  const row = el('<div class="abs row" style="gap:16px"></div>', { left: '40px', top: '660px' });
+  const box = (txt, gold) => el(`<div class="card big" style="padding:28px 26px;width:180px;text-align:center"><div class="t1" style="font-size:40px;${gold ? 'color:var(--gold)' : ''}">${txt}</div></div>`, {}, row);
+  box('Post'); const mid = box('?', true); box('Sale');
+  mid.style.borderStyle = 'dashed'; mid.style.borderColor = 'rgba(246,181,58,.8)';
+  mid.firstElementChild.style.fontSize = '80px';
+  add(row, W('l02', 'jo') - .15, t1, 'pop', { sfx: 'pop' });
+  const miss = el('<div class="abs chip bigchip" style="border-color:rgba(227,52,58,.6)">missing link</div>', { left: '150px', top: '900px' });
+  add(miss, W('l02', 'woh') - .1, t1, 'shake', { sfx: 'thump' });
   stand('gap', t0, t1);
 }
 
-// 3 · simple solution reveal: the system before the ads
+// 3 · simple solution reveal: one straight path under every post
 {
   const { t0, t1 } = sc.solution;
-  heading('Pehle system,', 'phir ads', t0 + .05, W('l03', 'phir') - .1, t1);
-  ghost('SYSTEM', 620, t0 + .1, t1, 300, -1);
-  const steps = [['WhatsApp', 'foran jawab', 'whatsapp'], ['Har lead', 'ka follow-up', 'follow-up'], ['Phir ads', 'har rupaya kaam kare', 'phir']];
+  heading('Har post ke saath', 'ek seedha raasta', t0 + .05, W('l03', 'ek') - .1, t1);
+  ghost('PATH', 620, t0 + .1, t1, 340, -1);
+  const steps = [['1', 'Post dekhi', W('l03', 'post', 't0', 2)], ['2', 'WhatsApp kiya', W('l03', 'whatsapp')], ['3', 'Order ho gaya', W('l03', 'order')]];
   const list = el('<div class="abs card big" style="padding:14px 32px;width:600px"></div>', { left: '440px', top: '520px' });
-  add(list, W('l03', 'system') - .1, t1, 'pop', { d: .5, sfx: 'pop' });
+  add(list, W('l03', 'seedha') - .1, t1, 'pop', { d: .5, sfx: 'pop' });
   const wire = el('<div style="position:absolute;left:65px;top:80px;width:5px;height:0;background:var(--gold);border-radius:3px"></div>', {}, list);
-  wire._wire = [W('l03', 'whatsapp'), W('l03', 'phir') + .1, 330]; wires.push(wire);
-  steps.forEach(([a, b, k], i) => {
-    const tt = W('l03', k);
+  wire._wire = [steps[0][2], steps[2][2] + .1, 330]; wires.push(wire);
+  steps.forEach(([n, a, tt]) => {
     const r = el('<div class="row" style="padding:18px 0;position:relative"></div>', {}, list);
     check(r, tt + .05);
-    const tx = el(`<div><div class="t1" style="font-size:50px">${a}</div><div class="t2" style="font-size:31px">${b}</div></div>`, {}, r);
+    const tx = el(`<div><div class="t1" style="font-size:52px">${a}</div></div>`, {}, r);
     unblur(tx, tt - .25, tt + .15, 16);
   });
-  const key = el('<div class="abs chip bigchip" style="background:var(--gold);color:#1a120b;border-color:var(--gold)">Simple system</div>', { left: '470px', top: '1120px' });
-  add(key, W('l03', 'phir') + .2, t1, 'pop', { sfx: 'ding' });
+  const key = el('<div class="abs chip bigchip" style="background:var(--gold);color:#1a120b;border-color:var(--gold);font-size:38px">Post → WhatsApp → Order</div>', { left: '440px', top: '1080px' });
+  add(key, W('l03', 'order') + .25, t1, 'pop', { sfx: 'ding' });
   stand('solution', t0, t1);
 }
 
-// 4 · credibility anchor: who is talking
+// 4 · credibility anchor
 {
   const { t0, t1 } = sc.founder;
   heading('Main Zarkhaiz', 'Founder, OutputDM', t0 + .05, W('l04', 'outputdm') - .1, t1);
@@ -268,87 +273,84 @@ function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); r
   stand('founder', t0, t1);
 }
 
-// 5 · fear removal: no big budget, nothing technical
+// 5 · fear removal: no daily posting stress, no need to be on camera
 {
   const { t0, t1 } = sc.fear;
-  heading('Darne ki', 'koi baat nahi', t0 + .05, W('l05', 'na', 't0') + .2, t1);
+  heading('Tension', 'aap ki nahi, hamari', t0 + .05, W('l05', 'camera') - .1, t1);
   ghost('EASY', 640, t0 + .1, t1, 380, -1);
-  const fears = [['Bada budget', W('l05', 'bada')], ['Technical cheezein', W('l05', 'technical')]];
+  const fears = [['Roz post ki tension', W('l05', 'roz')], ['Camera ke saamne', W('l05', 'camera')]];
   fears.forEach(([a, tt], i) => {
     const c = el('<div class="abs card big row" style="width:600px"></div>', { left: '30px', top: px(600 + i * 178) });
     el(`<div class="chk" style="border-color:transparent;background:var(--red)">${CROSS}</div>`, {}, c);
     const tx = el(`<div class="t1" style="position:relative;white-space:nowrap">${a}</div>`, {}, c);
-    const st = el('<div class="strike"></div>', { width: '0px' }, tx); st._strike = [tt + .25, tx]; tx._dim = tt + .3;
+    const st = el('<div class="strike"></div>', { width: '0px' }, tx); st._strike = [tt + .35, tx]; tx._dim = tt + .4;
     add(c, tt - .2, t1, 'right', { sfx: 'thump' });
   });
   const ok = el('<div class="abs card big row" style="width:610px;border-color:rgba(246,181,58,.8)"></div>', { left: '30px', top: '980px' });
-  check(ok, W('l05', 'sambhaalte') + .05);
-  el('<div><div class="t1" style="white-space:nowrap">Hum sambhaalte hain</div><div class="t2">aap sirf business chalayen</div></div>', {}, ok);
-  add(ok, W('l05', 'hum') - .15, t1, 'pop', { sfx: 'ding' });
+  check(ok, W('l05', 'banate') + .05);
+  el('<div><div class="t1" style="white-space:nowrap;font-size:40px">Content hum banate hain</div><div class="t2">posts, reels, design</div></div>', {}, ok);
+  add(ok, W('l05', 'content') - .15, t1, 'pop', { sfx: 'ding' });
   stand('fear', t0, t1);
 }
 
-// 6 · last objection killed: "it won't work for my business"
+// 6 · last objection killed: "my business is too small for this"
 {
   const { t0, t1 } = sc.objection;
-  heading('"Mere business mein', 'nahi chalega?"', t0 + .05, W('l06', 'nahi') - .1, t1);
-  ghost('PROOF', 620, t0 + .1, t1, 340, 1);
-  const bub = el('<div class="abs"><div class="bubble">Mere business mein<br>yeh nahi chalega...</div></div>', { left: '470px', top: '540px' });
-  add(bub, W('l06', 'lagta') - .1, W('l06', 'free') + .1, 'pop', { sfx: 'pop' });
+  heading('"Chhota business hai,', 'itna sab kis liye?"', t0 + .05, W('l06', 'itna') - .1, t1);
+  ghost('START', 620, t0 + .1, t1, 340, 1);
+  const bub = el('<div class="abs"><div class="bubble">Chhota business hai...<br>itna sab kis liye?</div></div>', { left: '470px', top: '540px' });
+  add(bub, W('l06', 'sochte') - .1, W('l06', 'free') + .1, 'pop', { sfx: 'pop' });
   const x = el(`<div class="abs chk" style="width:110px;height:110px;border-color:transparent;background:var(--red)">${CROSS}</div>`, { left: '930px', top: '520px' });
   add(x, W('l06', 'free') - .1, W('l06', 'free') + .3, 'pop', { sfx: 'thump' });
   const c = el('<div class="abs card big" style="width:600px;padding:32px 34px;border-color:rgba(246,181,58,.8)"></div>', { left: '440px', top: '560px' });
   el('<div class="row" style="gap:16px;margin-bottom:16px"><div class="lock" style="background:var(--gold);color:#1a120b">&#128269;</div><div class="lbl" style="font-size:30px">Free review</div></div>', {}, c);
-  el('<div class="t1" style="font-size:46px">Pehle hum dikhayenge</div><div class="t2" style="font-size:31px;margin-top:8px">customers kahan kho rahe hain</div>', {}, c);
-  ['Visibility', 'Conversion', 'Follow-up'].forEach((m, i) => {
-    const r = el(`<div class="row" style="margin-top:14px;gap:14px"><span class="pin" style="background:var(--red);box-shadow:0 0 0 8px rgba(227,52,58,.18)"></span><div class="t2" style="font-size:32px;color:var(--cream)">${m}</div></div>`, {}, c);
+  el('<div class="t1" style="font-size:46px">Kahan se shuru karein</div><div class="t2" style="font-size:31px;margin-top:8px">aap ke business ke hisaab se</div>', {}, c);
+  ['Pehla qadam', 'Doosra qadam', 'Phir barhayein'].forEach((m, i) => {
+    el(`<div class="row" style="margin-top:14px;gap:14px"><span class="num" style="font-size:40px;width:44px">${i + 1}</span><div class="t2" style="font-size:32px;color:var(--cream)">${m}</div></div>`, {}, c);
   });
   add(c, W('l06', 'free') + .25, t1, 'pop', { sfx: 'ding' });
   stand('objection', t0, t1);
 }
 
-// 7 · lifestyle normalisation: a morning with new customers already waiting
+// 7 · lifestyle normalisation: a post in the morning, orders by the evening
 {
   const { t0, t1 } = sc.lifestyle;
-  heading('Socho...', 'subah uthein aur messages aaye hon', t0 + .05, W('l07', 'subah') - .1, t1);
-  ghost('7:30', 600, t0 + .1, t1, 400, -1);
-  const ph = el('<div class="abs phone"><div class="pclock">7:30</div><div class="pdate">Monday</div></div>', { left: '70px', top: '560px' });
+  heading('Socho...', 'subah post, shaam tak orders', t0 + .05, W('l07', 'shaam') - .1, t1);
+  ghost('6:45', 600, t0 + .1, t1, 400, -1);
+  const ph = el('<div class="abs phone" style="background:linear-gradient(#3a2216,#1a110c)"><div class="pclock">6:45</div><div class="pdate">shaam</div></div>', { left: '70px', top: '560px' });
   add(ph, W('l07', 'subah') - .1, t1, 'up', { sfx: 'whoosh' });
-  const msgs = ['Price kya hai?', 'Order karna hai', 'Kal visit kar sakte hain?', 'Mujhe bhi detail bhejein'];
-  const tm = W('l07', 'messages');
+  const msgs = ['Order: 2 pack chahiye', 'Delivery kab tak?', 'Mera order bhi likh lein', 'Price list bhej dein'];
+  const tm = W('l07', 'orders');
   msgs.forEach((m, i) => {
-    const n = el(`<div class="note"><div class="wa" style="width:58px;height:58px">${WA.replace(/50/g, '34')}</div><div><div class="nt">Naya customer</div><div class="nb">${m}</div></div></div>`, {}, ph);
+    const n = el(`<div class="note"><div class="wa" style="width:58px;height:58px">${WA.replace(/50/g, '34')}</div><div><div class="nt">Naya order</div><div class="nb">${m}</div></div></div>`, {}, ph);
     n.style.top = px(300 + i * 124);
-    add(n, tm - .35 + i * .22, t1, 'up', { sfx: i < 2 ? 'pop' : null });
+    add(n, tm - .45 + i * .22, t1, 'up', { sfx: i < 2 ? 'pop' : null });
   });
-  const sys = el('<div class="abs" style="font-family:Playfair;font-weight:900;font-size:84px;line-height:1;width:560px;text-align:center"><span style="color:var(--muted);font-size:52px">luck nahi,</span><br><span style="color:var(--gold)">SYSTEM</span></div>', { left: '40px', top: '1190px' });
-  add(sys, W('l07', 'system') - .15, t1, 'pop', { sfx: 'ding' });
+  const nm = el('<div class="abs" style="font-family:Playfair;font-weight:900;font-size:80px;line-height:1;width:560px;text-align:center"><span style="color:var(--muted);font-size:50px">yahi hona chahiye</span><br><span style="color:var(--gold)">NORMAL</span></div>', { left: '40px', top: '1190px' });
+  add(nm, W('l07', 'normal') - .15, t1, 'pop', { sfx: 'ding' });
   stand('lifestyle', t0, t1);
 }
 
-// 8 · authority validation: businesses across industries choose OutputDM
+// 8 · authority validation: industries, two countries, the brand wall
 {
   const { t0, t1 } = sc.authority;
-  heading('Restaurants se', 'real estate tak', t0 + .05, W('l08', 'real') - .1, t1);
+  heading('Har industry', 'Pakistan + UAE', t0 + .05, W('l08', 'pakistan') - .1, t1);
   ghost('TRUST', 600, t0 + .1, t1, 360, 1);
-  const tags = [['Restaurants', W('l08', 'restaurants')], ['Real estate', W('l08', 'real')]];
-  tags.forEach(([p, tt], i) => {
-    const c = el(`<div class="abs chip bigchip"><span class="pin"></span>${p}</div>`, { left: px(60 + i * 40), top: px(560 + i * 130) });
-    add(c, tt - .15, t1, 'pop', { sfx: 'pop' });
+  const tags = [['Restaurants', 'restaurants'], ['Real estate', 'real'], ['Health', 'health'], ['Travel', 'travel']];
+  tags.forEach(([p, k], i) => {
+    const c = el(`<div class="abs chip bigchip"><span class="pin"></span>${p}</div>`, { left: px(50 + (i % 2) * 370), top: px(560 + Math.floor(i / 2) * 120) });
+    add(c, W('l08', k) - .15, t1, 'pop', { sfx: 'pop' });
   });
-  const pl = el('<div class="abs row" style="gap:18px"></div>', { left: '60px', top: '830px' });
-  ['Pakistan', 'UAE'].forEach(p => el(`<span class="chip" style="font-size:40px"><span class="pin"></span>${p}</span>`, {}, pl));
-  add(pl, W('l08', 'pakistan') - .15, t1, 'up', { sfx: 'pop' });
   const brands = ['Dajaj Broast', 'Nabi Cafe', 'Sadaqat Properties', 'Cheesy Chicken', 'Tashkeel Travels', 'Misbah Noor Medical Complex', 'Dabbay Wala', 'Dua Pixels', 'ABS Developers', 'Sami Motors', 'Guftagu Restaurant', 'Elite Health Cart'];
   const tb = W('l08', 'businesses') - .2;
   [0, 1, 2].forEach(r => {
-    const m = el('<div class="marq"></div>', { top: px(980 + r * 104) });
+    const m = el('<div class="marq"></div>', { top: px(860 + r * 104) });
     const list = brands.slice(r * 4).concat(brands.slice(0, r * 4));
     m.innerHTML = list.concat(list).map(b => `<span class="chip" style="font-size:40px;padding:16px 32px;margin-right:18px;background:rgba(64,50,38,.95);border-color:rgba(246,181,58,.45);color:#fff8ee">${b}</span>`).join('');
     m._marq = { dir: r % 2 ? 1 : -1, speed: 80 };
     add(m, tb + r * .12, t1, 'up');
   });
-  const ch = el('<div class="abs chip bigchip" style="background:var(--gold);color:#1a120b;border-color:var(--gold)">OutputDM chunte hain</div>', { left: '60px', top: '1300px' });
+  const ch = el('<div class="abs chip bigchip" style="background:var(--gold);color:#1a120b;border-color:var(--gold)">OutputDM chunte hain</div>', { left: '60px', top: '1200px' });
   add(ch, W('l08', 'chunte') - .15, t1, 'pop', { sfx: 'ding' });
   stand('authority', t0, t1);
 }
@@ -574,6 +576,7 @@ window.render = async t => {
     if (n._marks) drawHero(n, t);
   }
   for (const b of bars) { const [a, e, f, to] = b._bar; b.firstElementChild.style.width = (100 * (f + (to - f) * eio(seg(t, a, e)))) + '%'; }
+  for (const n of counters) { const [a, b, f, to] = n._count, p = eio(seg(t, a, b)); n.textContent = Math.round(f + (to - f) * p).toLocaleString('en-US'); }
   for (const n of blurs) { const [a, b, f] = n._unblur, p = eio(seg(t, a, b)); n.style.filter = p < 1 ? `blur(${(f * (1 - p)).toFixed(2)}px)` : 'none'; n.style.opacity = .35 + .65 * p; }
   for (const w of wires) { const [a, e, h] = w._wire; w.style.height = px(h * seg(t, a, e)); }
   for (const c of checks) {
