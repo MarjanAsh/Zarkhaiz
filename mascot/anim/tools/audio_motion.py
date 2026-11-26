@@ -11,7 +11,7 @@ Usage: python3 audio_motion.py [--seed 7] [--cfg 2.8]
 Output: out/speech/motion.npz  exp (N,21,3) expression offsets relative to the resting face, pitch/yaw/roll (N,)
         relative to rest, fps, speaking (N,) 0..1 (voice loudness, for gating)
 Install: git clone https://github.com/jdh-algo/JoyVASA /home/user/JoyVASA; weights in its pretrained_weights/
-  (JoyVASA/motion_generator/motion_generator_hubert_chinese.pt, JoyVASA/motion_template/motion_template.pkl from
+  (JoyVASA/motion_generator/motion_generator_hubert_chinese.pt, JoyVASA/motion_template/motion_template.pkl: in the HF repo jdh-algo/JoyVASA they sit at motion_generator/..., motion_template/... (no JoyVASA/ prefix); from
   huggingface.co/jdh-algo/JoyVASA; "TencentGameMate:chinese-hubert-base"/ from
   huggingface.co/TencentGameMate/chinese-hubert-base); pip install transformers einops.
 """

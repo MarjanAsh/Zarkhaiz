@@ -203,12 +203,15 @@ function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); r
   const { t0, t1 } = sc.hook;
   heading('Main agency<br>chalata hoon...', 'phir bhi kehta hoon:', -.6, W('l01', 'phir') - .1, t1);   // on screen at frame 0
   ghost('STOP', 620, t0 + .2, t1, 380, -1);
-  const big = el('<div class="abs" style="font-family:Playfair;font-weight:900;font-size:150px;line-height:.95;color:var(--cream);text-shadow:0 18px 60px rgba(0,0,0,.6)">ADS PE<br><span style="color:var(--gold)">PAISA</span></div>', { left: '56px', top: '640px' });
+  // the first frame is the thumbnail and the scroll-stopper: a confession label is on screen from frame 0
+  const conf = el('<div class="abs chip" style="background:var(--red);border-color:var(--red);color:#fff;font-size:32px;font-weight:800;letter-spacing:.08em">AGENCY OWNER KA SACH</div>', { left: '64px', top: '545px' });
+  add(conf, -.6, t1, 'pop');
+  const big = el('<div class="abs" style="font-family:Playfair;font-weight:900;font-size:150px;line-height:.95;color:var(--cream);text-shadow:0 18px 60px rgba(0,0,0,.6)">ADS PE<br><span style="color:var(--gold)">PAISA</span></div>', { left: '56px', top: '660px' });
   add(big, W('l01', 'ads') - .15, t1, 'pop', { sfx: 'thump' });
-  const strike = el('<div class="abs" style="height:22px;background:var(--red);border-radius:11px;box-shadow:0 8px 30px rgba(227,52,58,.5)"></div>', { left: '40px', top: '840px', width: '0px' });
+  const strike = el('<div class="abs" style="height:22px;background:var(--red);border-radius:11px;box-shadow:0 8px 30px rgba(227,52,58,.5)"></div>', { left: '40px', top: '860px', width: '0px' });
   strike._grow = null; strike._sweep = [W('l01', 'band') - .05, W('l01', 'band') + .3, 520];
   add(strike, W('l01', 'band') - .1, t1, 'fade');
-  const stamp = el('<div class="abs"><div class="stamp">BAND KAREIN</div></div>', { left: '60px', top: '1010px' });
+  const stamp = el('<div class="abs"><div class="stamp">BAND KAREIN</div></div>', { left: '60px', top: '1030px' });
   add(stamp, W('l01', 'band'), t1, 'pop', { sfx: 'thump' });
   stand('hook', t0, t1);
 }
@@ -272,13 +275,13 @@ function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); r
   ghost('EASY', 640, t0 + .1, t1, 380, -1);
   const fears = [['Bada budget', W('l05', 'bada')], ['Technical cheezein', W('l05', 'technical')]];
   fears.forEach(([a, tt], i) => {
-    const c = el('<div class="abs card big row" style="width:640px"></div>', { left: '40px', top: px(600 + i * 178) });
+    const c = el('<div class="abs card big row" style="width:600px"></div>', { left: '30px', top: px(600 + i * 178) });
     el(`<div class="chk" style="border-color:transparent;background:var(--red)">${CROSS}</div>`, {}, c);
     const tx = el(`<div class="t1" style="position:relative;white-space:nowrap">${a}</div>`, {}, c);
     const st = el('<div class="strike"></div>', { width: '0px' }, tx); st._strike = [tt + .25, tx]; tx._dim = tt + .3;
     add(c, tt - .2, t1, 'right', { sfx: 'thump' });
   });
-  const ok = el('<div class="abs card big row" style="width:640px;border-color:rgba(246,181,58,.8)"></div>', { left: '40px', top: '980px' });
+  const ok = el('<div class="abs card big row" style="width:610px;border-color:rgba(246,181,58,.8)"></div>', { left: '30px', top: '980px' });
   check(ok, W('l05', 'sambhaalte') + .05);
   el('<div><div class="t1" style="white-space:nowrap">Hum sambhaalte hain</div><div class="t2">aap sirf business chalayen</div></div>', {}, ok);
   add(ok, W('l05', 'hum') - .15, t1, 'pop', { sfx: 'ding' });

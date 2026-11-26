@@ -8,7 +8,7 @@ words at a time with the spoken word highlighted.
 """
 import json, os, re
 
-LEAD, GAP, SCENE_GAP, TAIL = 0.5, 0.22, 0.45, 2.8
+LEAD, GAP, SCENE_GAP, TAIL = 0.4, 0.16, 0.32, 2.6   # ad 01: tighter than the reel
 
 lines = json.load(open("lines.json"))
 dur = json.load(open("vo/dur.json"))

@@ -1,0 +1,90 @@
+l01   0.54 Main         self      self_nod        -                  
+l01   4.88 band         negation  head_no         -                  
+l01   5.09 karein.      cta       call_to_action  L:point_camera     
+l02   5.91 asal         emphasis  emphasis_chop   -                  too soon after the last stroke: face and head only
+l02   6.26 masla        problem   problem_face    -                  
+l02   6.96 nahi...      negation  head_no         -                  
+l02   8.67 nahi         negation  head_no         -                  
+l03   9.91 system       connect   bring_together  -                  arms left to 'karein:' (cta)
+l03  10.39 karein:      cta       call_to_action  L:point_camera     
+l03  11.07 WhatsApp     cta       point_you       -                  arms left to 'karein:' (cta)
+l03  11.64 foran        emphasis  emphasis_chop   -                  arms left to 'WhatsApp' (cta)
+l04  14.78 Main         self      self_nod        -                  
+l04  15.18 Zarkhaiz,    brand     brand_present   L:present          present would leave the frame here
+l04  15.88 OutputDM     brand     brand_present   -                  arms left to 'Zarkhaiz,' (brand)
+l04  17.25 2018         place     present_item    -                  arms left to 'yahi' (emphasis)
+l04  18.10 yahi         emphasis  emphasis_chop   R:chop             
+l05  19.42 Na           negation  head_no         -                  
+l05  20.86 na           negation  head_no         -                  
+l05  22.55 hum          self      self_nod        -                  
+l06  24.00 aap          you       point_you       L:point_camera     
+l06  24.64 nahi         negation  head_no         -                  
+l06  25.66 Free         positive  thumbs_good     L:thumbs_up        
+l06  26.33 hum          self      self_nod        -                  
+l06  27.83 kahan        question  question_shrug  L+R:explain        shrug would leave the frame here; used the next choice
+l06  28.06 kho          problem   problem_face    -                  
+l06  28.28 rahe         question  question_shrug  -                  arms left to 'kahan' (question)
+l07  34.06 nahi,        negation  head_no         -                  
+l07  34.75 system       connect   bring_together  L+R:explain        
+l08  35.77 Restaurants  place     present_item    -                  too soon after the last stroke: face and head only
+l08  36.36 real         place     present_item    -                  arms left to 'Restaurants' (place)
+l08  37.45 Pakistan     place     present_item    L:present          
+l08  38.16 UAE          place     present_item    -                  arms left to 'Pakistan' (place)
+l08  39.28 OutputDM     brand     brand_present   L:present          present would leave the frame here
+l09  40.64 Free         positive  thumbs_good     L:thumbs_up        
+l09  41.35 Growth       positive  present_item    -                  arms left to 'Free' (positive)
+l09  42.29 abhi         cta       call_to_action  L:point_camera     
+l09  42.59 WhatsApp     cta       point_you       -                  arms left to 'abhi' (cta)
+l09  42.94 karein.      cta       call_to_action  -                  arms left to 'abhi' (cta)
+l10  43.39 OutputDM     brand     brand_present   L:present          present would leave the frame here
+calm arms (v021):
+L 6.89 rest -> relaxed
+L 11.97 rest -> relaxed
+L 16.77 rest -> relaxed
+L 24.94 thumbs_up: dropped, point_camera held only 0.86 s
+L 30.12 rest -> relaxed
+L 41.57 point_camera: dropped, thumbs_up held only 0.85 s
+L 44.98 rest -> relaxed
+R 17.47 chop -> explain
+R 20.65 rest -> relaxed
+R 30.12 rest -> relaxed
+R 36.73 rest -> relaxed
+{
+ "arm moves": 22,
+ "arm gestures used": [
+  "explain",
+  "point_camera",
+  "present",
+  "relaxed",
+  "thumbs_up"
+ ],
+ "gesture ids used": [
+  "brand_present",
+  "bring_together",
+  "call_to_action",
+  "emphasis_chop",
+  "head_no",
+  "point_you",
+  "present_item",
+  "problem_face",
+  "question_shrug",
+  "self_nod",
+  "thumbs_good"
+ ],
+ "expressions used": [
+  "confident",
+  "excited",
+  "explaining",
+  "happy",
+  "proud",
+  "questioning",
+  "reassuring",
+  "serious",
+  "slight_smile",
+  "worried"
+ ],
+ "head events": 21,
+ "body events": 8,
+ "gaze events": 3,
+ "blinks": 13
+}

@@ -181,7 +181,7 @@ def direct(reel, anim_json=None, brands=("outputdm", "zarkhaiz"), places=("lahor
         # ---- level 2: cues ----
         cues = []
         commas = [i for i, w in enumerate(words) if w["w"].rstrip().endswith(",")]
-        is_list = ln["text"].count(",") >= 2
+        is_list = ln.get("list", ln["text"].count(",") >= 2)          # lines.json "list": false for a line with commas that is not a list
         for i, (tok, w) in enumerate(zip(toks, words)):
             c = None; n = None
             nx = toks[i + 1] if i + 1 < len(toks) else ""

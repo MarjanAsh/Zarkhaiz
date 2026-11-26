@@ -499,3 +499,28 @@ are possible later; godly.website redirects to a host that does not resolve; rep
 `out/outputdm_founder_reel_v021.mp4`: 60 fps, 2325 frames, -14.2 LUFS, -1.4 dBFS true peak; QA in `qa/v021/qa.md`
 (no blinks, no single-frame jumps, no black or frozen frames). Render: events.mjs, mix.py, `video.mjs --fps 60
 --workers 4 --out out/video_v021.mp4` (7 min), mux as for v020. Open: watching it for motion and lip-sync.
+
+## Ad 01 (Nov 26, in progress): viral ad, nine beats
+The user (Nov 26): make the next viral video, it will also run as a paid ad; the script must follow this sequence:
+confession + contradiction hook, curiosity gap trigger, simple solution reveal, credibility anchor, fear removal,
+last objection killed, lifestyle normalisation, authority validation, CTA. Same character, theme and logo, consistent.
+**User decision: "mere se na kuch poochna"**: for this video, do not ask; build it end to end (this replaces the
+plan-first wait for this request only).
+
+Project: `video/outputdm-ad01/` (read its `make.sh`; copy and numbers in `AD_COPY.md`).
+- Script `lines.json`: 10 lines, one or two per beat; only claims the reel already made (since 2018, Lahore, Pakistan
+  and UAE, the brand wall, the free review).
+- Voice: Gemini TTS Charon on the "AI Tools" environment (session "Ad 01 voiceover with Gemini TTS", notes in
+  `vo/raw/NOTES.md`). Line 4 came out as "kaam kar raha hoon"; the daily TTS quota was used up, so "kaam kar rahe hain"
+  was spliced in from the reel's own line 3 take (same voice, cut at the quietest point found by forced alignment,
+  level matched); the original take is `vo/raw/l04_tts_raha_hoon.wav`. `fix_vo.py` with SPEED=1.08 (ad pacing),
+  tighter gaps in `build_timeline.py`: 47.3 s.
+- Character: the same pipeline as the reel, pointed at this project with `REEL_DIR` and `ANIM_TAG=ad01`
+  (`align.py`, `audio_motion.py`, `build_face.py`; head frames in `mascot/anim/out/head_ad01`, never mixed with the
+  reel's). The director got the ad's cue words ("band" = stop, "asal", "foran", "system") and a per-line
+  `"list": false`. Arms: v021 (relaxed stance, calm arms, rigid hands).
+- Page: nine scenes, one per beat, big graphics (stamp "BAND KAREIN", redacted "asal masla", system checklist,
+  founder card, crossed fears, objection bubble -> free review card, phone with WhatsApp messages at 7:30, brand wall,
+  WhatsApp CTA). A red "AGENCY OWNER KA SACH" label is on screen from frame 0 (thumbnail).
+- Research: the Meta Ad Library search tool was not offered in this session, so the style follows the reference
+  reels already studied (top of this file) and common short-form ad structure; no other creator's material is used.
