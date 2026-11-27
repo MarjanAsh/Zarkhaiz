@@ -554,3 +554,7 @@ The user: "agla ad bhi isi tarah bana do" (and the VPS is connected for help if 
 `video/outputdm-ad03/`: same nine beats and pipeline (ANIM_TAG=ad03). New voice lines 1, 2, 3, 5, 6, 7 by
 gemini-3.1-flash-tts-preview, Charon (`vo/raw/NOTES.md`); lines 4, 8, 9, 10 reuse ad 02. Rendered
 `out/outputdm_ad03_v001.mp4`: 48.2 s, 60 fps, -13.8 LUFS, QA `qa/qa.md`. Copy `AD_COPY.md`. Open: watch and listen.
+- Ad 03 v002 (Nov 27): the user asked for a real-looking site in the browser card and a template in the phone. A real
+  company's site would put its brand in our ad, so a fictional Canadian business was designed instead
+  ("Maple Ridge Coffee Co.", Toronto, mapleridgecoffee.ca): `outputdm-ad03/assets/site/` (desktop.html, mobile.html and
+  their screenshots). Re-rendered `out/outputdm_ad03_v002.mp4` (2891 frames, no blinks).

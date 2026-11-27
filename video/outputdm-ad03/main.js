@@ -207,8 +207,8 @@ function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); r
   const conf = el('<div class="abs chip" style="background:var(--red);border-color:var(--red);color:#fff;font-size:32px;font-weight:800;letter-spacing:.08em">DEVELOPER KA SACH</div>', { left: '64px', top: '545px' });
   add(conf, -.6, t1, 'pop');
   const c = el('<div class="abs card big" style="width:560px;padding:22px 26px"></div>', { left: '40px', top: '650px' });
-  el('<div class="row" style="gap:10px;margin-bottom:16px"><span class="pin" style="background:#e3343a;box-shadow:none"></span><span class="pin" style="box-shadow:none"></span><span class="pin" style="background:#25d366;box-shadow:none"></span><div class="t2" style="font-size:26px;margin-left:12px">nayi-website.com</div></div>', {}, c);
-  el('<div style="height:150px;border-radius:16px;background:linear-gradient(135deg,rgba(246,181,58,.35),rgba(246,181,58,.08))"></div><div class="redact" style="width:80%;filter:none;opacity:.5"></div><div class="redact" style="width:55%;filter:none;opacity:.5"></div>', {}, c);
+  el('<div class="row" style="gap:10px;margin-bottom:16px"><span class="pin" style="background:#e3343a;box-shadow:none"></span><span class="pin" style="box-shadow:none"></span><span class="pin" style="background:#25d366;box-shadow:none"></span><div class="t2" style="font-size:26px;margin-left:12px">mapleridgecoffee.ca</div></div>', {}, c);
+  el('<img src="assets/site/site_desktop.png" style="width:100%;display:block;border-radius:14px">', {}, c);
   add(c, W('l01', 'websites') - .2, t1, 'pop', { sfx: 'pop' });
   const stamp = el('<div class="abs"><div class="stamp" style="font-size:52px">ABHI MAT BANWAYEIN</div></div>', { left: '30px', top: '1080px' });
   add(stamp, W('l01', 'mat') - .05, t1, 'pop', { sfx: 'thump' });
@@ -310,12 +310,12 @@ function unblur(n, a, b, from = 18) { n._unblur = [a, b, from]; blurs.push(n); r
   const { t0, t1 } = sc.lifestyle;
   heading('Socho...', 'raat ko site, subah tak order', t0 + .05, W('l07', 'subah') - .1, t1);
   ghost('11:40', 600, t0 + .1, t1, 400, -1);
-  const ph = el('<div class="abs phone" style="background:linear-gradient(#3a2216,#1a110c)"><div class="pclock">11:40</div><div class="pdate">raat</div></div>', { left: '70px', top: '560px' });
+  const ph = el('<div class="abs phone" style="background:#fbf7f1 url(assets/site/site_mobile.png) top/100% auto no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(rgba(20,14,10,.05) 0 30%,rgba(20,14,10,.72) 48%,rgba(20,14,10,.85))"></div></div>', { left: '70px', top: '560px' });
   add(ph, W('l07', 'raat') - .1, t1, 'up', { sfx: 'whoosh' });
   const msgs = ['Website se naya order', 'Booking confirm karein', 'Mujhe price bhej dein', 'Kal visit kar sakte hain?'];
   const tm = W('l07', 'order');
   msgs.forEach((m, i) => {
-    const n = el(`<div class="note"><div class="wa" style="width:58px;height:58px">${WA.replace(/50/g, '34')}</div><div><div class="nt">Website</div><div class="nb">${m}</div></div></div>`, {}, ph);
+    const n = el(`<div class="note" style="background:rgba(28,20,15,.96);border-color:rgba(246,181,58,.35)"><div class="wa" style="width:58px;height:58px">${WA.replace(/50/g, '34')}</div><div><div class="nt">Website</div><div class="nb">${m}</div></div></div>`, {}, ph);
     n.style.top = px(300 + i * 124);
     add(n, tm - .45 + i * .22, t1, 'up', { sfx: i < 2 ? 'pop' : null });
   });
