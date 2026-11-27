@@ -1,0 +1,12 @@
+[
+  {"id": "l01", "scene": "hook", "emotion": "confident", "energy": 0.8, "text": "Main websites banata hoon... phir bhi kehta hoon: nayi website mat banwayein.", "say": "میں ویب سائٹس بناتا ہوں... پھر بھی کہتا ہوں: نئی ویب سائٹ مت بنوائیں۔"},
+  {"id": "l02", "scene": "gap", "text": "Pehle yeh dekhein ke log aap ki website pe aa kar rukte kyun nahi.", "say": "پہلے یہ دیکھیں کہ لوگ آپ کی ویب سائٹ پہ آ کر رکتے کیوں نہیں۔"},
+  {"id": "l03", "scene": "solution", "text": "Teen cheezein: page jaldi khule, pehli line mein faida, aur WhatsApp ka button saamne.", "say": "تین چیزیں: پیج جلدی کھلے، پہلی لائن میں فائدہ، اور واٹس ایپ کا بٹن سامنے۔"},
+  {"id": "l04", "scene": "founder", "text": "Main Zarkhaiz, OutputDM ka founder. Hum 2018 se yahi kaam kar rahe hain.", "say": "میں زرخیز، آؤٹ پُٹ ڈی ایم کا فاؤنڈر۔ ہم دو ہزار اٹھارہ سے یہی کام کر رہے ہیں۔"},
+  {"id": "l05", "scene": "fear", "text": "Na lambi coding ki fikr, na mehnga redesign. Pehle chhoti tabdeeliyan.", "say": "نہ لمبی کوڈنگ کی فکر، نہ مہنگا ری ڈیزائن۔ پہلے چھوٹی تبدیلیاں۔"},
+  {"id": "l06", "scene": "objection", "intent": "question", "text": "Lagta hai aap ki website theek hai? Free review mein hum dikhayenge log kahan chhod kar jaate hain.", "say": "لگتا ہے آپ کی ویب سائٹ ٹھیک ہے؟ فری ریویو میں ہم دکھائیں گے لوگ کہاں چھوڑ کر جاتے ہیں۔"},
+  {"id": "l07", "scene": "lifestyle", "list": false, "text": "Socho, koi raat ko aap ki site khole aur subah tak order de chuka ho. Yahi normal hona chahiye.", "say": "سوچو، کوئی رات کو آپ کی سائٹ کھولے اور صبح تک آرڈر دے چکا ہو۔ یہی نارمل ہونا چاہیے۔"},
+  {"id": "l08", "scene": "authority", "list": false, "text": "Restaurants, real estate, health aur travel: Pakistan aur UAE ke businesses OutputDM chunte hain.", "say": "ریسٹورنٹس، ریئل اسٹیٹ، ہیلتھ اور ٹریول: پاکستان اور یو اے ای کے بزنسز آؤٹ پُٹ ڈی ایم چنتے ہیں۔"},
+  {"id": "l09", "scene": "cta", "intent": "cta", "text": "Free Digital Growth Review ke liye abhi WhatsApp karein.", "say": "فری ڈیجیٹل گروتھ ریویو کے لیے ابھی واٹس ایپ کریں۔"},
+  {"id": "l10", "scene": "cta", "intent": "cta", "text": "OutputDM dot com.", "say": "آؤٹ پُٹ ڈی ایم ڈاٹ کام۔"}
+]
