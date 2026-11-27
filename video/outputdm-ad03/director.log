@@ -1,0 +1,93 @@
+l01   0.60 Main         self      self_nod        -                  
+l01   4.44 mat          negation  head_no         -                  
+l02   6.79 aap          you       point_you       L:point_camera     
+l02   7.99 rukte        problem   problem_face    -                  
+l02   8.27 kyun         question  question_shrug  -                  shrug would leave the frame here; explain would arrive 1.17 s late; no arm clip for this gesture is built
+l02   8.42 nahi.        negation  head_no         -                  
+l03   9.03 Teen         number    count           R:count3           count3 would arrive 0.36 s late
+l03  10.68 khule,       list      count           L:count1           
+l03  11.24 pehli        number    count           L:count1           
+l03  11.98 faida,       list      count           L:count2           
+l03  12.81 WhatsApp     cta       call_to_action  L:point_camera     
+l04  14.70 Main         self      self_nod        -                  
+l04  15.02 Zarkhaiz,    brand     brand_present   L:present          present would leave the frame here
+l04  15.56 OutputDM     brand     brand_present   -                  arms left to 'Zarkhaiz,' (brand)
+l04  16.88 Hum          self      self_nod        -                  
+l04  17.25 2018         place     present_item    -                  present would arrive 0.77 s late; present would leave the frame here; no arm clip for this gesture is built
+l04  18.38 yahi         emphasis  emphasis_chop   R:chop             
+l05  19.70 Na           negation  head_no         -                  
+l05  21.36 na           negation  head_no         -                  
+l06  25.09 aap          you       point_you       L:point_camera     
+l06  26.50 Free         positive  thumbs_good     L:thumbs_up        
+l06  27.27 hum          self      self_nod        -                  
+l06  28.39 kahan        question  question_shrug  L+R:explain        shrug would leave the frame here; used the next choice
+l06  29.08 jaate        question  question_shrug  -                  arms left to 'kahan' (question)
+l07  30.95 aap          you       point_you       L:point_camera     
+l07  33.85 Yahi         emphasis  emphasis_chop   R:chop             
+l08  35.41 Restaurants, place     present_item    L:present          
+l08  36.10 real         place     present_item    -                  arms left to 'Restaurants,' (place)
+l08  38.21 Pakistan     place     present_item    L:present          
+l08  38.91 UAE          place     present_item    -                  arms left to 'Pakistan' (place)
+l08  40.08 OutputDM     brand     brand_present   L:present          present would leave the frame here
+l09  41.55 Free         positive  thumbs_good     L:thumbs_up        
+l09  42.27 Growth       positive  present_item    -                  arms left to 'Free' (positive)
+l09  43.20 abhi         cta       call_to_action  L:point_camera     
+l09  43.51 WhatsApp     cta       point_you       -                  arms left to 'abhi' (cta)
+l09  43.85 karein.      cta       call_to_action  -                  arms left to 'abhi' (cta)
+l10  44.31 OutputDM     brand     brand_present   L:present          present would leave the frame here
+calm arms (v021):
+L 11.49 count2: left out, point_camera follows at 12.13
+L 8.37 rest -> relaxed
+L 12.13 point_camera: dropped, count1 held only 1.38 s
+L 16.61 rest -> relaxed
+L 25.78 thumbs_up: dropped, point_camera held only 0.60 s
+L 32.53 rest -> relaxed
+L 42.48 point_camera: dropped, thumbs_up held only 0.85 s
+L 45.90 rest -> relaxed
+R 8.41 count3 -> present
+R 10.59 rest -> relaxed
+R 17.75 chop -> explain
+R 20.89 rest -> relaxed
+R 30.80 rest -> relaxed
+R 33.22 chop -> explain
+R 35.42 rest -> relaxed
+{
+ "arm moves": 23,
+ "arm gestures used": [
+  "count1",
+  "explain",
+  "point_camera",
+  "present",
+  "relaxed",
+  "thumbs_up"
+ ],
+ "gesture ids used": [
+  "brand_present",
+  "call_to_action",
+  "count",
+  "emphasis_chop",
+  "head_no",
+  "point_you",
+  "present_item",
+  "problem_face",
+  "question_shrug",
+  "self_nod",
+  "thumbs_good"
+ ],
+ "expressions used": [
+  "confident",
+  "excited",
+  "explaining",
+  "happy",
+  "proud",
+  "questioning",
+  "reassuring",
+  "serious",
+  "slight_smile",
+  "worried"
+ ],
+ "head events": 22,
+ "body events": 8,
+ "gaze events": 5,
+ "blinks": 14
+}

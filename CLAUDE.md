@@ -27,7 +27,7 @@ and `mascot/README.md` (the character images).
   the script and the real word times (`acting.json`). QA in `video/outputdm-reel/qa/v021/qa.md`. v020 to v012 kept.
 - Ad 01 (2026-11-26, viral ad with the user's nine-beat script, also for paid ads): `video/outputdm-ad01/` (make.sh,
   AD_COPY.md, `video/README.md` "Ad 01"). Same character pipeline with REEL_DIR / ANIM_TAG=ad01.
-- Ad 02 (2026-11-26, same nine beats, "followers are not business"): `video/outputdm-ad02/` (ANIM_TAG=ad02). For the next
+- Ad 02 (followers) `video/outputdm-ad02/`, Ad 03 (website, Nov 27) `video/outputdm-ad03/`. For the next
   ad copy this folder, write lines.json and the nine scenes in main.js, get the voice on the "AI Tools" environment, run make.sh.
 - 360 + lip-sync test clip (2026-11-19): `video/turn360/` (HyperFrames project, 5.3 s, 1080x1920, 60 fps), character
   from `mascot/turn/` (read its README: library angles + FILM turnaround, voice-driven mouth shapes, limits). The user's

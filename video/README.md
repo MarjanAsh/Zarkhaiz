@@ -548,3 +548,9 @@ Project: `video/outputdm-ad02/` (same files and `make.sh` as ad 01, `ANIM_TAG=ad
 ### Ad 02 rendered (Nov 26)
 `outputdm-ad02/out/outputdm_ad02_v001.mp4`: 50.3 s, 1080x1920, 60 fps, -13.8 LUFS; QA `outputdm-ad02/qa/qa.md`.
 Copy: `outputdm-ad02/AD_COPY.md`. Open: watching/listening (lip-sync, the voice model change at the CTA).
+
+## Ad 03 (Nov 27): "do not build a new website yet"
+The user: "agla ad bhi isi tarah bana do" (and the VPS is connected for help if needed; not needed this time).
+`video/outputdm-ad03/`: same nine beats and pipeline (ANIM_TAG=ad03). New voice lines 1, 2, 3, 5, 6, 7 by
+gemini-3.1-flash-tts-preview, Charon (`vo/raw/NOTES.md`); lines 4, 8, 9, 10 reuse ad 02. Rendered
+`out/outputdm_ad03_v001.mp4`: 48.2 s, 60 fps, -13.8 LUFS, QA `qa/qa.md`. Copy `AD_COPY.md`. Open: watch and listen.

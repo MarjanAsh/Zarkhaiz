@@ -1,0 +1,979 @@
+{
+ "face": [
+  {
+   "t": -9,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 0.24,
+   "expr": "confident",
+   "k": 0.55
+  },
+  {
+   "t": 5.049,
+   "expr": "worried",
+   "k": 0.55
+  },
+  {
+   "t": 5.219,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 8.642,
+   "expr": "excited",
+   "k": 0.55
+  },
+  {
+   "t": 8.752,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 14.263,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 14.335,
+   "expr": "confident",
+   "k": 0.65
+  },
+  {
+   "t": 19.375,
+   "expr": "worried",
+   "k": 0.55
+  },
+  {
+   "t": 19.444,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 24.296,
+   "expr": "questioning",
+   "k": 0.6
+  },
+  {
+   "t": 24.345,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 29.526,
+   "expr": "explaining",
+   "k": 0.55
+  },
+  {
+   "t": 29.595,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 34.989,
+   "expr": "explaining",
+   "k": 0.6
+  },
+  {
+   "t": 35.039,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 41.208,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 41.219,
+   "expr": "excited",
+   "k": 0.55
+  },
+  {
+   "t": 43.892,
+   "expr": "excited",
+   "k": 0.55
+  },
+  {
+   "t": 44.222,
+   "expr": "slight_smile",
+   "k": 0.6
+  },
+  {
+   "t": 45.774,
+   "expr": "slight_smile",
+   "k": 0.6
+  }
+ ],
+ "accents": [
+  {
+   "t": 4.264,
+   "d": 0.7,
+   "expr": "worried",
+   "k": 0.55
+  },
+  {
+   "t": 6.61,
+   "d": 0.88,
+   "expr": "reassuring",
+   "k": 0.55
+  },
+  {
+   "t": 8.09,
+   "d": 0.88,
+   "expr": "questioning",
+   "k": 0.74
+  },
+  {
+   "t": 8.243,
+   "d": 0.88,
+   "expr": "worried",
+   "k": 0.46
+  },
+  {
+   "t": 8.846,
+   "d": 0.7,
+   "expr": "explaining",
+   "k": 0.66
+  },
+  {
+   "t": 10.496,
+   "d": 0.7,
+   "expr": "explaining",
+   "k": 0.66
+  },
+  {
+   "t": 11.058,
+   "d": 0.7,
+   "expr": "explaining",
+   "k": 0.66
+  },
+  {
+   "t": 11.8,
+   "d": 0.7,
+   "expr": "explaining",
+   "k": 0.66
+  },
+  {
+   "t": 12.63,
+   "d": 0.7,
+   "expr": "excited",
+   "k": 0.66
+  },
+  {
+   "t": 14.836,
+   "d": 0.82,
+   "expr": "proud",
+   "k": 0.68
+  },
+  {
+   "t": 18.2,
+   "d": 0.82,
+   "expr": "serious",
+   "k": 0.49
+  },
+  {
+   "t": 19.523,
+   "d": 0.88,
+   "expr": "worried",
+   "k": 0.46
+  },
+  {
+   "t": 21.177,
+   "d": 0.88,
+   "expr": "worried",
+   "k": 0.46
+  },
+  {
+   "t": 24.912,
+   "d": 0.82,
+   "expr": "reassuring",
+   "k": 0.58
+  },
+  {
+   "t": 26.316,
+   "d": 0.82,
+   "expr": "happy",
+   "k": 0.78
+  },
+  {
+   "t": 28.214,
+   "d": 0.82,
+   "expr": "questioning",
+   "k": 0.78
+  },
+  {
+   "t": 28.904,
+   "d": 0.82,
+   "expr": "questioning",
+   "k": 0.78
+  },
+  {
+   "t": 30.766,
+   "d": 0.85,
+   "expr": "reassuring",
+   "k": 0.57
+  },
+  {
+   "t": 33.667,
+   "d": 0.85,
+   "expr": "serious",
+   "k": 0.47
+  },
+  {
+   "t": 35.229,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.5
+  },
+  {
+   "t": 38.033,
+   "d": 0.8,
+   "expr": "explaining",
+   "k": 0.5
+  },
+  {
+   "t": 39.896,
+   "d": 0.8,
+   "expr": "proud",
+   "k": 0.7
+  },
+  {
+   "t": 41.374,
+   "d": 0.7,
+   "expr": "happy",
+   "k": 0.88
+  },
+  {
+   "t": 43.024,
+   "d": 0.7,
+   "expr": "excited",
+   "k": 0.66
+  },
+  {
+   "t": 43.329,
+   "d": 0.7,
+   "expr": "reassuring",
+   "k": 0.66
+  },
+  {
+   "t": 43.674,
+   "d": 0.7,
+   "expr": "excited",
+   "k": 0.66
+  },
+  {
+   "t": 44.132,
+   "d": 0.7,
+   "expr": "proud",
+   "k": 0.77
+  }
+ ],
+ "head": [
+  {
+   "t": 0.476,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.55
+  },
+  {
+   "t": 4.324,
+   "d": 1.1,
+   "kind": "shake",
+   "amp": 0.66
+  },
+  {
+   "t": 6.67,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.55
+  },
+  {
+   "t": 8.15,
+   "d": 0.9,
+   "kind": "look_up",
+   "amp": 0.46
+  },
+  {
+   "t": 10.556,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.44
+  },
+  {
+   "t": 11.86,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.44
+  },
+  {
+   "t": 14.578,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.49
+  },
+  {
+   "t": 16.76,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.49
+  },
+  {
+   "t": 18.26,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.88
+  },
+  {
+   "t": 19.583,
+   "d": 1.1,
+   "kind": "shake",
+   "amp": 0.55
+  },
+  {
+   "t": 21.237,
+   "d": 1.1,
+   "kind": "shake",
+   "amp": 0.55
+  },
+  {
+   "t": 24.972,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.58
+  },
+  {
+   "t": 26.376,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.58
+  },
+  {
+   "t": 28.274,
+   "d": 0.9,
+   "kind": "look_up",
+   "amp": 0.49
+  },
+  {
+   "t": 30.826,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.57
+  },
+  {
+   "t": 33.727,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.85
+  },
+  {
+   "t": 35.289,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.3
+  },
+  {
+   "t": 38.093,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.3
+  },
+  {
+   "t": 39.956,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.5
+  },
+  {
+   "t": 41.434,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.66
+  },
+  {
+   "t": 43.084,
+   "d": 0.8,
+   "kind": "forward",
+   "amp": 0.88
+  },
+  {
+   "t": 44.192,
+   "d": 0.6,
+   "kind": "nod",
+   "amp": 0.55
+  }
+ ],
+ "gaze": [
+  {
+   "t": 7.97,
+   "d": 0.6,
+   "gx": 5,
+   "gy": 5
+  },
+  {
+   "t": 28.094,
+   "d": 0.6,
+   "gx": 5,
+   "gy": 5
+  },
+  {
+   "t": 28.784,
+   "d": 0.6,
+   "gx": 5,
+   "gy": 5
+  },
+  {
+   "t": 35.159,
+   "d": 0.7,
+   "gx": -9,
+   "gy": -1
+  },
+  {
+   "t": 37.963,
+   "d": 0.7,
+   "gx": -9,
+   "gy": -1
+  }
+ ],
+ "blinks": [
+  1.4,
+  5.159,
+  9.533,
+  13.115,
+  16.977,
+  20.467,
+  24.346,
+  27.648,
+  30.49,
+  35.039,
+  37.809,
+  41.239,
+  44.762,
+  47.671
+ ],
+ "arms": {
+  "L": [
+   [
+    -1.0,
+    "relaxed",
+    0.6
+   ],
+   [
+    6.07,
+    "point_camera",
+    0.8
+   ],
+   [
+    8.37,
+    "relaxed",
+    0.946
+   ],
+   [
+    9.956,
+    "count1",
+    0.8
+   ],
+   [
+    14.206,
+    "present",
+    0.9
+   ],
+   [
+    16.606,
+    "relaxed",
+    0.946
+   ],
+   [
+    24.372,
+    "point_camera",
+    0.8
+   ],
+   [
+    27.584,
+    "explain",
+    0.9
+   ],
+   [
+    30.226,
+    "point_camera",
+    0.8
+   ],
+   [
+    32.526,
+    "relaxed",
+    0.946
+   ],
+   [
+    34.609,
+    "present",
+    0.889
+   ],
+   [
+    40.834,
+    "thumbs_up",
+    0.8
+   ],
+   [
+    43.502,
+    "present",
+    0.9
+   ],
+   [
+    45.902,
+    "relaxed",
+    0.946
+   ]
+  ],
+  "R": [
+   [
+    -1.0,
+    "relaxed",
+    0.6
+   ],
+   [
+    8.411,
+    "present",
+    0.684
+   ],
+   [
+    10.595,
+    "relaxed",
+    0.786
+   ],
+   [
+    17.75,
+    "explain",
+    0.7
+   ],
+   [
+    20.894,
+    "relaxed",
+    0.786
+   ],
+   [
+    27.584,
+    "explain",
+    0.9
+   ],
+   [
+    30.796,
+    "relaxed",
+    0.946
+   ],
+   [
+    33.217,
+    "explain",
+    0.7
+   ],
+   [
+    35.417,
+    "relaxed",
+    0.786
+   ]
+  ]
+ },
+ "body": [
+  {
+   "t": 6.59,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.55
+  },
+  {
+   "t": 12.61,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.88
+  },
+  {
+   "t": 18.18,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.49
+  },
+  {
+   "t": 24.892,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.58
+  },
+  {
+   "t": 28.194,
+   "d": 0.9,
+   "kind": "shrug",
+   "amp": 0.78
+  },
+  {
+   "t": 30.746,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.57
+  },
+  {
+   "t": 33.647,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.47
+  },
+  {
+   "t": 43.004,
+   "d": 1.0,
+   "kind": "lean_fwd",
+   "amp": 0.88
+  }
+ ],
+ "turns": [],
+ "log": [
+  {
+   "line": "l01",
+   "word": "Main",
+   "t": 0.6,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l01",
+   "word": "mat",
+   "t": 4.44,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "aap",
+   "t": 6.79,
+   "concept": "you",
+   "gesture": "point_you",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "rukte",
+   "t": 7.99,
+   "concept": "problem",
+   "gesture": "problem_face",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l02",
+   "word": "kyun",
+   "t": 8.27,
+   "concept": "question",
+   "gesture": "question_shrug",
+   "arms": "-",
+   "why": "shrug would leave the frame here; explain would arrive 1.17 s late; no arm clip for this gesture is built"
+  },
+  {
+   "line": "l02",
+   "word": "nahi.",
+   "t": 8.42,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "Teen",
+   "t": 9.03,
+   "concept": "number",
+   "gesture": "count",
+   "arms": "R:count3",
+   "why": "count3 would arrive 0.36 s late"
+  },
+  {
+   "line": "l03",
+   "word": "khule,",
+   "t": 10.68,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count1",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "pehli",
+   "t": 11.24,
+   "concept": "number",
+   "gesture": "count",
+   "arms": "L:count1",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "faida,",
+   "t": 11.98,
+   "concept": "list",
+   "gesture": "count",
+   "arms": "L:count2",
+   "why": ""
+  },
+  {
+   "line": "l03",
+   "word": "WhatsApp",
+   "t": 12.81,
+   "concept": "cta",
+   "gesture": "call_to_action",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l04",
+   "word": "Main",
+   "t": 14.7,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l04",
+   "word": "Zarkhaiz,",
+   "t": 15.02,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "L:present",
+   "why": "present would leave the frame here"
+  },
+  {
+   "line": "l04",
+   "word": "OutputDM",
+   "t": 15.56,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "-",
+   "why": "arms left to 'Zarkhaiz,' (brand)"
+  },
+  {
+   "line": "l04",
+   "word": "Hum",
+   "t": 16.88,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l04",
+   "word": "2018",
+   "t": 17.25,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "present would arrive 0.77 s late; present would leave the frame here; no arm clip for this gesture is built"
+  },
+  {
+   "line": "l04",
+   "word": "yahi",
+   "t": 18.38,
+   "concept": "emphasis",
+   "gesture": "emphasis_chop",
+   "arms": "R:chop",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "Na",
+   "t": 19.7,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l05",
+   "word": "na",
+   "t": 21.36,
+   "concept": "negation",
+   "gesture": "head_no",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "aap",
+   "t": 25.09,
+   "concept": "you",
+   "gesture": "point_you",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "Free",
+   "t": 26.5,
+   "concept": "positive",
+   "gesture": "thumbs_good",
+   "arms": "L:thumbs_up",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "hum",
+   "t": 27.27,
+   "concept": "self",
+   "gesture": "self_nod",
+   "arms": "-",
+   "why": ""
+  },
+  {
+   "line": "l06",
+   "word": "kahan",
+   "t": 28.39,
+   "concept": "question",
+   "gesture": "question_shrug",
+   "arms": "L+R:explain",
+   "why": "shrug would leave the frame here; used the next choice"
+  },
+  {
+   "line": "l06",
+   "word": "jaate",
+   "t": 29.08,
+   "concept": "question",
+   "gesture": "question_shrug",
+   "arms": "-",
+   "why": "arms left to 'kahan' (question)"
+  },
+  {
+   "line": "l07",
+   "word": "aap",
+   "t": 30.95,
+   "concept": "you",
+   "gesture": "point_you",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l07",
+   "word": "Yahi",
+   "t": 33.85,
+   "concept": "emphasis",
+   "gesture": "emphasis_chop",
+   "arms": "R:chop",
+   "why": ""
+  },
+  {
+   "line": "l08",
+   "word": "Restaurants,",
+   "t": 35.41,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "L:present",
+   "why": ""
+  },
+  {
+   "line": "l08",
+   "word": "real",
+   "t": 36.1,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Restaurants,' (place)"
+  },
+  {
+   "line": "l08",
+   "word": "Pakistan",
+   "t": 38.21,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "L:present",
+   "why": ""
+  },
+  {
+   "line": "l08",
+   "word": "UAE",
+   "t": 38.91,
+   "concept": "place",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Pakistan' (place)"
+  },
+  {
+   "line": "l08",
+   "word": "OutputDM",
+   "t": 40.08,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "L:present",
+   "why": "present would leave the frame here"
+  },
+  {
+   "line": "l09",
+   "word": "Free",
+   "t": 41.55,
+   "concept": "positive",
+   "gesture": "thumbs_good",
+   "arms": "L:thumbs_up",
+   "why": ""
+  },
+  {
+   "line": "l09",
+   "word": "Growth",
+   "t": 42.27,
+   "concept": "positive",
+   "gesture": "present_item",
+   "arms": "-",
+   "why": "arms left to 'Free' (positive)"
+  },
+  {
+   "line": "l09",
+   "word": "abhi",
+   "t": 43.2,
+   "concept": "cta",
+   "gesture": "call_to_action",
+   "arms": "L:point_camera",
+   "why": ""
+  },
+  {
+   "line": "l09",
+   "word": "WhatsApp",
+   "t": 43.51,
+   "concept": "cta",
+   "gesture": "point_you",
+   "arms": "-",
+   "why": "arms left to 'abhi' (cta)"
+  },
+  {
+   "line": "l09",
+   "word": "karein.",
+   "t": 43.85,
+   "concept": "cta",
+   "gesture": "call_to_action",
+   "arms": "-",
+   "why": "arms left to 'abhi' (cta)"
+  },
+  {
+   "line": "l10",
+   "word": "OutputDM",
+   "t": 44.31,
+   "concept": "brand",
+   "gesture": "brand_present",
+   "arms": "L:present",
+   "why": "present would leave the frame here"
+  }
+ ],
+ "arm_log": [
+  "L 11.49 count2: left out, point_camera follows at 12.13",
+  "L 8.37 rest -> relaxed",
+  "L 12.13 point_camera: dropped, count1 held only 1.38 s",
+  "L 16.61 rest -> relaxed",
+  "L 25.78 thumbs_up: dropped, point_camera held only 0.60 s",
+  "L 32.53 rest -> relaxed",
+  "L 42.48 point_camera: dropped, thumbs_up held only 0.85 s",
+  "L 45.90 rest -> relaxed",
+  "R 8.41 count3 -> present",
+  "R 10.59 rest -> relaxed",
+  "R 17.75 chop -> explain",
+  "R 20.89 rest -> relaxed",
+  "R 30.80 rest -> relaxed",
+  "R 33.22 chop -> explain",
+  "R 35.42 rest -> relaxed"
+ ]
+}
